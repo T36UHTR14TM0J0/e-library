@@ -87,18 +87,18 @@ Sebelum memulai, pastikan Anda telah menginstall:
 
 ## Langkah 1: Clone Repository
 
-1.Buka terminal/command prompt
-2.Clone repositori ini: https://github.com/T36UHTR14TM0J0/e-library.git
-3.buka project diterminal : cd e-library
+1.Buka terminal/command prompt.
+2.Clone repositori ini: <b>https://github.com/T36UHTR14TM0J0/e-library.git</b>.
+3.buka project diterminal : <b>cd e-library</b>.
 
 ## Langkah 2: Install Dependencies
 
-1.composer install
+1.<b>composer install</b>
 
 ## Langkah 3: Setup Environment
 
-1.Salin file .env.example menjadi .env: cp .env.example .env
-2.Generate application key: php artisan key:generate
+1.Salin file .env.example menjadi .env: <b>cp .env.example .env</b>.
+2.Generate application key: <b>php artisan key:generate</b>.
 3.Konfigurasi database di .env:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -110,16 +110,17 @@ DB_PASSWORD=password_db
 ## Langkah 4: Database Setup
 
 1.Buat database baru di sistem database Anda
-dengan menjalankan migrasi dan seeder: php artisan migrate --seed
+dengan menjalankan migrasi dan seeder: <b>php artisan migrate --seed</b>.
+2.kalau migrate error import database yang ada didalam folder database_file
 
 ## Langkah 5: Storage Link
 
-Jalankan perintah berikut untuk membuat symbolic link: php artisan storage:link
+Jalankan perintah berikut untuk membuat symbolic link: <b>php artisan storage:link</b>
 
 ## Langkah 6: Menjalankan Aplikasi
 
 Jalankan server development Laravel:
-php artisan serve
+<b>php artisan serve</b>
 Aplikasi akan berjalan di http://localhost:8000
 
 ## NOTE :
