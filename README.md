@@ -121,3 +121,18 @@ Jalankan perintah berikut untuk membuat symbolic link: php artisan storage:link
 Jalankan server development Laravel:
 php artisan serve
 Aplikasi akan berjalan di http://localhost:8000
+
+## NOTE :
+
+default akun :
+1.admin
+username : admin
+password : admin123
+
+2.mahasiswa
+username : mahasiswa
+password : mahasiswa123
+
+3.dosen
+username : dosen
+password : dosen123
