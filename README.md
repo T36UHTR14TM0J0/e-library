@@ -88,7 +88,7 @@ Sebelum memulai, pastikan Anda telah menginstall:
 ## Langkah 1: Clone Repository
 
 1.Buka terminal/command prompt
-2.Clone repositori ini: https://github.com/T36UHTR14TM0J0/e-library.git 3.
+2.Clone repositori ini: https://github.com/T36UHTR14TM0J0/e-library.git
 3.buka project diterminal : cd e-library
 
 ## Langkah 2: Install Dependencies
