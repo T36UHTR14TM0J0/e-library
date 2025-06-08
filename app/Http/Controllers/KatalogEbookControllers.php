@@ -47,4 +47,12 @@ class KatalogEbookControllers extends Controller
 
         return view('katalog.ebook.index', compact('ebooks', 'kategoris', 'prodis'));
     }
+
+    public function show($id)
+    {
+        $ebook = Ebook::with(['kategori', 'prodi', 'pengunggah'])
+                    ->findOrFail($id);
+                    
+        return view('katalog.ebook.show', compact('ebook'));
+    }
 }

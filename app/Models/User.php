@@ -53,4 +53,25 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Prodi::class);
     }
+
+
+    /**
+     * Hubungan ke reading history
+     */
+    public function ebookReadings()
+    {
+        return $this->hasMany(EbookReading::class);
+    }
+
+    
+    /**
+     * Hitung jumlah ebook yang sudah dibaca
+     */
+    public function getReadEbooksCountAttribute()
+    {
+        return $this->ebookReadings()
+            ->select('ebook_id')
+            ->distinct()
+            ->count('ebook_id');
+    }
 }

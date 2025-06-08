@@ -34,12 +34,15 @@
                                     style="height: 200px; width: 100%; object-fit: cover;">
                             </div>
                             <div class="colored-shadow" 
-                                style="background-image: url('{{ $ebook->cover_url ?? asset('assets/images/ebook-default.jpg') }}');"></div>
+                                style="background-image: url('{{ $ebook->cover_url ?? asset('assets/images/default-cover.png') }}');"></div>
                         </div>
                         <div class="card-body pt-2">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="badge bg-gradient-{{ $ebook->izin_unduh ? 'success' : 'danger' }}">
                                     {{ $ebook->izin_unduh ? 'Boleh Unduh' : 'Tidak Boleh Unduh' }}
+                                </span>
+                                <span class="badge bg-info">
+                                    <td>{{ $ebook->total_reads }} kali</td>
                                 </span>
                             </div>
                             <h5 class="font-weight-normal">
@@ -59,7 +62,7 @@
                             <hr class="horizontal dark my-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <a href="{{ route('ebook.show', $ebook->id) }}" class="btn btn-sm btn-outline-info">
+                                    <a href="{{ route('KatalogEbook.show', $ebook->id) }}" class="btn btn-sm btn-outline-info">
                                         Detail
                                     </a>
                                     @if($ebook->file_url)
@@ -96,14 +99,14 @@
                                     @if(filter_var($ebook->file_url, FILTER_VALIDATE_URL))
                                         <!-- Untuk URL eksternal -->
                                         <iframe 
-                                            src="{{ Storage::url($ebook->file_url) }}?file={{ urlencode($ebook->file_url)}}" 
+                                            src="https://docs.google.com/viewer?url={{ urlencode($ebook->file_url) }}&embedded=true" 
                                             frameborder="0" 
                                             style="width: 100%; height: 100%;"
                                         ></iframe>
                                     @else
                                         <!-- Untuk file lokal -->
                                         <iframe 
-                                            src="{{ Storage::url($ebook->file_url) }}#toolbar=0&navpanes=0" 
+                                            src="{{ Storage::url($ebook->file_url) }}#toolbar=0&navpanes=0&scrollbar=0" 
                                             frameborder="0" 
                                             style="width: 100%; height: 100%;"
                                         ></iframe>
@@ -117,14 +120,36 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary text-white btn-sm" data-bs-dismiss="modal">Tutup</button>
                                 @if($ebook->izin_unduh)
-                                    <a href="{{ $ebook->file_url }}" class="btn btn-primary btn-sm" download>
-                                        Unduh
+                                    <a href="{{ Storage::url($ebook->file_url) }}" class="btn btn-primary btn-sm" download>
+                                         Unduh
                                     </a>
                                 @endif
                             </div>
                         </div>
                     </div>
                 </div>
+
+                @push('scripts')
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        $('#readPdfModal{{ $ebook->id }}').on('shown.bs.modal', function() {
+                            // Start tracking reading session
+                            $.ajax({
+                                url: '{{ route("reading.start") }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    ebook_id: '{{ $ebook->id }}'
+                                },
+                                success: function(response) {
+                                    
+                                }
+                            });
+                        });
+
+                   });
+                </script>
+                @endpush
                 @endif
 
                 <!-- EPUB Reader Modal -->
@@ -150,8 +175,8 @@
                                 </div>
                                 <button type="button" class="btn btn-secondary text-white btn-sm" data-bs-dismiss="modal">Tutup</button>
                                 @if($ebook->izin_unduh)
-                                    <a href="{{ $ebook->file_url }}" class="btn btn-primary btn-sm" download>
-                                        Unduh
+                                    <a href="{{ Storage::url($ebook->file_url) }}" class="btn btn-primary btn-sm" download>
+                                         Unduh
                                     </a>
                                 @endif
                             </div>
@@ -160,56 +185,45 @@
                 </div>
 
                 @push('scripts')
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-                <script src="https://unpkg.com/epubjs@latest/dist/epub.min.js"></script>
-                <script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        $('#readEpubModal{{ $ebook->id }}').on('shown.bs.modal', function() {
-                            var viewer = document.getElementById("epub-viewer-{{ $ebook->id }}");
-                            viewer.innerHTML = '';
-                            
-                            try {
-                                var book = ePub("{{ Storage::url($ebook->file_url) }}");
-                                var rendition = book.renderTo("epub-viewer-{{ $ebook->id }}", {
+                    <!-- Make sure jQuery is loaded first if you're using it -->
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+                    <script src="https://unpkg.com/epubjs@latest/dist/epub.min.js"></script>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Use event delegation for modals in case they're dynamically loaded
+                            $(document).on('shown.bs.modal', '#readEpubModal{{ $ebook->id }}', function() {
+                                // Start tracking reading session
+                                $.ajax({
+                                    url: '{{ route("reading.start") }}',
+                                    method: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+                                        ebook_id: '{{ $ebook->id }}'
+                                    }
+                                });
+
+                                // Initialize EPUB reader
+                                window.currentBook = ePub("{{ Storage::url($ebook->file_url) }}");
+                                window.currentRendition = window.currentBook.renderTo("epub-viewer-{{ $ebook->id }}", {
                                     width: "100%",
                                     height: "100%",
-                                    spread: "none",
-                                    manager: "continuous"
+                                    spread: "none"
                                 });
+
+                                // Display the first page
+                                window.currentRendition.display();
                                 
-                                rendition.display().then(function() {
-                                    // Connect buttons to navigation
-                                    document.getElementById('prevBtn{{ $ebook->id }}').addEventListener('click', function() {
-                                        rendition.prev();
-                                    });
-                                    
-                                    document.getElementById('nextBtn{{ $ebook->id }}').addEventListener('click', function() {
-                                        rendition.next();
-                                    });
-                                    
-                                    // Keyboard navigation
-                                    document.addEventListener('keydown', function(e) {
-                                        if (e.keyCode === 37) { // Left arrow
-                                            rendition.prev();
-                                        } else if (e.keyCode === 39) { // Right arrow
-                                            rendition.next();
-                                        }
-                                    });
+                                // Navigation buttons
+                                document.getElementById('prevBtn{{ $ebook->id }}').addEventListener('click', function() {
+                                    window.currentRendition.prev();
                                 });
-                                
-                                book.on('error', function(error) {
-                                    console.error("EPUB Error:", error);
-                                    viewer.innerHTML = '<div class="alert alert-danger">Gagal memuat file EPUB. Silakan coba lagi.</div>';
+
+                                document.getElementById('nextBtn{{ $ebook->id }}').addEventListener('click', function() {
+                                    window.currentRendition.next();
                                 });
-                                
-                                
-                            } catch (error) {
-                                console.error("EPUB Initialization Error:", error);
-                                viewer.innerHTML = '<div class="alert alert-danger">Gagal memulai pembaca EPUB.</div>';
-                            }
+                            });
                         });
-                    });
-                </script>
+                    </script>
                 @endpush
                 @endif
                 @endforeach
@@ -308,6 +322,9 @@
     }
     .modal-xl {
         max-width: 95%;
+    }
+    .modal-body iframe {
+        border: none;
     }
 </style>
 @endpush

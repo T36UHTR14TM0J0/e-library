@@ -92,11 +92,11 @@
                         </tr>
                         <tr>
                             <th>Tanggal Ditambahkan</th>
-                            <td>{{ $buku->created_at->format('d F Y H:i') }}</td>
+                            <td>{{ $buku->created_at }}</td>
                         </tr>
                         <tr>
                             <th>Terakhir Diupdate</th>
-                            <td>{{ $buku->updated_at->format('d F Y H:i') }}</td>
+                            <td>{{ $buku->updated_at }}</td>
                         </tr>
                     </table>
                 </div>

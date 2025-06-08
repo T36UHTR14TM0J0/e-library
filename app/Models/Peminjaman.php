@@ -35,10 +35,6 @@ class Peminjaman extends Model
         return $this->belongsTo(Buku::class, 'book_id');
     }
 
-    // public function bukuDigital()
-    // {
-    //     return $this->belongsTo(Ebook::class, 'ebook_id');
-    // }
 
     // Method
     // public function hitungDenda()

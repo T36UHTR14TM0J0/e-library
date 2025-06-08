@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('buku_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('ebook_id')->nullable()->constrained()->onDelete('set null');
-            $table->enum('jenis', ['fisik', 'digital']);
             $table->enum('status', ['menunggu', 'dipinjam', 'dikembalikan', 'terlambat', 'dibatalkan']);
             $table->date('tanggal_pinjam');
             $table->date('tanggal_jatuh_tempo');

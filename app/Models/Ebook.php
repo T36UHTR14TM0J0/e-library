@@ -60,16 +60,27 @@ class Ebook extends Model
         return false;
     }
 
+    /**
+     * Hubungan ke reading history
+     */
+    public function readings()
+    {
+        return $this->hasMany(EbookReading::class);
+    }
+
+
+    public function getTotalReadsAttribute()
+    {
+        return $this->readings()->count();
+    }
+
+        
+
     // public function transaksi()
     // {
     //     return $this->hasMany(Transaction::class);
     // }
 
-    // Scope
-    // public function scopePublik($query)
-    // {
-    //     return $query->where('publik', true);
-    // }
 
     // public function scopeUntukProdi($query, $prodiId)
     // {
