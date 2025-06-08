@@ -5,6 +5,7 @@ use App\Http\Controllers\BukuControllers;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EbookControllers;
 use App\Http\Controllers\EbookReadingControllers;
+use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdiController;
@@ -31,6 +32,7 @@ Route::middleware(['auth'])->group(function() {
     Route::resource('buku', BukuControllers::class);
     Route::resource('ebook', EbookControllers::class);
     Route::resource('KatalogEbook', KatalogEbookControllers::class);
+    Route::resource('KatalogBuku', KatalogBukuControllers::class);
     Route::post('/reading/start', [EbookReadingControllers::class, 'startReading'])->name('reading.start');
     
     Route::middleware('admin')->group(function() {

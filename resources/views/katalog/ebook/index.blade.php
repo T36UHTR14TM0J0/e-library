@@ -38,25 +38,25 @@
                         </div>
                         <div class="card-body pt-2">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-gradient-{{ $ebook->izin_unduh ? 'success' : 'danger' }}">
-                                    {{ $ebook->izin_unduh ? 'Boleh Unduh' : 'Tidak Boleh Unduh' }}
+                                <span class="badge bg-gradient-danger">
+                                    {{ $ebook->prodi->nama ?? '-' }}
                                 </span>
                                 <span class="badge bg-info">
                                     <td>{{ $ebook->total_reads }} kali</td>
                                 </span>
                             </div>
                             <h5 class="font-weight-normal">
-                                <a href="{{ route('ebook.show', $ebook->id) }}" class="text-dark">{{ Str::limit($ebook->judul, 50) }}</a>
+                                <a href="{{ route('KatalogEbook.show', $ebook->id) }}" class="text-dark">{{ Str::limit($ebook->judul, 50) }}</a>
                             </h5>
                             <p class="mb-0 text-sm">
                                 <i class="fas fa-user-edit me-1"></i> {{ $ebook->penulis }}
                             </p>
                             <div class="d-flex justify-content-between mt-2">
-                                <span class="text-sm">
-                                    <i class="icon-tag me-1"></i> {{ $ebook->kategori->nama ?? '-' }}
+                                <span class="badge bg-secondary">
+                                    {{ $ebook->kategori->nama ?? '-' }}
                                 </span>
-                                <span class="text-sm">
-                                    {{ $ebook->prodi->nama ?? '-' }}
+                                <span class="badge bg-success">
+                                    {{ $ebook->created_at ?? '-' }}
                                 </span>
                             </div>
                             <hr class="horizontal dark my-2">
