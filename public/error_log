@@ -1,0 +1,12 @@
+[06-Jun-2025 19:37:38 UTC] PHP Fatal error:  Uncaught ErrorException: Cannot modify header information - headers already sent by (output started at /home/naylafro/public_html/e-library/vendor/symfony/http-foundation/Response.php:387) in /home/naylafro/public_html/e-library/vendor/symfony/http-foundation/Response.php:322
+Stack trace:
+#0 /home/naylafro/public_html/e-library/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(256): Illuminate\Foundation\Bootstrap\HandleExceptions->handleError()
+#1 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#2 /home/naylafro/public_html/e-library/vendor/symfony/http-foundation/Response.php(322): header()
+#3 /home/naylafro/public_html/e-library/vendor/symfony/http-foundation/Response.php(401): Symfony\Component\HttpFoundation\Response->sendHeaders()
+#4 /home/naylafro/public_html/e-library/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(219): Symfony\Component\HttpFoundation\Response->send()
+#5 /home/naylafro/public_html/e-library/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(196): Illuminate\Foundation\Bootstrap\HandleExceptions->renderHttpResponse()
+#6 /home/naylafro/public_html/e-library/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(256): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException()
+#7 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#8 {main}
+  thrown in /home/naylafro/public_html/e-library/vendor/symfony/http-foundation/Response.php on line 322
