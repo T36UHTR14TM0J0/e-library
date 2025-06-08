@@ -95,14 +95,18 @@
                               @if($ebook->file_exists)
                                   @if(filter_var($ebook->file_url, FILTER_VALIDATE_URL))
                                       <!-- Untuk URL eksternal -->
-                                      <iframe src="{{ asset('assets/vendors/pdfjs/web/viewer.html') }}?file={{ urlencode($ebook->file_url) }}" 
-                                              frameborder="0" 
-                                              style="width: 100%; height: 100%;"></iframe>
+                                      <iframe 
+                                          src="{{ Storage::url($ebook->file_url) }}?file={{ urlencode($ebook->file_url)}}" 
+                                          frameborder="0" 
+                                          style="width: 100%; height: 100%;"
+                                      ></iframe>
                                   @else
                                       <!-- Untuk file lokal -->
-                                      <iframe src="{{ asset('assets/vendors/pdfjs/web/viewer.html') }}?file={{ urlencode(Storage::url($ebook->file_url)) }}" 
-                                              frameborder="0" 
-                                              style="width: 100%; height: 100%;"></iframe>
+                                      <iframe 
+                                          src="{{ Storage::url($ebook->file_url) }}#toolbar=0&navpanes=0" 
+                                          frameborder="0" 
+                                          style="width: 100%; height: 100%;"
+                                      ></iframe>
                                   @endif
                               @else
                                   <div class="alert alert-danger m-3">
