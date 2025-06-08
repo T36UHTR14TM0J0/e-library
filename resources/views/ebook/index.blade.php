@@ -1,18 +1,18 @@
 @extends('layouts.app')
-@section('title', 'Data Buku')
+@section('title', 'Data Ebook')
 @section('content')
 <div class="container">
     <div class="row mb-4">
         <div class="col-md-12">
-            <a href="{{ route('buku.create') }}" class="btn btn-sm btn-inverse-primary">
+            <a href="{{ route('ebook.create') }}" class="btn btn-sm btn-inverse-primary">
                 <i class="icon-plus"></i> Tambah Data
             </a>
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-inverse-dark btn-sm" data-bs-toggle="modal" data-bs-target="#filter">
               <i class="icon-search"></i> Filter
             </button>
-            @if(request()->has('nama') || request()->has('penulis') || request()->has('kategori_id') || request()->has('prodi_id'))
-            <a href="{{ route('buku.index') }}" class="btn btn-sm btn-inverse-danger">
+            @if(request()->has('judul') || request()->has('penulis') || request()->has('kategori_id') || request()->has('prodi_id'))
+            <a href="{{ route('ebook.index') }}" class="btn btn-sm btn-inverse-danger">
                 <i class="icon-close"></i> Batal Filter
             </a>
             @endif
@@ -26,37 +26,43 @@
                         <thead class="bg-primary">
                             <tr>
                                 <th class="text-white text-center bg-primary">No</th>
-                                <th class="text-white text-center bg-primary">ISBN</th>
                                 <th class="text-white text-center bg-primary">Judul</th>
                                 <th class="text-white text-center bg-primary">Penulis</th>
                                 <th class="text-white text-center bg-primary">Kategori</th>
                                 <th class="text-white text-center bg-primary">Prodi</th>
-                                <th class="text-white text-center bg-primary">Jumlah</th>
+                                <th class="text-white text-center bg-primary">Uploader</th>
+                                <th class="text-white text-center bg-primary">Izin Unduh</th>
                                 <th class="text-white text-center bg-primary">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $no= 1;?>
-                            @forelse ($bukus as $buku)
+                            @forelse ($ebooks as $ebook)
                             <tr>
                                 <td class="text-center"><?= $no++;?></td>
-                                <td>{{ $buku->isbn ?? '-' }}</td>
-                                <td>{{ $buku->judul }}</td>
-                                <td>{{ $buku->penulis }}</td>
-                                <td>{{ $buku->kategori->nama ?? '-' }}</td>
-                                <td>{{ $buku->prodi->nama ?? '-' }}</td>
-                                <td class="text-center">{{ $buku->jumlah }}</td>
+                                <td>{{ $ebook->judul }}</td>
+                                <td>{{ $ebook->penulis }}</td>
+                                <td>{{ $ebook->kategori->nama ?? '-' }}</td>
+                                <td>{{ $ebook->prodi->nama ?? '-' }}</td>
+                                <td>{{ $ebook->pengunggah->nama_lengkap ?? '-' }}</td>
+                                <td class="text-center">
+                                    @if($ebook->izin_unduh)
+                                        <span class="badge bg-success">Ya</span>
+                                    @else
+                                        <span class="badge bg-danger">Tidak</span>
+                                    @endif
+                                </td>
                                 <td>
-                                    <a href="{{ route('buku.show',$buku->id) }}" class="btn btn-sm btn-info" title="View">
+                                    <a href="{{ route('ebook.show',$ebook->id) }}" class="btn btn-sm btn-info" title="View">
                                         <i class="icon-eye text-white"></i>
                                     </a>
-                                    <a href="{{ route('buku.edit',$buku->id) }}" class="btn btn-sm btn-warning" title="edit">
+                                    <a href="{{ route('ebook.edit',$ebook->id) }}" class="btn btn-sm btn-warning" title="edit">
                                         <i class="mdi mdi-border-color text-white"></i>
                                     </a>
-                                    <button class="btn btn-sm btn-danger" title="Delete" onclick="confirmDelete('{{ $buku->id }}')">
+                                    <button class="btn btn-sm btn-danger" title="Delete" onclick="confirmDelete('{{ $ebook->id }}')">
                                         <i class="icon-trash text-white"></i>
                                     </button>
-                                    <form id="delete-form-{{ $buku->id }}" action="{{ route('buku.destroy', $buku->id) }}" method="POST" style="display: none;">
+                                    <form id="delete-form-{{ $ebook->id }}" action="{{ route('ebook.destroy', $ebook->id) }}" method="POST" style="display: none;">
                                         @csrf
                                         @method('DELETE')
                                     </form>
@@ -64,7 +70,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="10" class="text-center">Tidak ada data</td>
+                                <td colspan="8" class="text-center">Tidak ada data</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -74,10 +80,10 @@
                 <!-- Pagination -->
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div>
-                        Menampilkan {{ $bukus->firstItem() }} sampai {{ $bukus->lastItem() }} dari {{ $bukus->total() }} entri
+                        Menampilkan {{ $ebooks->firstItem() }} sampai {{ $ebooks->lastItem() }} dari {{ $ebooks->total() }} entri
                     </div>
                     <div>
-                        {{ $bukus->links() }}
+                        {{ $ebooks->links() }}
                     </div>
                 </div>
             </div>
@@ -90,10 +96,10 @@
 <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
-      <form method="GET" action="{{ route('buku.index') }}" class="needs-validation" novalidate>
+      <form method="GET" action="{{ route('ebook.index') }}" class="needs-validation" novalidate>
         <div class="modal-header bg-primary text-white">
           <h5 class="modal-title fs-5 fw-semibold" id="filterLabel">
-            <i class="bi bi-sliders me-2"></i>Filter Buku
+            <i class="bi bi-sliders me-2"></i>Filter ebook
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -110,7 +116,6 @@
             <input type="text" name="penulis" id="penulis" class="form-control" 
                    placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
           </div>
-          
           
           <!-- Kategori Selection -->
           <div class="mb-3">
@@ -137,6 +142,16 @@
               @endforeach
             </select>
           </div>
+
+          <!-- Izin Unduh Selection -->
+          <div class="mb-3">
+            <label for="izin_unduh" class="form-label fw-medium">Izin Unduh</label>
+            <select name="izin_unduh" id="izin_unduh" class="form-select">
+              <option value="">Semua Status</option>
+              <option value="1" {{ request('izin_unduh') == '1' ? 'selected' : '' }}>Diizinkan</option>
+              <option value="0" {{ request('izin_unduh') == '0' ? 'selected' : '' }}>Tidak Diizinkan</option>
+            </select>
+          </div>
         </div>
         <div class="modal-footer">
           <button type="reset" class="btn btn-outline-secondary">
@@ -151,4 +166,3 @@
   </div>
 </div>
 @endsection
-

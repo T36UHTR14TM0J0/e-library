@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuControllers;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EbookControllers;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
@@ -28,6 +29,7 @@ Route::middleware(['auth'])->group(function() {
 
     Route::resource('kategori', KategoriController::class);
     Route::resource('buku', BukuControllers::class);
+    Route::resource('ebook', EbookControllers::class);
     
 });
 

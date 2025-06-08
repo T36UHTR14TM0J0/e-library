@@ -41,7 +41,7 @@
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> <a class="nav-link" href="{{ route('kategori.index') }}">Kategori</a></li>
           <li class="nav-item"> <a class="nav-link" href="{{ route('buku.index') }}">Buku</a></li>
-          <li class="nav-item"> <a class="nav-link" href="">Ebook</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{ route('ebook.index') }}">Ebook</a></li>
         </ul>
       </div>
     </li>
