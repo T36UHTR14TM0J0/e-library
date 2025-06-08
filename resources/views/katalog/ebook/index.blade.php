@@ -100,9 +100,9 @@
                                               style="width: 100%; height: 100%;"></iframe>
                                   @else
                                       <!-- Untuk file lokal -->
-                                      <iframe src="https://mozilla.github.io/pdf.js/web/viewer.html?file={{ urlencode(Storage::url($ebook->file_url)) }}"
-        style="width:100%; height:100%; border:none;">
-</iframe>
+                                      <iframe src="{{ asset('assets/vendors/pdfjs/web/viewer.html') }}?file={{ urlencode(Storage::url($ebook->file_url)) }}" 
+                                              frameborder="0" 
+                                              style="width: 100%; height: 100%;"></iframe>
                                   @endif
                               @else
                                   <div class="alert alert-danger m-3">
