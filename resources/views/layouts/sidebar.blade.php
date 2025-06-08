@@ -15,7 +15,7 @@
       <div class="collapse" id="katalog">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> <a class="nav-link" href="">Buku</a></li>
-          <li class="nav-item"> <a class="nav-link" href="">Ebook</a></li>
+          <li class="nav-item"> <a class="nav-link" href="{{ route('KatalogEbook.index') }}">Ebook</a></li>
         </ul>
       </div>
     </li>

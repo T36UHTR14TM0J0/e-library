@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Ebook extends Model
 {
@@ -34,6 +35,29 @@ class Ebook extends Model
     public function pengunggah()
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+
+    // Accessor untuk memeriksa tipe file
+    public function getFileTypeAttribute()
+    {
+        if ($this->file_url) {
+            return strtolower(pathinfo($this->file_url, PATHINFO_EXTENSION));
+        }
+        return null;
+    }
+
+    // Accessor untuk memeriksa apakah file ada
+    public function getFileExistsAttribute()
+    {
+        if ($this->file_url) {
+            // Cek apakah URL eksternal atau lokal
+            if (filter_var($this->file_url, FILTER_VALIDATE_URL)) {
+                return true; // Untuk URL eksternal, kita asumsikan ada
+            }
+            return Storage::disk('public')->exists($this->file_url);
+        }
+        return false;
     }
 
     // public function transaksi()
