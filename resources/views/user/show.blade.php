@@ -1,11 +1,8 @@
 @extends('layouts.app')
-
+@section('title','Detail User')
 @section('content')
 <div class="container">
     <div class="card">
-        <div class="card-header">
-            <h3>Detail Pengguna</h3>
-        </div>
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-4">
