@@ -42,11 +42,11 @@
       </a>
       <div class="collapse" id="master-buku">
         <ul class="nav flex-column sub-menu">
+          @if (auth()->user()->isDosen())
           <li class="nav-item"> <a class="nav-link" href="{{ route('kategori.index') }}">Kategori</a></li>
           <li class="nav-item"> <a class="nav-link" href="{{ route('buku.index') }}">Buku</a></li>
-          {{-- @if (auth()->user()->isDosen()) --}}
+          @endif
           <li class="nav-item"> <a class="nav-link" href="{{ route('ebook.index') }}">Ebook</a></li>
-          {{-- @endif --}}
         </ul>
       </div>
     </li>
