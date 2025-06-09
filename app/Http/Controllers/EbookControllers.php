@@ -138,10 +138,10 @@ class EbookControllers extends Controller
                 Storage::delete('public/' . $ebook->gambar_sampul);
             }
             
-            $image       = $request->file('file_url');
+            $image       = $request->file('gambar_sampul');
             $imageName   = time() . '_' . $file->getClientOriginalName();
             $image->move(storage_path('app/public/ebooks'), $imageName);
-            $validated['file_url'] = 'ebooks/' . $imageName;
+            $validated['gambar_sampul'] = 'ebooks/' . $imageName;
         } elseif ($request->has('hapus_gambar') && $request->hapus_gambar) {
             // Hapus gambar jika checkbox dicentang
             Storage::delete('public/' . $ebook->gambar_sampul);

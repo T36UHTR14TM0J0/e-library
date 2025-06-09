@@ -14,10 +14,14 @@ class EbookRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'judul'       => 'required|string|max:255',
-            'penulis'     => 'required|string|max:255',
-            'kategori_id' => 'required|exists:kategoris,id',
-            'file_url'    => 'required|file|mimes:pdf,epub|max:10240', // 10MB
+            'judul'         => 'required|string|max:255',
+            'penulis'       => 'required|string|max:255',
+            'kategori_id'   => 'required|exists:kategoris,id',
+            'prodi_id'      => 'nullable|exists:prodis,id',
+            'deskripsi'     => 'nullable|string',
+            'izin_unduh'    => 'nullable|string',
+            'file_url'      => 'required|file|mimes:pdf,epub|max:10240', // 10MB
+            'gambar_sampul' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
         // Untuk update, file_url tidak harus selalu diisi
@@ -47,11 +51,15 @@ class EbookRequest extends FormRequest
     public function attributes()
     {
         return [
-            'judul'       => 'Judul Ebook',
-            'penulis'     => 'Penulis',
-            'kategori_id' => 'Kategori',
-            'prodi_id'    => 'Program Studi',
-            'file_url'    => 'File Ebook',
+            'judul'         => 'Judul Ebook',
+            'penulis'       => 'Penulis',
+            'kategori_id'   => 'Kategori',
+            'prodi_id'      => 'Program Studi',
+            'deskripsi'     => 'Deskripsi',
+            'izin_unduh'    => 'Izin Unduh',
+            'file_url'      => 'File Ebook',
+            'gambar_sampul' => 'Gambar Sampul',
+            
         ];
     }
 }
