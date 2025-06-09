@@ -28,13 +28,13 @@
                     <div class="card card-hover h-100">
                         <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
                             <div class="d-block blur-shadow-image">
-                                <img src="{{ $buku->cover_url ?? asset('assets/images/default-cover.png') }}" 
+                                <img src="{{ asset('storage/' . $buku->gambar_sampul) ?? asset('assets/images/default-cover.png') }}" 
                                     alt="{{ $buku->judul }}" 
                                     class="img-fluid border-radius-lg" 
                                     style="height: 200px; width: 100%; object-fit: cover;">
                             </div>
                             <div class="colored-shadow" 
-                                style="background-image: url('{{ $buku->cover_url ?? asset('assets/images/default-cover.png') }}');"></div>
+                                style="background-image: url('{{ $buku->gambar_sampul ?? asset('assets/images/default-cover.png') }}');"></div>
                         </div>
                         <div class="card-body pt-2">
                             <div class="d-flex justify-content-between align-items-center mb-2">
