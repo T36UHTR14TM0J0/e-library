@@ -30,10 +30,13 @@ Route::middleware(['auth'])->group(function() {
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::resource('KatalogEbook', KatalogEbookControllers::class);
-    Route::resource('KatalogBuku', KatalogBukuControllers::class);
     Route::post('/reading/start', [EbookReadingControllers::class, 'startReading'])->name('reading.start');
     
+    Route::prefix('Katalog')->group(function(){
+        Route::resource('KatalogEbook', KatalogEbookControllers::class);
+        Route::resource('KatalogBuku', KatalogBukuControllers::class);
+    });
+
     Route::prefix('MasterData')->group(function(){
         Route::resource('ebook', EbookControllers::class);
     });

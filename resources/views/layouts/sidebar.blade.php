@@ -8,22 +8,22 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-link {{ request()->is('Katalog*') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->is('Katalog/KatalogBuku*') || request()->is('Katalog/KatalogEbook*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
          href="#katalog" 
-         aria-expanded="{{ request()->is('Katalog*') ? 'true' : 'false' }}" 
+         aria-expanded="{{ request()->is('Katalog/KatalogBuku*') || request()->is('Katalog/KatalogEbook*') ? 'true' : 'false' }}" 
          aria-controls="katalog">
         <i class="fa fa-book menu-icon"></i>
         <span class="menu-title">Katalog</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->is('katalog*') ? 'show' : '' }}" id="katalog">
+      <div class="collapse {{ request()->is('Katalog/KatalogBuku*') || request()->is('Katalog/KatalogEbook*') ? 'show' : '' }}" id="katalog">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('KatalogBuku*') ? 'active' : '' }}" href="{{ route('KatalogBuku.index') }}">Buku</a>
+            <a class="nav-link {{ request()->is('Katalog/KatalogBuku*') ? 'active' : '' }}" href="{{ route('KatalogBuku.index') }}">Buku</a>
           </li>
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('KatalogEbook*') ? 'active' : '' }}" href="{{ route('KatalogEbook.index') }}">Ebook</a>
+            <a class="nav-link {{ request()->is('Katalog/KatalogEbook*') ? 'active' : '' }}" href="{{ route('KatalogEbook.index') }}">Ebook</a>
           </li>
         </ul>
       </div>

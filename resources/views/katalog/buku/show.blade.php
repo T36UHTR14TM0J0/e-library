@@ -92,11 +92,11 @@
                         </tr>
                         <tr>
                             <th>Tanggal Ditambahkan</th>
-                            <td>{{ $buku->created_at }}</td>
+                            <td>{{ $buku->created_at->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                         <tr>
                             <th>Terakhir Diupdate</th>
-                            <td>{{ $buku->updated_at }}</td>
+                            <td>{{ $buku->updated_at->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                     </table>
                 </div>

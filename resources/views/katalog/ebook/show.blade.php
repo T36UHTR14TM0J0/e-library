@@ -86,11 +86,11 @@
                         </tr>
                         <tr>
                             <th>Tanggal Diunggah</th>
-                            <td>{{ $ebook->created_at }}</td>
+                            <td>{{ $ebook->created_at->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                         <tr>
                             <th>Terakhir Diupdate</th>
-                            <td>{{ $ebook->updated_at }}</td>
+                            <td>{{ $ebook->updated_at->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                         <tr>
                             <th>Total Dibaca</th>

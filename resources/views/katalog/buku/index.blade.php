@@ -56,7 +56,7 @@
                                     {{ $buku->kategori->nama ?? '-' }}
                                 </span>
                                 <span class="badge bg-success">
-                                    {{ $buku->created_at ?? '-' }}
+                                    {{ $buku->created_at->locale('id')->translatedFormat('d F Y H:i') ?? '-' }}
                                 </span>
                             </div>
                             <hr class="horizontal dark my-2">

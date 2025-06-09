@@ -42,7 +42,7 @@
                                     {{ $ebook->prodi->nama ?? '-' }}
                                 </span>
                                 <span class="badge bg-info">
-                                    <td>{{ $ebook->total_reads }} kali</td>
+                                    <td>Dibaca : {{ $ebook->total_reads }} kali</td>
                                 </span>
                             </div>
                             <h5 class="font-weight-normal">
@@ -56,7 +56,7 @@
                                     {{ $ebook->kategori->nama ?? '-' }}
                                 </span>
                                 <span class="badge bg-success">
-                                    {{ $ebook->created_at ?? '-' }}
+                                    {{ $ebook->created_at->locale('id')->translatedFormat('d F Y H:i') ?? '-' }}
                                 </span>
                             </div>
                             <hr class="horizontal dark my-2">
