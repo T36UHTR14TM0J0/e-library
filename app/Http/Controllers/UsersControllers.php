@@ -7,6 +7,7 @@ use App\Models\Prodi;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UsersControllers extends Controller
 {
@@ -45,7 +46,6 @@ class UsersControllers extends Controller
 
     public function store(UsersRequest $request)
     {
-        // Data sudah divalidasi oleh UsersRequest
         $validated = $request->validated();
 
         // Handle file upload
@@ -57,15 +57,15 @@ class UsersControllers extends Controller
 
         // Membuat pengguna baru
         User::create([
-            'nama_lengkap' => $validated['nama_lengkap'],
-            'email' => $validated['email'],
-            'username' => $validated['username'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
-            'npm' => $validated['npm'] ?? null,
-            'nidn' => $validated['nidn'] ?? null,
-            'prodi_id' => $validated['prodi_id'] ?? null,
-            'foto' => $validated['foto'] ?? null,
+            'nama_lengkap'  => $validated['nama_lengkap'],
+            'email'         => $validated['email'],
+            'username'      => $validated['username'],
+            'password'      => Hash::make($validated['password']),
+            'role'          => $validated['role'],
+            'npm'           => $validated['npm'] ?? null,
+            'nidn'          => $validated['nidn'] ?? null,
+            'prodi_id'      => $validated['prodi_id'] ?? null,
+            'foto'          => $validated['foto'] ?? null,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User baru berhasil ditambahkan.');
@@ -96,6 +96,8 @@ class UsersControllers extends Controller
             unset($validated['password']); // Hapus dari array jika tidak diubah
         }
 
+        // dd($request->has('remove_foto'));
+
         // Handle file upload
         if ($request->hasFile('foto')) {
             // Hapus foto lama jika ada
@@ -118,13 +120,13 @@ class UsersControllers extends Controller
 
         // Update data pengguna
         $user->update([
-            'nama_lengkap' => $validated['nama_lengkap'],
-            'email' => $validated['email'],
-            'username' => $validated['username'],
-            'role' => $validated['role'],
-            'npm' => $validated['npm'] ?? null,
-            'nidn' => $validated['nidn'] ?? null,
-            'prodi_id' => $validated['prodi_id'] ?? null,
+            'nama_lengkap'  => $validated['nama_lengkap'],
+            'email'         => $validated['email'],
+            'username'      => $validated['username'],
+            'role'          => $validated['role'],
+            'npm'           => $validated['npm'] ?? null,
+            'nidn'          => $validated['nidn'] ?? null,
+            'prodi_id'      => $validated['prodi_id'] ?? null,
             // Password dan foto sudah dihandle di atas
         ] + $validated); // Gabungkan dengan data yang mungkin sudah diubah
 
