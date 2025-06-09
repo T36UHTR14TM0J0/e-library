@@ -37,9 +37,9 @@ Route::middleware(['auth'])->group(function() {
     Route::post('/reading/start', [EbookReadingControllers::class, 'startReading'])->name('reading.start');
     
     Route::middleware('admin')->group(function() {
-        Route::resource('users', UsersControllers::class);
         Route::resource('kategori', KategoriController::class);
         Route::prefix('pengaturan')->group(function(){
+            Route::resource('users', UsersControllers::class);
             Route::resource('prodi', ProdiController::class);
         });
     });

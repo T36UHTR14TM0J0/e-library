@@ -25,7 +25,6 @@ class PeminjamanControllers extends Controller
         return view('peminjaman.index', compact('peminjamans'));
     }
 
-
     /**
      * Menyimpan data peminjaman baru
      */
@@ -41,7 +40,7 @@ class PeminjamanControllers extends Controller
         // Check book availability
         $buku = Buku::findOrFail($request->buku_id);
         
-        if ($buku->tersedia() <= 0) {
+        if ($buku->jumlah <= 0) {
             return redirect()->back()
                 ->with('error', 'Buku tidak tersedia untuk dipinjam');
         }
@@ -70,20 +69,20 @@ class PeminjamanControllers extends Controller
         }
 
         // Validate due date based on user role
-        $isDosen = auth()->user()->isDosen(); // Assuming you have this field
+        $isDosen = auth()->user()->role === 'dosen';
+        $isMahasiswa = auth()->user()->role === 'mahasiswa';
+        
         $tanggalPinjam = Carbon::parse($request->tanggal_pinjam);
         $tanggalJatuhTempo = Carbon::parse($request->tanggal_jatuh_tempo);
         
         if ($isDosen) {
-            $maxDueDate = $tanggalPinjam->copy()->addMonths(6); // 1 semester for lecturers
+            $maxDueDate = $tanggalPinjam->copy()->addMonths(6);
             if ($tanggalJatuhTempo->gt($maxDueDate)) {
                 return redirect()->back()
                     ->with('error', 'Maksimal jatuh tempo untuk dosen adalah 6 bulan (1 semester)');
             }
-        } 
-         $isMahasiswa = auth()->user()->isMahasiswa(); // Assuming you have this field
-        if($isMahasiswa) {
-            $maxDueDate = $tanggalPinjam->copy()->addWeek(); // 1 week for students
+        } elseif ($isMahasiswa) {
+            $maxDueDate = $tanggalPinjam->copy()->addWeek();
             if ($tanggalJatuhTempo->gt($maxDueDate)) {
                 return redirect()->back()
                     ->with('error', 'Maksimal jatuh tempo untuk mahasiswa adalah 1 minggu');
@@ -91,44 +90,140 @@ class PeminjamanControllers extends Controller
         }
 
         // Process the loan
-        $peminjaman = new Peminjaman();
-        $peminjaman->user_id = Auth::id();
-        $peminjaman->buku_id = $request->buku_id;
-        $peminjaman->status = 'menunggu';
-        $peminjaman->tanggal_pinjam = $request->tanggal_pinjam;
-        $peminjaman->tanggal_jatuh_tempo = $request->tanggal_jatuh_tempo;
-        $peminjaman->catatan = $request->catatan;
-        $peminjaman->save();
+        $peminjaman = Peminjaman::create([
+            'user_id' => Auth::id(),
+            'buku_id' => $request->buku_id,
+            'status' => 'menunggu',
+            'tanggal_pinjam' => $request->tanggal_pinjam,
+            'tanggal_jatuh_tempo' => $request->tanggal_jatuh_tempo,
+            'catatan' => $request->catatan,
+        ]);
+
+         $peminjaman->buku->decrement('jumlah');
 
         return redirect()->route('KatalogBuku.index')
             ->with('success', 'Peminjaman berhasil diajukan');
     }
 
     /**
-     * Menampilkan detail peminjaman
+     * Menyetujui peminjaman (admin only)
      */
-    public function show($id)
+    public function approve($id)
     {
-        $peminjaman = Peminjaman::with(['buku', 'user'])
-            ->where('user_id', Auth::id())
-            ->findOrFail($id);
+        $peminjaman = Peminjaman::with('buku')->findOrFail($id);
+        
+        // Validasi status
+        if ($peminjaman->status !== 'menunggu') {
+            return redirect()->back()
+                ->with('error', 'Hanya bisa menyetujui peminjaman yang berstatus menunggu');
+        }
 
-        return view('peminjaman.show', compact('peminjaman'));
+        // Validasi stok buku
+        if ($peminjaman->buku->jumlah <= 0) {
+            return redirect()->back()
+                ->with('error', 'Stok buku tidak mencukupi untuk disetujui');
+        }
+
+        // Update status dan tanggal
+        $peminjaman->update([
+            'status' => 'dipinjam',
+            // 'tanggal_pinjam' => now(),
+            // 'tanggal_jatuh_tempo' => now()->addWeek(), // 1 minggu untuk semua
+            // 'disetujui_oleh' => Auth::id(),
+            // 'disetujui_pada' => now()
+        ]);
+        
+        // Kurangi stok buku
+        $peminjaman->buku->decrement('jumlah');
+        
+        return redirect()->back()
+            ->with('success', 'Peminjaman telah disetujui');
     }
 
     /**
-     * Membatalkan peminjaman
+     * Menolak peminjaman (admin only)
+     */
+    public function reject($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+        
+        // Validasi status
+        if ($peminjaman->status !== 'menunggu') {
+            return redirect()->back()
+                ->with('error', 'Hanya bisa menolak peminjaman yang berstatus menunggu');
+        }
+
+        $peminjaman->update([
+            'status'    => 'dibatalkan',
+            'catatan'   => 'Ditolak oleh admin',
+            // 'ditolak_oleh' => Auth::id(),
+            // 'ditolak_pada' => now()
+        ]);
+        
+        return redirect()->back()
+            ->with('success', 'Peminjaman telah ditolak');
+    }
+
+    /**
+     * Konfirmasi pengembalian buku (admin only)
+     */
+    public function returnBook(Request $request, $id)
+    {
+        $peminjaman = Peminjaman::with('buku')->findOrFail($id);
+        
+        // Validasi status
+        if ($peminjaman->status !== 'dipinjam' && $peminjaman->status !== 'terlambat') {
+            return redirect()->back()
+                ->with('error', 'Hanya bisa mengembalikan buku yang berstatus dipinjam atau terlambat');
+        }
+
+        $updateData = [
+            'status' => 'dikembalikan',
+            'tanggal_kembali' => now(),
+            // 'kondisi_buku' => $request->condition,
+            // 'catatan_pengembalian' => $request->return_notes,
+            // 'dikembalikan_oleh' => Auth::id()
+        ];
+
+        // Jika terlambat, hitung denda
+        if ($peminjaman->isLate()) {
+            $daysLate = now()->diffInDays($peminjaman->tanggal_jatuh_tempo);
+            $denda = $daysLate * 1000; // Rp 5000 per hari
+            $updateData['denda'] = $denda;
+        }
+
+        $peminjaman->update($updateData);
+    
+        
+        return redirect()->back()
+            ->with('success', 'Pengembalian buku telah dikonfirmasi');
+    }
+
+    /**
+     * Membatalkan peminjaman (user only)
      */
     public function cancel($id)
     {
-        $peminjaman = Peminjaman::where('user_id', Auth::id())
-            ->where('status', 'menunggu')
-            ->findOrFail($id);
+        $peminjaman = Peminjaman::findOrFail($id);
+        
+        // Validasi kepemilikan
+        if ($peminjaman->user_id !== Auth::id()) {
+            return redirect()->back()
+                ->with('error', 'Anda tidak memiliki akses untuk membatalkan peminjaman ini');
+        }
 
-        $peminjaman->status = 'dibatalkan';
-        $peminjaman->save();
-
+        // Validasi status
+        if ($peminjaman->status !== 'menunggu') {
+            return redirect()->back()
+                ->with('error', 'Hanya bisa membatalkan peminjaman yang berstatus menunggu');
+        }
+        
+        $peminjaman->update([
+            'status' => 'dibatalkan',
+            'catatan' => 'Dibatalkan oleh peminjam',
+        ]);
+        
         return redirect()->back()
-            ->with('success', 'Peminjaman berhasil dibatalkan');
+            ->with('success', 'Peminjaman telah dibatalkan');
     }
 }

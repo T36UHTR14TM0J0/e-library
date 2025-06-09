@@ -120,12 +120,6 @@
                     @if($user->foto)
                         <div class="mb-2">
                             <img src="{{ asset('storage/' . $user->foto) }}" class="img-thumbnail" width="100">
-                            <div class="form-check mt-2">
-                                <input class="form-check-input" type="checkbox" name="remove_foto" id="remove_foto">
-                                <label class="form-check-label" for="remove_foto">
-                                    Hapus foto saat ini
-                                </label>
-                            </div>
                         </div>
                     @endif
                     <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror">

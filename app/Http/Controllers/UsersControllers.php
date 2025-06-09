@@ -96,7 +96,7 @@ class UsersControllers extends Controller
             unset($validated['password']); // Hapus dari array jika tidak diubah
         }
 
-        // dd($request->has('remove_foto'));
+    
 
         // Handle file upload
         if ($request->hasFile('foto')) {
@@ -107,13 +107,7 @@ class UsersControllers extends Controller
             
             $path = $request->file('foto')->store('profile-photos', 'public');
             $validated['foto'] = $path;
-        } elseif ($request->has('remove_foto')) {
-            // Hapus foto jika opsi remove_foto dicentang
-            if ($user->foto) {
-                Storage::disk('public')->delete($user->foto);
-            }
-            $validated['foto'] = null;
-        } else {
+        }  else {
             // Pertahankan foto yang ada jika tidak ada perubahan
             unset($validated['foto']);
         }

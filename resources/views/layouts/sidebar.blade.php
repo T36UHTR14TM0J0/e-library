@@ -89,7 +89,7 @@
             <a class="nav-link {{ request()->is('pengaturan/prodi*') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Prodi</a>
           </li>
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>
+            <a class="nav-link {{ request()->is('pengaturan/users*') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>
           </li>
         </ul>
       </div>

@@ -42,7 +42,6 @@ class UsersRequest extends FormRequest
             'nidn'          => 'nullable|required_if:role,dosen|unique:users,nidn,'.$userId,
             'prodi_id'      => 'nullable|exists:prodis,id',
             'foto'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'remove_foto'   => 'nullable|boolean',
         ];
 
         // For update requests, make password optional
@@ -64,10 +63,6 @@ class UsersRequest extends FormRequest
             $this->request->remove('password_confirmation');
         }
 
-        // Handle remove_foto checkbox
-        if (!$this->has('remove_foto')) {
-            $this->merge(['remove_foto' => false]);
-        }
     }
 
     /**
