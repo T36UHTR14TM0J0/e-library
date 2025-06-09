@@ -2,7 +2,7 @@
 @section('title', 'Tambah Data User')
 @section('content')
 <div class="container">
-    <form method="POST" action="{{ route('Users.store') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('users.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <!-- Left Column -->
