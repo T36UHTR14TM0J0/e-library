@@ -42,7 +42,7 @@
                                     {{ $buku->prodi->nama ?? '-' }}
                                 </span>
                                 <span class="badge bg-info">
-                                    <td>Tersedia : {{ $buku->tersedia() }}</td>
+                                    Tersedia : {{ $buku->jumlahTersedia() }}
                                 </span>
                             </div>
                             <h5 class="font-weight-normal">
@@ -51,7 +51,6 @@
                             <p class="mb-0 text-sm">
                                 {{ $buku->penulis }}
                             </p>
-                            {{-- <hr class="horizontal dark my-2"> --}}
                             <div class="d-flex justify-content-between">
                                 <span class="badge bg-secondary">
                                     {{ $buku->kategori->nama ?? '-' }}
@@ -67,12 +66,59 @@
                                         Detail
                                     </a>
                                 </div>
-                                <small class="text-muted">
-                                    <a href="#" class="btn btn-sm btn-outline-success">
-                                        Pinjam
-                                    </a>
-                                </small>
+                                @if($buku->tersedia() > 0)
+                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#pinjamModal-{{ $buku->id }}">
+                                    Pinjam
+                                </button>
+                                @else
+                                <button class="btn btn-sm btn-outline-secondary" disabled>
+                                    Tidak Tersedia
+                                </button>
+                                @endif
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pinjam Modal for each book -->
+                <!-- Pinjam Modal for each book -->
+                <div class="modal fade" id="pinjamModal-{{ $buku->id }}" tabindex="-1" aria-labelledby="pinjamModalLabel-{{ $buku->id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="{{ route('peminjaman.store') }}" method="POST">
+                                @csrf
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="pinjamModalLabel-{{ $buku->id }}">Pinjam Buku</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="buku_id" value="{{ $buku->id }}">
+                                    <div class="mb-3">
+                                        <label class="form-label">Judul Buku</label>
+                                        <input type="text" class="form-control" value="{{ $buku->judul }}" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Penulis</label>
+                                        <input type="text" class="form-control" value="{{ $buku->penulis }}" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Tanggal Pinjam</label>
+                                        <input type="date" class="form-control" id="tanggal_pinjam-{{ $buku->id }}" name="tanggal_pinjam" value="{{ now()->format('Y-m-d') }}" onchange="calculateDueDate({{ $buku->id }})">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Tanggal Jatuh Tempo</label>
+                                        <input type="date" class="form-control" id="tanggal_jatuh_tempo-{{ $buku->id }}" name="tanggal_jatuh_tempo">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="catatan" class="form-label">Catatan (Opsional)</label>
+                                        <textarea class="form-control" id="catatan" name="catatan" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-primary">Konfirmasi Pinjam</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -169,5 +215,56 @@
         border: none;
     }
 </style>
+@endpush
+
+
+@push('scripts')
+<script>
+    // Calculate due date based on user role when modal is shown
+    document.querySelectorAll('[id^="pinjamModal-"]').forEach(modal => {
+        modal.addEventListener('shown.bs.modal', function() {
+            const modalId = this.id.split('-')[1];
+            calculateDueDate(modalId);
+        });
+    });
+
+    // Function to calculate due date
+    function calculateDueDate(bookId) {
+        const borrowDateInput = document.getElementById(`tanggal_pinjam-${bookId}`);
+        const dueDateInput = document.getElementById(`tanggal_jatuh_tempo-${bookId}`);
+        
+        const borrowDate = new Date(borrowDateInput.value);
+        
+        // Check user role (you'll need to pass this from your controller)
+        const isLecturer = {{ auth()->user()->is_lecturer ? 'true' : 'false' }};
+        
+        if (isLecturer) {
+            // Calculate 1 semester (6 months) for lecturers
+            const dueDate = new Date(borrowDate);
+            dueDate.setMonth(dueDate.getMonth() + 6);
+            dueDateInput.value = formatDate(dueDate);
+        } else {
+            // Calculate 1 week for students
+            const dueDate = new Date(borrowDate);
+            dueDate.setDate(dueDate.getDate() + 7);
+            dueDateInput.value = formatDate(dueDate);
+        }
+    }
+
+    // Helper function to format date as YYYY-MM-DD
+    function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Initialize due date when page loads (for each modal)
+    document.addEventListener('DOMContentLoaded', function() {
+        @foreach ($bukus as $buku)
+            calculateDueDate({{ $buku->id }});
+        @endforeach
+    });
+</script>
 @endpush
 @endsection

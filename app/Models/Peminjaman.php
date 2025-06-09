@@ -25,14 +25,14 @@ class Peminjaman extends Model
     protected $dates = ['tanggal_pinjam', 'tanggal_jatuh_tempo', 'tanggal_kembali'];
 
     // Relasi
-    public function pengguna()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function bukuFisik()
+    public function buku()
     {
-        return $this->belongsTo(Buku::class, 'book_id');
+        return $this->belongsTo(Buku::class, 'buku_id');
     }
 
 
@@ -47,6 +47,12 @@ class Peminjaman extends Model
     //     $dendaPerHari = config('perpustakaan.denda_per_hari', 5000); // Rp 5000/hari
     //     return $hariTerlambat * $dendaPerHari;
     // }
+
+    public function isLate()
+    {
+        // Example logic - adjust according to your business rules
+        return $this->tanggal_jatuh_tempo < now() && $this->status !== 'dikembalikan';
+    }
 
     public function tandaiDikembalikan()
     {

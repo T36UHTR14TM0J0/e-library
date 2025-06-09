@@ -8,29 +8,29 @@
     </li>
     
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('KatalogBuku.index') || request()->routeIs('KatalogEbook.index') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->is('Katalog*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
          href="#katalog" 
-         aria-expanded="{{ request()->routeIs('KatalogBuku.index') || request()->routeIs('KatalogEbook.index') ? 'true' : 'false' }}" 
+         aria-expanded="{{ request()->is('Katalog*') ? 'true' : 'false' }}" 
          aria-controls="katalog">
         <i class="fa fa-book menu-icon"></i>
         <span class="menu-title">Katalog</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->routeIs('KatalogBuku.index') || request()->routeIs('KatalogEbook.index') ? 'show' : '' }}" id="katalog">
+      <div class="collapse {{ request()->is('katalog*') ? 'show' : '' }}" id="katalog">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('KatalogBuku.index') ? 'active' : '' }}" href="{{ route('KatalogBuku.index') }}">Buku</a>
+            <a class="nav-link {{ request()->is('KatalogBuku*') ? 'active' : '' }}" href="{{ route('KatalogBuku.index') }}">Buku</a>
           </li>
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('KatalogEbook.index') ? 'active' : '' }}" href="{{ route('KatalogEbook.index') }}">Ebook</a>
+            <a class="nav-link {{ request()->is('KatalogEbook*') ? 'active' : '' }}" href="{{ route('KatalogEbook.index') }}">Ebook</a>
           </li>
         </ul>
       </div>
     </li>
     
     <li class="nav-item">
-      <a class="nav-link {{ request()->is('peminjaman*') ? 'active' : '' }}" href="#">
+      <a class="nav-link {{ request()->is('peminjaman*') ? 'active' : '' }}" href="{{ route('peminjaman.index') }}">
         <i class="icon-paper menu-icon"></i>
         <span class="menu-title">Peminjaman</span>
       </a>
@@ -45,27 +45,27 @@
     
     @if (auth()->user()->isAdmin() || auth()->user()->isDosen())
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('kategori.index') || request()->routeIs('buku.index') || request()->routeIs('ebook.index') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->is('kategori*') || request()->is('buku*') || request()->is('ebook*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
          href="#master-buku" 
-         aria-expanded="{{ request()->routeIs('kategori.index') || request()->routeIs('buku.index') || request()->routeIs('ebook.index') ? 'true' : 'false' }}" 
+         aria-expanded="{{ request()->is('kategori*') || request()->is('buku*') || request()->is('ebook*') ? 'true' : 'false' }}" 
          aria-controls="master-buku">
         <i class="icon-layout menu-icon"></i>
         <span class="menu-title">Master Data</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->routeIs('kategori.index') || request()->routeIs('buku.index') || request()->routeIs('ebook.index') ? 'show' : '' }}" id="master-buku">
+      <div class="collapse {{ request()->is('kategori*') || request()->is('buku*') || request()->is('ebook*') ? 'show' : '' }}" id="master-buku">
         <ul class="nav flex-column sub-menu">
           @if (auth()->user()->isAdmin())
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('kategori.index') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
+            <a class="nav-link {{ request()->is('kategori*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
           </li>
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('buku.index') ? 'active' : '' }}" href="{{ route('buku.index') }}">Buku</a>
+            <a class="nav-link {{ request()->is('buku*') ? 'active' : '' }}" href="{{ route('buku.index') }}">Buku</a>
           </li>
           @endif
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('ebook.index') ? 'active' : '' }}" href="{{ route('ebook.index') }}">Ebook</a>
+            <a class="nav-link {{ request()->is('ebook*') ? 'active' : '' }}" href="{{ route('ebook.index') }}">Ebook</a>
           </li>
         </ul>
       </div>
@@ -74,22 +74,22 @@
 
     @if (auth()->user()->isAdmin())
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('prodi.index') || request()->routeIs('users.index') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->is('prodi*') || request()->is('users*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
          href="#pengaturan" 
-         aria-expanded="{{ request()->routeIs('prodi.index') || request()->routeIs('users.index') ? 'true' : 'false' }}" 
+         aria-expanded="{{ request()->is('prodi*') || request()->is('users*') ? 'true' : 'false' }}" 
          aria-controls="pengaturan">
         <i class="icon-cog menu-icon"></i>
         <span class="menu-title">Pengaturan</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->routeIs('prodi.index') || request()->routeIs('users.index') ? 'show' : '' }}" id="pengaturan">
+      <div class="collapse {{ request()->is('prodi*') || request()->is('users*') ? 'show' : '' }}" id="pengaturan">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('prodi.index') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Prodi</a>
+            <a class="nav-link {{ request()->is('prodi*') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Prodi</a>
           </li>
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>
+            <a class="nav-link {{ request()->is('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>
           </li>
         </ul>
       </div>
@@ -97,7 +97,6 @@
     @endif
   </ul>
 </nav>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Menangani collapse sidebar

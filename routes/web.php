@@ -8,6 +8,7 @@ use App\Http\Controllers\EbookReadingControllers;
 use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\PeminjamanControllers;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\UsersControllers;
@@ -40,6 +41,12 @@ Route::middleware(['auth'])->group(function() {
         Route::resource('prodi', ProdiController::class);
         Route::resource('kategori', KategoriController::class);
     });
+
+    // Route untuk peminjaman
+    Route::post('/peminjaman', [PeminjamanControllers::class, 'store'])->name('peminjaman.store');
+    Route::get('/peminjaman', [PeminjamanControllers::class, 'index'])->name('peminjaman.index');
+    // Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])->name('peminjaman.show');
+    // Route::post('/peminjaman/{id}/cancel', [PeminjamanController::class, 'cancel'])->name('peminjaman.cancel');
 
     
     
