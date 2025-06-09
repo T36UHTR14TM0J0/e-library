@@ -1,7 +1,5 @@
-<!-- resources/views/user/user.blade.php -->
-
-@extends('layouts.app') <!-- Perhatikan penulisan 'layouts' (biasanya plural) -->
-@section('title', 'Data Prodi') <!-- Titik koma dihapus setelah string -->
+@extends('layouts.app')
+@section('title', 'Data Prodi')
 
 @section('content')
 <div class="container">
@@ -43,7 +41,7 @@
                               <td>{{ ($row->deskripsi) ? $row->deskripsi : "-" }}</td>
                               <td class="text-center">
                                   <a href="{{ route('prodi.edit',$row->id) }}" class="btn btn-sm btn-warning" title="Edit">
-                                      <i class="mdi mdi-border-color"></i>
+                                      <i class="mdi mdi-border-color text-white "></i>
                                   </a>
 
                                   <button class="btn btn-sm btn-danger" title="Delete" onclick="confirmDelete('{{ $row->id }}')">
@@ -57,7 +55,7 @@
                           </tr>
                           @empty
                           <tr>
-                              <td colspan="4" class="text-center">Tidak ada data</td>
+                              <td colspan="5" class="text-center">Tidak ada data</td>
                           </tr>
                           @endforelse
                       </tbody>

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class ProdiRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Menentukan apakah pengguna diizinkan untuk melakukan permintaan ini.
      */
     public function authorize(): bool
     {
@@ -15,20 +15,20 @@ class ProdiRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Mendapatkan aturan validasi yang berlaku untuk permintaan ini.
      */
     public function rules(): array
     {
-        $rules = [
-            'kode' => 'required',
-            'nama' => 'required',
+        return [
+            'kode'      => 'required', // Kode prodi harus diisi
+            'nama'      => 'required', // Nama prodi harus diisi
+            'deskripsi' => 'nullable',  // Deskripsi prodi boleh kosong
         ];
-
-        return $rules;
     }
 
+    /**
+     * Mendapatkan pesan kesalahan kustom untuk aturan validasi.
+     */
     public function messages(): array
     {
         return [
@@ -38,13 +38,14 @@ class ProdiRequest extends FormRequest
     }
 
     /**
-     * Nama atribut kustom untuk pesan error
+     * Mendapatkan nama atribut kustom untuk pesan kesalahan.
      */
     public function attributes(): array
     {
         return [
-            'kode' => 'Kode prodi',
-            'nama' => 'Nama prodi',
+            'kode'      => 'Kode prodi',
+            'nama'      => 'Nama prodi',
+            'deskripsi' => 'Deskripsi prodi',
         ];
     }
 }

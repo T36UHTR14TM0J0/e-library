@@ -74,19 +74,19 @@
 
     @if (auth()->user()->isAdmin())
     <li class="nav-item">
-      <a class="nav-link {{ request()->is('prodi*') || request()->is('users*') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->is('pengaturan*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
          href="#pengaturan" 
-         aria-expanded="{{ request()->is('prodi*') || request()->is('users*') ? 'true' : 'false' }}" 
+         aria-expanded="{{ request()->is('pengaturan*') ? 'true' : 'false' }}" 
          aria-controls="pengaturan">
         <i class="icon-cog menu-icon"></i>
         <span class="menu-title">Pengaturan</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->is('prodi*') || request()->is('users*') ? 'show' : '' }}" id="pengaturan">
+      <div class="collapse {{ request()->is('pengaturan/prodi*') || request()->is('pengaturan/users*') ? 'show' : '' }}" id="pengaturan">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('prodi*') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Prodi</a>
+            <a class="nav-link {{ request()->is('pengaturan/prodi*') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Prodi</a>
           </li>
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>

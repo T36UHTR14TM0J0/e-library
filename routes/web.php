@@ -38,15 +38,26 @@ Route::middleware(['auth'])->group(function() {
     
     Route::middleware('admin')->group(function() {
         Route::resource('users', UsersControllers::class);
-        Route::resource('prodi', ProdiController::class);
         Route::resource('kategori', KategoriController::class);
+        Route::prefix('pengaturan')->group(function(){
+            Route::resource('prodi', ProdiController::class);
+        });
     });
 
     // Route untuk peminjaman
     Route::post('/peminjaman', [PeminjamanControllers::class, 'store'])->name('peminjaman.store');
     Route::get('/peminjaman', [PeminjamanControllers::class, 'index'])->name('peminjaman.index');
-    // Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])->name('peminjaman.show');
-    // Route::post('/peminjaman/{id}/cancel', [PeminjamanController::class, 'cancel'])->name('peminjaman.cancel');
+    
+
+    // Untuk admin
+    Route::prefix('admin')->middleware('admin')->group(function () {
+        Route::put('/peminjaman/{id}/approve', [PeminjamanControllers::class, 'approve'])->name('admin.peminjaman.approve');
+        Route::put('/peminjaman/{id}/reject', [PeminjamanControllers::class, 'reject'])->name('admin.peminjaman.reject');
+        Route::put('/peminjaman/{id}/return', [PeminjamanControllers::class, 'returnBook'])->name('admin.peminjaman.return');
+    });
+
+    Route::delete('/peminjaman/{id}/cancel', [PeminjamanControllers::class, 'cancel'])->name('peminjaman.cancel');
+
 
     
     

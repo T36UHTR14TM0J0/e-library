@@ -17,14 +17,14 @@ class Prodi extends Model
         return $this->hasMany(User::class, 'prodi_id');
     }
 
-    public function bukuFisik()
+    public function buku()
     {
         return $this->hasMany(Buku::class, 'prodi_id');
     }
 
-    // public function bukuDigital()
-    // {
-    //     return $this->hasMany(Ebook::class, 'prodi_id');
-    // }
+    public function ebook()
+    {
+        return $this->hasMany(Ebook::class, 'prodi_id');
+    }
 }
 
