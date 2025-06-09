@@ -139,7 +139,7 @@ class EbookControllers extends Controller
             }
             
             $image       = $request->file('gambar_sampul');
-            $imageName   = time() . '_' . $file->getClientOriginalName();
+            $imageName   = time() . '_' . $image->getClientOriginalName();
             $image->move(storage_path('app/public/ebooks'), $imageName);
             $validated['gambar_sampul'] = 'ebooks/' . $imageName;
         } elseif ($request->has('hapus_gambar') && $request->hapus_gambar) {
