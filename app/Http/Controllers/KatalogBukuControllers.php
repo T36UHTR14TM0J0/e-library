@@ -43,4 +43,11 @@ class KatalogBukuControllers extends Controller
 
         return view('katalog.buku.index', compact('bukus', 'kategoris', 'prodis'));
     }
+
+    public function show($id)
+    {
+         $buku = Buku::with(['kategori', 'prodi'])
+                    ->findOrFail($id);
+        return view('katalog.buku.show', compact('buku'));
+    }
 }
