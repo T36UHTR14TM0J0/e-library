@@ -40,11 +40,20 @@ class Buku extends Model
     // Method
     public function jumlahTersedia()
     {
+        return $this->jumlah;
+    }
+
+    public function jumlah_stok()
+    {
+        return $this->jumlah + $this->dipinjam();
+    }
+    
+    public function dipinjam()
+    {
         $dipinjam = $this->peminjaman()
             ->where('status', 'dipinjam')
             ->count();
-
-        return $this->jumlah - $dipinjam;
+        return $dipinjam;
     }
 
     public function tersedia()

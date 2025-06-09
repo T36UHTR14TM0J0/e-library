@@ -68,11 +68,19 @@
                         </tr>
                         <tr>
                             <th>Jumlah Total</th>
-                            <td>{{ $buku->jumlah }}</td>
+                            <td>
+                                <span class="badge bg-success">
+                                    {{ $buku->jumlah_stok() }}
+                                </span>
+                            </td>
                         </tr>
                         <tr>
                             <th>Sedang Dipinjam</th>
-                            <td>{{ $buku->jumlah - $buku->jumlahTersedia() }}</td>
+                            <td>
+                                <span class="badge bg-primary">
+                                    {{ $buku->dipinjam() }}
+                                </span>
+                            </td>
                         </tr>
                         <tr>
                             <th>Jumlah Tersedia</th>
@@ -103,7 +111,7 @@
             </div>
             
             <div class="d-flex justify-content-between">
-                <a href="{{ route('buku.index') }}" class="btn btn-secondary text-white">
+                <a href="{{ route('KatalogBuku.index') }}" class="btn btn-secondary text-white">
                      Kembali ke Daftar Buku
                 </a>
             </div>

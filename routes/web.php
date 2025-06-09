@@ -56,6 +56,8 @@ Route::middleware(['auth'])->group(function() {
     // Route untuk peminjaman
     Route::post('/peminjaman', [PeminjamanControllers::class, 'store'])->name('peminjaman.store');
     Route::get('/peminjaman', [PeminjamanControllers::class, 'index'])->name('peminjaman.index');
+    Route::delete('/peminjaman/{id}/cancel', [PeminjamanControllers::class, 'cancel'])->name('peminjaman.cancel');
+    Route::get('/peminjaman/{id}/show', [PeminjamanControllers::class, 'show'])->name('peminjaman.show');
     
 
     // Untuk admin
@@ -65,7 +67,6 @@ Route::middleware(['auth'])->group(function() {
         Route::put('/peminjaman/{id}/return', [PeminjamanControllers::class, 'returnBook'])->name('admin.peminjaman.return');
     });
 
-    Route::delete('/peminjaman/{id}/cancel', [PeminjamanControllers::class, 'cancel'])->name('peminjaman.cancel');
 
 
     

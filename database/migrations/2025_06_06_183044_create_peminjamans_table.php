@@ -13,17 +13,21 @@ return new class extends Migration
     {
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('buku_id')->nullable()->constrained()->onDelete('set null');
-            $table->foreignId('ebook_id')->nullable()->constrained()->onDelete('set null');
-            $table->enum('status', ['menunggu', 'dipinjam', 'dikembalikan', 'terlambat', 'dibatalkan']);
-            $table->date('tanggal_pinjam');
-            $table->date('tanggal_jatuh_tempo');
-            $table->date('tanggal_kembali')->nullable();
-            $table->decimal('denda', 10, 2)->default(0);
-            $table->text('catatan')->nullable();
-            $table->timestamps();
-
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Mengaitkan dengan tabel users
+            $table->foreignId('buku_id')->nullable()->constrained()->onDelete('set null'); // Mengaitkan dengan tabel buku, bisa null
+            $table->enum('status', ['menunggu', 'dipinjam', 'dikembalikan', 'terlambat', 'dibatalkan']); // Status peminjaman
+            $table->date('tanggal_pinjam'); // Tanggal peminjaman
+            $table->date('tanggal_jatuh_tempo'); // Tanggal jatuh tempo
+            $table->date('tanggal_kembali')->nullable(); // Tanggal pengembalian, bisa null
+            $table->date('tanggal_setujui')->nullable(); // Tanggal persetujuan, bisa null
+            $table->date('tanggal_batal')->nullable(); // Tanggal pembatalan, bisa null
+            $table->decimal('denda', 10, 2)->default(0); // Denda yang dikenakan
+            $table->text('catatan_pinjam')->nullable(); // Catatan saat peminjaman, bisa null
+            $table->text('catatan_kembali')->nullable(); // Catatan saat pengembalian, bisa null
+            $table->text('catatan_batal')->nullable(); // Catatan saat pembatalan, bisa null
+            $table->foreignId('disetujui_oleh')->nullable()->constrained('users')->onDelete('set null'); // Mengaitkan dengan tabel users
+            $table->foreignId('dibatalkan_oleh')->nullable()->constrained('users')->onDelete('set null'); // Mengaitkan dengan tabel users
+            $table->timestamps(); // Menambahkan kolom created_at dan updated_at
         });
     }
 

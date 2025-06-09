@@ -12,17 +12,38 @@ class Peminjaman extends Model
     protected $fillable = [
         'user_id',
         'buku_id',
-        'ebook_id',
-        'jenis',
-        'status',
+        'status', // Menghapus ebook_id dan jenis karena tidak ada di migrasi
         'tanggal_pinjam',
         'tanggal_jatuh_tempo',
         'tanggal_kembali',
+        'tanggal_setujui', // Menambahkan kolom tanggal_setujui
+        'tanggal_batal', // Menambahkan kolom tanggal_batal
         'denda',
-        'catatan',
+        'catatan_pinjam', // Mengganti catatan menjadi catatan_pinjam
+        'catatan_kembali', // Menambahkan catatan_kembali
+        'catatan_batal', // Menambahkan catatan_batal
+        'disetujui_oleh', // Menambahkan kolom disetujui_oleh
+        'dibatalkan_oleh', // Menambahkan kolom dibatalkan_oleh
     ];
 
-    protected $dates = ['tanggal_pinjam', 'tanggal_jatuh_tempo', 'tanggal_kembali'];
+    protected $dates = [
+        'tanggal_pinjam',
+        'tanggal_jatuh_tempo',
+        'tanggal_kembali',
+        'tanggal_setujui', // Menambahkan kolom tanggal_setujui
+        'tanggal_batal', // Menambahkan kolom tanggal_batal
+    ];
+
+    protected $casts = [
+        'tanggal_pinjam' => 'datetime',
+        'tanggal_jatuh_tempo' => 'datetime',
+        'tanggal_setujui' => 'datetime',
+        'tanggal_pinjam' => 'datetime',
+        'tanggal_batal' => 'datetime',
+        'tanggal_kembali' => 'datetime'
+
+    ];
+
 
     // Relasi
     public function user()
@@ -30,23 +51,29 @@ class Peminjaman extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    
     public function buku()
     {
         return $this->belongsTo(Buku::class, 'buku_id');
     }
 
+    public function disetujui()
+    {
+        return $this->belongsTo(User::class, 'disetujui_oleh');
+    }
+
+    public function dibatalkan_oleh()
+    {
+        return $this->belongsTo(User::class, 'dibatalkan_oleh');
+    }
 
     // Method
-    // public function hitungDenda()
-    // {
-    //     if ($this->status !== 'terlambat' || $this->tanggal_kembali) {
-    //         return 0;
-    //     }
-
-    //     $hariTerlambat = now()->diffInDays($this->tanggal_jatuh_tempo);
-    //     $dendaPerHari = config('perpustakaan.denda_per_hari', 5000); // Rp 5000/hari
-    //     return $hariTerlambat * $dendaPerHari;
-    // }
+    public function hitungDenda()
+    {
+        $hariTerlambat = now()->diffInDays($this->tanggal_jatuh_tempo);
+        $dendaPerHari = 1000;// Rp 5000/hari
+        return $hariTerlambat * $dendaPerHari;
+    }
 
     public function isLate()
     {
