@@ -60,7 +60,7 @@ class EbookControllers extends Controller
 
         // Handle cover image upload
         if ($request->hasFile('gambar_sampul')) {
-            $image       = $request->file('file_url');
+            $image       = $request->file('gambar_sampul');
             $imageName   = time() . '_' . $file->getClientOriginalName();
             $image->move(storage_path('app/public/ebooks'), $imageName);
             $validated['file_url'] = 'ebooks/' . $imageName;

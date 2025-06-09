@@ -6,8 +6,8 @@
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-4">
-                    @if($buku->cover)
-                        <img src="{{ asset('storage/' . $buku->cover) }}" class="img-thumbnail" width="200" alt="Cover Buku">
+                    @if($buku->gambar_sampul)
+                        <img src="{{ asset('storage/' . $buku->gambar_sampul) }}" class="img-thumbnail" width="200" alt="Cover Buku">
                     @else
                         <img src="{{ asset('assets/images/default-cover.png') }}" class="img-thumbnail" width="200" alt="Cover Default">
                     @endif

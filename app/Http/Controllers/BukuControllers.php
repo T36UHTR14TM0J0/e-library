@@ -47,10 +47,12 @@ class BukuControllers extends Controller
     {
         $validated = $request->validated();
         
-        // Handle file upload
+               // Handle cover image upload
         if ($request->hasFile('gambar_sampul')) {
-            $imagePath = $request->file('gambar_sampul')->store('public/buku_covers');
-            $validated['gambar_sampul'] = str_replace('public/', '', $imagePath);
+            $image       = $request->file('gambar_sampul');
+            $imageName   = time() . '_' . $image->getClientOriginalName();
+            $image->move(storage_path('app/public/buku-covers'), $imageName);
+            $validated['gambar_sampul'] = 'buku-covers/' . $imageName;
         }
 
         try {
@@ -85,24 +87,29 @@ class BukuControllers extends Controller
     public function update(BukuRequest $request, Buku $buku)
     {
         $validated = $request->validated();
-        // Handle image upload/deletion
+        
+        // Handle gambar sampul upload
         if ($request->hasFile('gambar_sampul')) {
-            // Delete old image if exists
+            // Hapus gambar lama jika ada
             if ($buku->gambar_sampul) {
                 Storage::delete('public/' . $buku->gambar_sampul);
             }
             
-            // Store new image
-            $path = $request->file('gambar_sampul')->store('buku-covers', 'public');
-            $validated['gambar_sampul'] = $path;
-        } elseif ($request->has('hapus_gambar')) {
-            // Delete current image if checkbox is checked
+            // Simpan gambar baru
+            $image = $request->file('gambar_sampul');
+            $imageName = 'cover_' . $buku->id . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('buku-covers', $imageName, 'public');
+            $validated['gambar_sampul'] = $imagePath;
+            
+        } elseif ($request->boolean('hapus_gambar')) {
+            // Hapus gambar jika checkbox dicentang
             if ($buku->gambar_sampul) {
                 Storage::delete('public/' . $buku->gambar_sampul);
-                $validated['gambar_sampul'] = null;
             }
+            $validated['gambar_sampul'] = null;
         }
-
+        // Jika tidak ada perubahan gambar, biarkan nilai yang ada
+        
         $buku->update($validated);
 
         return redirect()->route('buku.index')
