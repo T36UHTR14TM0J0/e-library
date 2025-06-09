@@ -100,12 +100,6 @@
                                         <div id="image-preview" class="mt-2">
                                             <div class="border p-2 rounded" style="max-width: 200px;">
                                                 <img src="{{ asset('storage/' . $ebook->gambar_sampul) }}" class="img-fluid" alt="Sampul Saat Ini">
-                                                <div class="form-check mt-2">
-                                                    <input class="form-check" type="checkbox" name="hapus_gambar" id="hapus_gambar">
-                                                    <label class="form-check" for="hapus_gambar">
-                                                        Hapus gambar saat ini
-                                                    </label>
-                                                </div>
                                             </div>
                                         </div>
                                     @endif

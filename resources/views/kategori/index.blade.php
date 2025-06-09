@@ -41,7 +41,7 @@
                               <td>{{ ($row->deskripsi) ? $row->deskripsi : "-" }}</td>
                               <td class="text-center">
                                   <a href="{{ route('kategori.edit',$row->id) }}" class="btn btn-sm btn-warning" title="Edit">
-                                      <i class="mdi mdi-border-color"></i>
+                                      <i class="mdi mdi-border-color text-white"></i>
                                   </a>
 
                                   <button class="btn btn-sm btn-danger" title="Delete" onclick="confirmDelete('{{ $row->id }}')">

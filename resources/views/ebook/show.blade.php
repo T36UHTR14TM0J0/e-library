@@ -12,21 +12,6 @@
                         <img src="{{ asset('assets/images/default-cover.png') }}" class="img-thumbnail" width="200" alt="Cover Default">
                     @endif
                     
-                    {{-- @if($ebook->file_url)
-                        <div class="mt-3">
-                            <a href="{{ asset('storage/' . $ebook->file_url) }}" 
-                               class="btn btn-primary w-100" 
-                               target="_blank">
-                                <i class="fas fa-book-open me-2"></i>Baca Ebook
-                            </a>
-                            @if($ebook->izin_unduh)
-                                <a href="{{ route('ebook.download', $ebook->id) }}" 
-                                   class="btn btn-success w-100 mt-2">
-                                    <i class="fas fa-download me-2"></i>Unduh Ebook
-                                </a>
-                            @endif
-                        </div>
-                    @endif --}}
                 </div>
                 <div class="col-md-8">
                     <table class="table table-bordered">
@@ -102,11 +87,11 @@
                         </tr>
                         <tr>
                             <th>Tanggal Diunggah</th>
-                            <td>{{ $ebook->created_at->format('d F Y H:i') }}</td>
+                            <td>{{ $ebook->created_at->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                         <tr>
                             <th>Terakhir Diupdate</th>
-                            <td>{{ $ebook->updated_at->format('d F Y H:i') }}</td>
+                            <td>{{ $ebook->updated_at->locale('id')->translatedFormat('d F Y') }}</td>
                         </tr>
                         <tr>
                             <th>Total Dibaca</th>

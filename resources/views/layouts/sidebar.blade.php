@@ -45,27 +45,27 @@
     
     @if (auth()->user()->isAdmin() || auth()->user()->isDosen())
     <li class="nav-item">
-      <a class="nav-link {{ request()->is('kategori*') || request()->is('buku*') || request()->is('ebook*') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->is('MasterData/kategori*') || request()->is('MasterData/buku*') || request()->is('MasterData/ebook*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
          href="#master-buku" 
-         aria-expanded="{{ request()->is('kategori*') || request()->is('buku*') || request()->is('ebook*') ? 'true' : 'false' }}" 
+         aria-expanded="{{ request()->is('MasterData/kategori*') || request()->is('MasterData/buku*') || request()->is('MasterData/ebook*') ? 'true' : 'false' }}" 
          aria-controls="master-buku">
         <i class="icon-layout menu-icon"></i>
         <span class="menu-title">Master Data</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->is('kategori*') || request()->is('buku*') || request()->is('ebook*') ? 'show' : '' }}" id="master-buku">
+      <div class="collapse {{ request()->is('MasterData/kategori*') || request()->is('MasterData/buku*') || request()->is('MasterData/ebook*') ? 'show' : '' }}" id="master-buku">
         <ul class="nav flex-column sub-menu">
           @if (auth()->user()->isAdmin())
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('kategori*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
+            <a class="nav-link {{ request()->is('MasterData/kategori*') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
           </li>
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('buku*') ? 'active' : '' }}" href="{{ route('buku.index') }}">Buku</a>
+            <a class="nav-link {{ request()->is('MasterData/buku*') ? 'active' : '' }}" href="{{ route('buku.index') }}">Buku</a>
           </li>
           @endif
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('ebook*') ? 'active' : '' }}" href="{{ route('ebook.index') }}">Ebook</a>
+            <a class="nav-link {{ request()->is('MasterData/ebook*') ? 'active' : '' }}" href="{{ route('ebook.index') }}">Ebook</a>
           </li>
         </ul>
       </div>

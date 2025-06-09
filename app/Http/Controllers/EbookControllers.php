@@ -61,14 +61,14 @@ class EbookControllers extends Controller
         // Handle cover image upload
         if ($request->hasFile('gambar_sampul')) {
             $image       = $request->file('gambar_sampul');
-            $imageName   = time() . '_' . $file->getClientOriginalName();
+            $imageName   = time() . '_' . $image->getClientOriginalName();
             $image->move(storage_path('app/public/ebooks'), $imageName);
-            $validated['file_url'] = 'ebooks/' . $imageName;
+            $validated['gambar_sampul'] = 'ebooks/' . $imageName;
         }
 
         // Set uploaded_by to current user
         $validated['uploaded_by'] = auth()->id();
-        $validated['izin_unduh'] = $request->has('izin_unduh') ? true : false;
+        $validated['izin_unduh']  = $request->has('izin_unduh') ? true : false;
 
         try {
             Ebook::create($validated);
@@ -142,10 +142,6 @@ class EbookControllers extends Controller
             $imageName   = time() . '_' . $image->getClientOriginalName();
             $image->move(storage_path('app/public/ebooks'), $imageName);
             $validated['gambar_sampul'] = 'ebooks/' . $imageName;
-        } elseif ($request->has('hapus_gambar') && $request->hapus_gambar) {
-            // Hapus gambar jika checkbox dicentang
-            Storage::delete('public/' . $ebook->gambar_sampul);
-            $validated['gambar_sampul'] = null;
         } else {
             // Pertahankan gambar yang ada
             $validated['gambar_sampul'] = $ebook->gambar_sampul;

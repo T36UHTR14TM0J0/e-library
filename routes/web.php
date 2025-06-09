@@ -30,17 +30,23 @@ Route::middleware(['auth'])->group(function() {
     
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    Route::resource('buku', BukuControllers::class);
-    Route::resource('ebook', EbookControllers::class);
     Route::resource('KatalogEbook', KatalogEbookControllers::class);
     Route::resource('KatalogBuku', KatalogBukuControllers::class);
     Route::post('/reading/start', [EbookReadingControllers::class, 'startReading'])->name('reading.start');
     
+    Route::prefix('MasterData')->group(function(){
+        Route::resource('ebook', EbookControllers::class);
+    });
+    
     Route::middleware('admin')->group(function() {
-        Route::resource('kategori', KategoriController::class);
         Route::prefix('pengaturan')->group(function(){
             Route::resource('users', UsersControllers::class);
             Route::resource('prodi', ProdiController::class);
+        });
+        
+        Route::prefix('MasterData')->group(function(){
+            Route::resource('buku', BukuControllers::class);
+            Route::resource('kategori', KategoriController::class);
         });
     });
 
