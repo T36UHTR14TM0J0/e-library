@@ -42,7 +42,7 @@
       </a>
       <div class="collapse" id="master-buku">
         <ul class="nav flex-column sub-menu">
-          @if (auth()->user()->isDosen())
+          @if (auth()->user()->isAdmin())
           <li class="nav-item"> <a class="nav-link" href="{{ route('kategori.index') }}">Kategori</a></li>
           <li class="nav-item"> <a class="nav-link" href="{{ route('buku.index') }}">Buku</a></li>
           @endif
