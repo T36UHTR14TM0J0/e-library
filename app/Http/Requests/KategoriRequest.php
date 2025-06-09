@@ -23,6 +23,7 @@ class KategoriRequest extends FormRequest
     {
         $rules = [
             'nama' => 'required',
+            'deskripsi' => 'nullable'
         ];
 
         return $rules;
@@ -42,6 +43,7 @@ class KategoriRequest extends FormRequest
     {
         return [
             'nama' => 'Nama kategori',
+            'deskripsi' => 'Deskripsi'
         ];
     }
 }
