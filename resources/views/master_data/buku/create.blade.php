@@ -31,8 +31,13 @@
 
                                 <div class="col-md-6">
                                     <label for="penerbit" class="form-label">Penerbit <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('penerbit') is-invalid @enderror" id="penerbit" name="penerbit" value="{{ old('penerbit') }}" placeholder="Nama penerbit">
-                                    @error('penerbit')
+                                    <select class="form-select @error('penerbit_id') is-invalid @enderror" id="penerbit_id" name="penerbit_id">
+                                        <option value="">Pilih Penerbit</option>
+                                        @foreach($penerbits as $penerbit)
+                                            <option value="{{ $penerbit->id }}" {{ old('penerbit_id') == $penerbit->id ? 'selected' : '' }}>{{ $penerbit->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('penerbit_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -119,10 +124,10 @@
 
                         <!-- Tombol Aksi -->
                         <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a href="{{ route('buku.index') }}" class="btn btn-secondary text-white">
+                            <a href="{{ route('buku.index') }}" class="btn btn-sm btn-secondary text-white">
                                 Kembali
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-sm btn-primary">
                                 Simpan Buku
                             </button>
                         </div>

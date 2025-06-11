@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BukuRequest;
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\Penerbit;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,12 +14,12 @@ class BukuControllers extends Controller
 {
     public function index()
     {
-        $bukus = Buku::with(['kategori', 'prodi'])
+        $bukus = Buku::with(['kategori', 'prodi','penerbit'])
             ->when(request('judul'), function($query) {
                 $query->where('judul', 'like', '%'.request('judul').'%');
             })
-            ->when(request('penulis'), function($query) {
-                $query->where('penulis', 'like', '%'.request('penulis').'%');
+            ->when(request('penerbit_id'), function($query) {
+                $query->where('penerbit_id', 'like', '%'.request('penerbit_id').'%');
             })
             ->when(request('kategori_id'), function($query) {
                 $query->where('kategori_id', request('kategori_id'));
@@ -31,15 +32,17 @@ class BukuControllers extends Controller
 
         $kategoris  = Kategori::all();
         $prodis     = Prodi::all();
+        $penerbits  = Penerbit::all();
 
-        return view('buku.index', compact('bukus', 'kategoris', 'prodis'));
+        return view('master_data.buku.index', compact('bukus', 'kategoris', 'prodis','penerbits'));
     }
 
     public function create()
     {
         $kategoris  = Kategori::all();
         $prodis     = Prodi::all();
-        return view('buku.create',compact('kategoris','prodis'));
+        $penerbits  = Penerbit::all();
+        return view('master_data.buku.create',compact('kategoris','prodis','penerbits'));
     }
 
     // Pada method store dan update
@@ -67,19 +70,21 @@ class BukuControllers extends Controller
 
     public function show(Buku $buku)
     {
-        return view('buku.show', compact('buku'));
+        return view('master_data.buku.show', compact('buku'));
     }
 
 
     public function edit(Buku $buku)
     {
-        $kategoris = Kategori::all();
-        $prodis = Prodi::all();
+        $kategoris  = Kategori::all();
+        $prodis     = Prodi::all();
+        $penerbits  = Penerbit::all();
         
-        return view('buku.edit', [
-            'buku' => $buku,
+        return view('master_data.buku.edit', [
+            'buku'      => $buku,
             'kategoris' => $kategoris,
-            'prodis' => $prodis
+            'prodis'    => $prodis,
+            'penerbits' => $penerbits
         ]);
     }
 
@@ -96,9 +101,9 @@ class BukuControllers extends Controller
             }
             
             // Simpan gambar baru
-            $image = $request->file('gambar_sampul');
-            $imageName = 'cover_' . $buku->id . '_' . time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('buku-covers', $imageName, 'public');
+            $image      = $request->file('gambar_sampul');
+            $imageName  = 'cover_' . $buku->id . '_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath  = $image->storeAs('buku-covers', $imageName, 'public');
             $validated['gambar_sampul'] = $imagePath;
             
         } elseif ($request->boolean('hapus_gambar')) {

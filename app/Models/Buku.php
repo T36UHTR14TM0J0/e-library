@@ -16,6 +16,7 @@ class Buku extends Model
         'tahun_terbit',
         'jumlah',
         'kategori_id',
+        'penerbit_id',
         'prodi_id',
         'deskripsi',
         'gambar_sampul',
@@ -30,6 +31,11 @@ class Buku extends Model
     public function prodi()
     {
         return $this->belongsTo(Prodi::class, 'prodi_id');
+    }
+
+    public function penerbit()
+    {
+        return $this->belongsTo(Penerbit::class, 'penerbit_id');
     }
 
     public function peminjaman()

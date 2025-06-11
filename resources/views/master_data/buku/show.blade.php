@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                             <th>Penerbit</th>
-                            <td>{{ $buku->penerbit ?? '-' }}</td>
+                            <td>{{ $buku->penerbit->nama ?? '-' }}</td>
                         </tr>
                         <tr>
                             <th>Tahun Terbit</th>
@@ -103,7 +103,7 @@
             </div>
             
             <div class="d-flex justify-content-between">
-                <a href="{{ route('buku.index') }}" class="btn btn-secondary text-white">
+                <a href="{{ route('buku.index') }}" class="btn btn-sm btn-secondary text-white">
                      Kembali ke Daftar Buku
                 </a>
             </div>
