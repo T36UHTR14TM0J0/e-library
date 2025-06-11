@@ -83,10 +83,13 @@
         <span class="menu-title">Pengaturan</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->is('pengaturan/prodi*') || request()->is('pengaturan/users*') ? 'show' : '' }}" id="pengaturan">
+      <div class="collapse {{ request()->is('pengaturan/prodi*') || request()->is('pengaturan/users*') ||  request()->is('pengaturan/penerbit*') ? 'show' : '' }}" id="pengaturan">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
-            <a class="nav-link {{ request()->is('pengaturan/prodi*') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Prodi</a>
+            <a class="nav-link {{ request()->is('pengaturan/penerbit*') ? 'active' : '' }}" href="{{ route('penerbit.index') }}">Penerbit</a>
+          </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('pengaturan/prodi*') ? 'active' : '' }}" href="{{ route('prodi.index') }}">Program Studi</a>
           </li>
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('pengaturan/users*') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>

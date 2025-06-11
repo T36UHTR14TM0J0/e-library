@@ -9,6 +9,7 @@ use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanControllers;
+use App\Http\Controllers\PenerbitControllers;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\UsersControllers;
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function() {
     Route::middleware('admin')->group(function() {
         Route::prefix('pengaturan')->group(function(){
             Route::resource('users', UsersControllers::class);
+            Route::resource('penerbit', PenerbitControllers::class);
             Route::resource('prodi', ProdiController::class);
         });
         
