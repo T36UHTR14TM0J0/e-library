@@ -18,6 +18,7 @@ class EbookRequest extends FormRequest
             'penulis'       => 'required|string|max:255',
             'kategori_id'   => 'required|exists:kategoris,id',
             'prodi_id'      => 'nullable|exists:prodis,id',
+            'penerbit_id'   => 'nullable',
             'deskripsi'     => 'nullable|string',
             'izin_unduh'    => 'nullable|string',
             'file_url'      => 'required|file|mimes:pdf,epub|max:10240', // 10MB
@@ -54,6 +55,7 @@ class EbookRequest extends FormRequest
             'judul'         => 'Judul Ebook',
             'penulis'       => 'Penulis',
             'kategori_id'   => 'Kategori',
+            'penerbit_id'   => 'Penerbit',
             'prodi_id'      => 'Program Studi',
             'deskripsi'     => 'Deskripsi',
             'izin_unduh'    => 'Izin Unduh',

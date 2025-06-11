@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EbookRequest;
 use App\Models\Ebook;
 use App\Models\Kategori;
+use App\Models\Penerbit;
 use App\Models\Prodi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,12 +14,12 @@ class EbookControllers extends Controller
 {
     public function index()
     {
-        $ebooks = Ebook::with(['kategori', 'prodi', 'pengunggah'])
+        $ebooks = Ebook::with(['kategori', 'prodi', 'pengunggah','penerbit'])
             ->when(request('judul'), function($query) {
                 $query->where('judul', 'like', '%'.request('judul').'%');
             })
-            ->when(request('penulis'), function($query) {
-                $query->where('penulis', 'like', '%'.request('penulis').'%');
+            ->when(request('penerbit_id'), function($query) {
+                $query->where('penerbit_id', 'like', '%'.request('penerbit_id').'%');
             })
             ->when(request('kategori_id'), function($query) {
                 $query->where('kategori_id', request('kategori_id'));
@@ -34,15 +35,17 @@ class EbookControllers extends Controller
 
         $kategoris  = Kategori::all();
         $prodis     = Prodi::all();
+        $penerbits  = Prodi::all();
 
-        return view('ebook.index', compact('ebooks', 'kategoris', 'prodis'));
+        return view('master_data.ebook.index', compact('ebooks', 'kategoris', 'prodis','penerbits'));
     }
 
     public function create()
     {
         $kategoris  = Kategori::all();
         $prodis     = Prodi::all();
-        return view('ebook.create',compact('kategoris','prodis'));
+        $penerbits  = Penerbit::all();
+        return view('master_data.ebook.create',compact('kategoris','prodis','penerbits'));
     }
 
     // Pada method store dan update
@@ -90,7 +93,7 @@ class EbookControllers extends Controller
 
     public function show(Ebook $ebook)
     {
-        return view('ebook.show', compact('ebook'));
+        return view('master_data.ebook.show', compact('ebook'));
     }
 
 
@@ -98,11 +101,13 @@ class EbookControllers extends Controller
     {
         $kategoris  = Kategori::all();
         $prodis     = Prodi::all();
+        $penerbits  = Penerbit::all();
         
-        return view('ebook.edit', [
+        return view('master_data.ebook.edit', [
             'ebook'       => $ebook,
             'kategoris'   => $kategoris,
-            'prodis'      => $prodis
+            'prodis'      => $prodis,
+            'penerbits'   => $penerbits
         ]);
     }
 

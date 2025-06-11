@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('gambar_sampul')->nullable();
             $table->text('deskripsi')->nullable();
             $table->boolean('izin_unduh')->default(false);
+            $table->foreign('penerbit_id')->references('id')->on('penerbits')->onDelete('set null');
+            $table->unsignedBigInteger('penerbit_id')->nullable();
             $table->timestamps();
 
         });

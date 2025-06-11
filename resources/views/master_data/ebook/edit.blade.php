@@ -31,6 +31,16 @@
                                 </div>
 
                                 <div class="col-md-6">
+                                    <label for="penerbit" class="form-label">Penerbit <span class="text-danger">*</span></label>
+                                    <select class="form-select @error('penerbit_id') is-invalid @enderror" id="penerbit_id" name="penerbit_id">
+                                        <option value="">Pilih Penerbit</option>
+                                        @foreach($penerbits as $penerbit)
+                                            <option value="{{ $penerbit->id }}" {{ old('penerbit_id', $ebook->penerbit_id) == $penerbit->id ? 'selected' : '' }}>{{ $penerbit->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
                                     <label for="kategori_id" class="form-label">Kategori <span class="text-danger">*</span></label>
                                     <select class="form-select @error('kategori_id') is-invalid @enderror" id="kategori_id" name="kategori_id">
                                         <option value="">Pilih Kategori</option>

@@ -24,6 +24,10 @@
                             <td>{{ $ebook->penulis }}</td>
                         </tr>
                         <tr>
+                            <th>Penerbit</th>
+                            <td>{{ $ebook->penerbit->nama ?? '-' }}</td>
+                        </tr>
+                        <tr>
                             <th>Kategori</th>
                             <td>
                                 @if($ebook->kategori)

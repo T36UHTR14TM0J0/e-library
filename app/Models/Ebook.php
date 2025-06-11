@@ -19,6 +19,7 @@ class Ebook extends Model
         'gambar_sampul',
         'deskripsi',
         'izin_unduh',
+        'penerbit_id',
     ];
 
     // Relasi
@@ -30,6 +31,11 @@ class Ebook extends Model
     public function prodi()
     {
         return $this->belongsTo(Prodi::class, 'prodi_id');
+    }
+
+    public function penerbit()
+    {
+        return $this->belongsTo(Penerbit::class, 'penerbit_id');
     }
 
     public function pengunggah()
