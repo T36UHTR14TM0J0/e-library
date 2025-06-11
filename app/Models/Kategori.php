@@ -9,14 +9,14 @@ class Kategori extends Model
     protected $fillable = ['nama', 'deskripsi'];
 
     // Relasi
-    public function bukuFisik()
+    public function buku()
     {
         return $this->hasMany(Buku::class);
     }
 
-    // public function bukuDigital()
-    // {
-    //     return $this->hasMany(Eb::class);
-    // }
+    public function ebook()
+    {
+        return $this->hasMany(Ebook::class);
+    }
 
 }

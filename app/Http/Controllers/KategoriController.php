@@ -21,7 +21,7 @@ class KategoriController extends Controller
         ->latest()
         ->paginate(10);
 
-        return view('kategori.index',compact('kategori'));
+        return view('master_data.kategori.index',compact('kategori'));
     }
 
     /**
@@ -29,7 +29,7 @@ class KategoriController extends Controller
      */
     public function create()
     {
-        return view('kategori.create');
+        return view('master_data.kategori.create');
     }
 
     /**
@@ -57,7 +57,7 @@ class KategoriController extends Controller
     {
         $kategori = Kategori::findOrFail($id);
 
-        return view('kategori.edit',compact('kategori'));
+        return view('master_data.kategori.edit',compact('kategori'));
     }
 
     /**
