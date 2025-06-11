@@ -39,8 +39,8 @@
     </div>
 
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ route('prodi.index') }}" class="btn btn-secondary text-white">Kembali</a>
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        <a href="{{ route('prodi.index') }}" class="btn btn-sm btn-secondary text-white">Kembali</a>
+        <button type="submit" class="btn btn-sm btn-primary">Simpan Perubahan</button>
     </div>
 </form>
 

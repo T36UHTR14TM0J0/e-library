@@ -20,12 +20,12 @@ class ProdiController extends Controller
     ->latest()
     ->paginate(10);
 
-        return view('prodi.index',compact('prodi'));
+        return view('pengaturan.prodi.index',compact('prodi'));
     }
 
     public function create()
     {
-        return view('prodi.create');
+        return view('pengaturan.prodi.create');
     }
 
     public function store(ProdiRequest $request)
@@ -46,7 +46,7 @@ class ProdiController extends Controller
     {
         $prodi = Prodi::findOrFail($id);
 
-        return view('prodi.edit',compact('prodi'));
+        return view('pengaturan.prodi.edit',compact('prodi'));
     }
 
 

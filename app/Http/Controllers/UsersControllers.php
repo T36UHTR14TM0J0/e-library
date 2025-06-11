@@ -14,9 +14,6 @@ class UsersControllers extends Controller
     public function index()
     {
         $users = User::query()
-            ->when(request('nama_lengkap'), function($query) {
-                $query->where('nama_lengkap', 'like', '%'.request('nama_lengkap').'%');
-            })
             ->when(request('username'), function($query) {
                 $query->where('username', 'like', '%'.request('username').'%');
             })
@@ -36,12 +33,12 @@ class UsersControllers extends Controller
             ->orderBy(request('sort_by', 'created_at'), request('sort_direction', 'desc'))
             ->paginate(request('per_page', 10));
 
-        return view('user.index', compact('users'));
+        return view('pengaturan.user.index', compact('users'));
     }
 
     public function create(){
         $prodis = Prodi::all();
-        return view('user.create', compact('prodis'));
+        return view('pengaturan.user.create', compact('prodis'));
     }
 
     public function store(UsersRequest $request)
@@ -74,13 +71,13 @@ class UsersControllers extends Controller
     // Menampilkan detail pengguna
     public function show(User $user)
     {
-        return view('user.show', compact('user'));
+        return view('pengaturan.user.show', compact('user'));
     }
 
     public function edit(User $user)
     {
         $prodis = Prodi::all(); // atau query lain sesuai kebutuhan
-        return view('user.edit', compact('user', 'prodis'));
+        return view('pengaturan.user.edit', compact('user', 'prodis'));
     }
 
     // Memperbarui pengguna

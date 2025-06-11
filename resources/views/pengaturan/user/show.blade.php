@@ -56,8 +56,8 @@
                 </div>
             </div>
             
-            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit</a>
-            <a href="{{ route('users.index') }}" class="btn btn-secondary text-white">Kembali</a>
+            <a href="{{ route('users.index') }}" class="btn btn-sm btn-secondary text-white">Kembali</a>
+            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-primary">Edit</a>
         </div>
     </div>
 </div>

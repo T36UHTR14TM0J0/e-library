@@ -127,8 +127,8 @@
         </div>
 
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ route('users.index') }}" class="btn btn-secondary text-white">Kembali</a>
-            <button type="submit" class="btn btn-primary">Simpan Data</button>
+            <a href="{{ route('users.index') }}" class="btn btn-secondary btn-sm text-white">Kembali</a>
+            <button type="submit" class="btn btn-sm btn-primary">Simpan Data</button>
         </div>
     </form>
 </div>
