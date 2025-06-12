@@ -4,15 +4,75 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12 mb-5">
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filter">
-                <i class="icon-search me-1"></i> Filter
-            </button>
-            @if(request()->hasAny(['judul', 'penulis', 'kategori_id', 'prodi_id', 'izin_unduh']))
-            <a href="{{ route('KatalogEbook.index') }}" class="btn btn-sm btn-outline-danger">
-                <i class="icon-close me-1"></i> Reset Filter
-            </a>
-            @endif
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter E-Book</h5>
+                        @if(request()->hasAny(['judul', 'penulis', 'kategori_id', 'prodi_id', 'izin_unduh']))
+                        <a href="{{ route('KatalogEbook.index') }}" class="btn btn-sm btn-light">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ route('KatalogEbook.index') }}">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="judul" class="form-label">Judul E-Book</label>
+                                <input type="text" name="judul" id="judul" class="form-control form-control-sm" 
+                                       placeholder="Cari berdasarkan judul" value="{{ request('judul') }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="penulis" class="form-label">Penulis</label>
+                                <input type="text" name="penulis" id="penulis" class="form-control form-control-sm" 
+                                       placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="kategori_id" class="form-label">Kategori</label>
+                                <select name="kategori_id" id="kategori_id" class="form-select form-select-sm">
+                                    <option value="">Semua Kategori</option>
+                                    @foreach($kategoris as $kategori)
+                                    <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
+                                        {{ $kategori->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="prodi_id" class="form-label">Program Studi</label>
+                                <select name="prodi_id" id="prodi_id" class="form-select form-select-sm">
+                                    <option value="">Semua Prodi</option>
+                                    @foreach($prodis as $prodi)
+                                    <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
+                                        {{ $prodi->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="izin_unduh" class="form-label">Status Unduh</label>
+                                <select name="izin_unduh" id="izin_unduh" class="form-select form-select-sm">
+                                    <option value="">Semua Status</option>
+                                    <option value="1" {{ request('izin_unduh') == '1' ? 'selected' : '' }}>Diizinkan</option>
+                                    <option value="0" {{ request('izin_unduh') == '0' ? 'selected' : '' }}>Tidak Diizinkan</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-sm btn-dark">
+                                <i class="bi bi-funnel me-1"></i> Terapkan Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
                 
         <div class="col-md-12">
@@ -26,15 +86,9 @@
                 @foreach ($ebooks as $ebook)
                 <div class="col-md-4">
                     <div class="card card-hover h-100">
-                        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                            @php
-                                $coverImage = $ebook->gambar_sampul && Storage::exists($ebook->gambar_sampul) 
-                                            ? asset('storage/' . $ebook->gambar_sampul) 
-                                            : asset('assets/images/default-cover.png');
-                            @endphp
-                            
+                        <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">                            
                             <div class="d-block blur-shadow-image">
-                                <img src="{{ $coverImage }}" 
+                                <img src="{{ asset($ebook->gambar_sampul ? 'storage/' . $ebook->gambar_sampul : 'assets/images/default-cover.png') }}" 
                                     alt="Cover {{ $ebook->judul }}" 
                                     class="img-fluid border-radius-lg" 
                                     style="height: 200px; width: 100%; object-fit: cover;"
@@ -42,7 +96,7 @@
                             </div>
                             
                             <div class="colored-shadow" 
-                                style="background-image: url('{{ $coverImage }}');
+                                style="background-image: url('{{ asset($ebook->gambar_sampul ? 'storage/' . $ebook->gambar_sampul : 'assets/images/default-cover.png') }}');
                                         background-size: cover;
                                         background-position: center;
                                         background-repeat: no-repeat;">
@@ -54,7 +108,7 @@
                                     {{ $ebook->prodi->nama ?? '-' }}
                                 </span>
                                 <span class="badge bg-info">
-                                    <td>Dibaca : {{ $ebook->total_reads }} kali</td>
+                                    Dibaca : {{ $ebook->total_reads }} kali
                                 </span>
                             </div>
                             <h5 class="font-weight-normal">
@@ -197,12 +251,10 @@
                 </div>
 
                 @push('scripts')
-                    <!-- Make sure jQuery is loaded first if you're using it -->
                     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
                     <script src="https://unpkg.com/epubjs@latest/dist/epub.min.js"></script>
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
-                            // Use event delegation for modals in case they're dynamically loaded
                             $(document).on('shown.bs.modal', '#readEpubModal{{ $ebook->id }}', function() {
                                 // Start tracking reading session
                                 $.ajax({
@@ -222,10 +274,8 @@
                                     spread: "none"
                                 });
 
-                                // Display the first page
                                 window.currentRendition.display();
                                 
-                                // Navigation buttons
                                 document.getElementById('prevBtn{{ $ebook->id }}').addEventListener('click', function() {
                                     window.currentRendition.prev();
                                 });
@@ -255,78 +305,6 @@
     </div>
 </div>
 
-<!-- Filter Modal -->
-<div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form method="GET" action="{{ route('KatalogEbook.index') }}">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-white" id="filterLabel">
-                        <i class="icon-search me-2"></i>Filter E-Book
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="judul" class="form-label">Judul E-Book</label>
-                        <input type="text" name="judul" id="judul" class="form-control" 
-                            placeholder="Cari berdasarkan judul" value="{{ request('judul') }}">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="penulis" class="form-label">Penulis</label>
-                        <input type="text" name="penulis" id="penulis" class="form-control" 
-                            placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="kategori_id" class="form-label">Kategori</label>
-                            <select name="kategori_id" id="kategori_id" class="form-select">
-                                <option value="">Semua Kategori</option>
-                                @foreach($kategoris as $kategori)
-                                <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                    {{ $kategori->nama }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="prodi_id" class="form-label">Program Studi</label>
-                            <select name="prodi_id" id="prodi_id" class="form-select">
-                                <option value="">Semua Prodi</option>
-                                @foreach($prodis as $prodi)
-                                <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
-                                    {{ $prodi->nama }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="izin_unduh" class="form-label">Status Unduh</label>
-                        <select name="izin_unduh" id="izin_unduh" class="form-select">
-                            <option value="">Semua Status</option>
-                            <option value="1" {{ request('izin_unduh') == '1' ? 'selected' : '' }}>Diizinkan</option>
-                            <option value="0" {{ request('izin_unduh') == '0' ? 'selected' : '' }}>Tidak Diizinkan</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="reset" class="btn btn-secondary text-white">
-                        Reset
-                    </button>
-                    <button type="submit" class="btn bg-primary text-white">
-                        Terapkan Filter
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 @push('styles')
 <style>
     .modal-fullscreen {
@@ -337,6 +315,11 @@
     }
     .modal-body iframe {
         border: none;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
 </style>
 @endpush

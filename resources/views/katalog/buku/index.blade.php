@@ -4,15 +4,66 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-12 mb-5">
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filter">
-                <i class="icon-search me-1"></i> Filter
-            </button>
-            @if(request()->hasAny(['judul', 'penulis', 'kategori_id', 'prodi_id', 'izin_unduh']))
-            <a href="{{ route('KatalogBuku.index') }}" class="btn btn-sm btn-outline-danger">
-                <i class="icon-close me-1"></i> Reset Filter
-            </a>
-            @endif
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-dark text-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter Buku</h5>
+                        @if(request()->hasAny(['judul', 'penulis', 'kategori_id', 'prodi_id']))
+                        <a href="{{ route('KatalogBuku.index') }}" class="btn btn-sm btn-light">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+                        </a>
+                        @endif
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ route('KatalogBuku.index') }}">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="judul" class="form-label">Judul Buku</label>
+                                <input type="text" name="judul" id="judul" class="form-control form-control-sm" 
+                                       placeholder="Cari berdasarkan judul" value="{{ request('judul') }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="penulis" class="form-label">Penulis</label>
+                                <input type="text" name="penulis" id="penulis" class="form-control form-control-sm" 
+                                       placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="kategori_id" class="form-label">Kategori</label>
+                                <select name="kategori_id" id="kategori_id" class="form-select form-select-sm">
+                                    <option value="">Semua Kategori</option>
+                                    @foreach($kategoris as $kategori)
+                                    <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
+                                        {{ $kategori->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="prodi_id" class="form-label">Program Studi</label>
+                                <select name="prodi_id" id="prodi_id" class="form-select form-select-sm">
+                                    <option value="">Semua Prodi</option>
+                                    @foreach($prodis as $prodi)
+                                    <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
+                                        {{ $prodi->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="submit" class="btn btn-sm btn-dark">
+                                <i class="bi bi-funnel me-1"></i> Terapkan Filter
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
                 
         <div class="col-md-12">
@@ -31,7 +82,8 @@
                                 <img src="{{ asset($buku->gambar_sampul ? 'storage/' . $buku->gambar_sampul : 'assets/images/default-cover.png') }}" 
                                     alt="{{ $buku->judul ?? 'Book Cover' }}" 
                                     class="img-fluid border-radius-lg" 
-                                    style="height: 200px; width: 100%; object-fit: cover;">
+                                    style="height: 200px; width: 100%; object-fit: cover;"
+                                    onerror="this.src='{{ asset('assets/images/default-cover.png') }}'">
                             </div>
                             <div class="colored-shadow" 
                                 style="background-image: url('{{ asset($buku->gambar_sampul ? 'storage/' . $buku->gambar_sampul : 'assets/images/default-cover.png') }}');"></div>
@@ -49,9 +101,9 @@
                                 <a href="#" class="text-dark">{{ Str::limit($buku->judul, 50) }}</a>
                             </h5>
                             <p class="mb-0 text-sm">
-                                {{ $buku->penulis }}
+                                <i class="fas fa-user-edit me-1"></i> {{ $buku->penulis }}
                             </p>
-                            <div class="d-flex justify-content-between">
+                            <div class="d-flex justify-content-between mt-2">
                                 <span class="badge bg-secondary">
                                     {{ $buku->kategori->nama ?? '-' }}
                                 </span>
@@ -80,7 +132,6 @@
                     </div>
                 </div>
 
-                <!-- Pinjam Modal for each book -->
                 <!-- Pinjam Modal for each book -->
                 <div class="modal fade" id="pinjamModal-{{ $buku->id }}" tabindex="-1" aria-labelledby="pinjamModalLabel-{{ $buku->id }}" aria-hidden="true">
                     <div class="modal-dialog">
@@ -115,8 +166,8 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Konfirmasi Pinjam</button>
+                                    <button type="button" class="btn btn-sm text-white btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    <button type="submit" class="btn btn-sm text-white btn-primary">Konfirmasi Pinjam</button>
                                 </div>
                             </form>
                         </div>
@@ -139,70 +190,6 @@
     </div>
 </div>
 
-<!-- Filter Modal -->
-<div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filterLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form method="GET" action="{{ route('KatalogBuku.index') }}">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-white" id="filterLabel">
-                        <i class="icon-search me-2"></i>Filter Buku
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="judul" class="form-label">Judul Buku</label>
-                        <input type="text" name="judul" id="judul" class="form-control" 
-                            placeholder="Cari berdasarkan judul" value="{{ request('judul') }}">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="penulis" class="form-label">Penulis</label>
-                        <input type="text" name="penulis" id="penulis" class="form-control" 
-                            placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="kategori_id" class="form-label">Kategori</label>
-                            <select name="kategori_id" id="kategori_id" class="form-select">
-                                <option value="">Semua Kategori</option>
-                                @foreach($kategoris as $kategori)
-                                <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                    {{ $kategori->nama }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="prodi_id" class="form-label">Program Studi</label>
-                            <select name="prodi_id" id="prodi_id" class="form-select">
-                                <option value="">Semua Prodi</option>
-                                @foreach($prodis as $prodi)
-                                <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
-                                    {{ $prodi->nama }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="reset" class="btn btn-secondary text-white">
-                        Reset
-                    </button>
-                    <button type="submit" class="btn bg-primary text-white">
-                        Terapkan Filter
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 @push('styles')
 <style>
     .modal-fullscreen {
@@ -214,9 +201,26 @@
     .modal-body iframe {
         border: none;
     }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .colored-shadow {
+        position: absolute;
+        top: 12px;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(12px);
+        z-index: -1;
+        opacity: 0.5;
+    }
 </style>
 @endpush
-
 
 @push('scripts')
 <script>

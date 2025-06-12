@@ -60,6 +60,7 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/peminjaman', [PeminjamanControllers::class, 'index'])->name('peminjaman.index');
     Route::delete('/peminjaman/{id}/cancel', [PeminjamanControllers::class, 'cancel'])->name('peminjaman.cancel');
     Route::get('/peminjaman/{id}/show', [PeminjamanControllers::class, 'show'])->name('peminjaman.show');
+    Route::get('/peminjaman/{id}/cetak', [PeminjamanControllers::class, 'cetakPDF'])->name('peminjaman.cetak');
     
 
     // Untuk admin

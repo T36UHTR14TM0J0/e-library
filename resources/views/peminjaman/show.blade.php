@@ -11,11 +11,11 @@
             <div class="mb-4">
                 @php
                     $statusColors = [
-                        'menunggu' => 'bg-secondary',
-                        'dipinjam' => 'bg-info',
-                        'dikembalikan' => 'bg-success',
-                        'terlambat' => 'bg-warning',
-                        'dibatalkan' => 'bg-danger'
+                        'menunggu'      => 'bg-secondary',
+                        'dipinjam'      => 'bg-info',
+                        'dikembalikan'  => 'bg-success',
+                        'terlambat'     => 'bg-warning',
+                        'dibatalkan'    => 'bg-danger'
                     ];
                 @endphp
                 <span class="badge {{ $statusColors[$peminjaman->status] ?? 'bg-secondary' }} fs-6">
@@ -90,9 +90,6 @@
                                 <dt class="col-sm-5">Lama Pinjam</dt>
                                 <dd class="col-sm-7">
                                     {{ $peminjaman->tanggal_pinjam->diffInDays(now()) }} hari
-                                    @if($peminjaman->status == 'terlambat')
-                                        <span class="badge bg-danger ms-2">Terlambat</span>
-                                    @endif
                                 </dd>
                             </dl>
                         </div>
@@ -103,9 +100,9 @@
                                 <dd class="col-sm-7">{{ $peminjaman->tanggal_kembali->locale('id')->translatedFormat('d F Y') }}</dd>
                                 @endif
 
-                                @if($peminjaman->denda > 0)
+                                @if($peminjaman->isLate())
                                 <dt class="col-sm-5">Denda</dt>
-                                <dd class="col-sm-7">Rp {{ number_format($peminjaman->denda, 2) }}</dd>
+                                <dd class="col-sm-7">Rp {{ number_format($peminjaman->hitungDenda(), 2) }}</dd>
                                 @endif
 
                                 @if($peminjaman->disetujui_oleh)
@@ -155,8 +152,12 @@
 
         <!-- Card Footer with Action Buttons -->
         <div class="card-footer bg-light d-flex justify-content-between">
-            <a href="{{ route('peminjaman.index') }}" class="btn btn-secondary text-white">
+            <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-secondary text-white">
                 Kembali
+            </a>
+
+            <a href="{{ route('peminjaman.cetak', $peminjaman->id) }}" class="btn btn-sm btn-danger text-white">
+                <i class="fas fa-file-pdf"></i> Cetak PDF
             </a>
 
         </div>

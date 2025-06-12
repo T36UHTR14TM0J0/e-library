@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                             <th>Penerbit</th>
-                            <td>{{ $buku->penerbit ?? '-' }}</td>
+                            <td>{{ $buku->penerbit->nama ?? '-' }}</td>
                         </tr>
                         <tr>
                             <th>Tahun Terbit</th>

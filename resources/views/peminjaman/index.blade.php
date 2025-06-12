@@ -4,11 +4,63 @@
 
 @section('content')
 <div class="container-fluid py-4">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-dark text-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter Peminjaman</h5>
+                @if(request()->hasAny(['status', 'search', 'date_from', 'date_to']))
+                <a href="{{ route('peminjaman.index') }}" class="btn btn-sm btn-light">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+                </a>
+                @endif
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('peminjaman.index') }}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select form-select-sm">
+                            <option value="">Semua Status</option>
+                            <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                            <option value="dipinjam" {{ request('status') == 'dipinjam' ? 'selected' : '' }}>Dipinjam</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="date_from" class="form-label">Dari Tanggal</label>
+                        <input type="date" name="date_from" id="date_from" class="form-control form-control-sm" 
+                               value="{{ request('date_from') }}">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="date_to" class="form-label">Sampai Tanggal</label>
+                        <input type="date" name="date_to" id="date_to" class="form-control form-control-sm" 
+                               value="{{ request('date_to') }}">
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <label for="search" class="form-label">Cari</label>
+                        <div class="input-group input-group-sm">
+                            <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                   placeholder="Judul/Peminjam..." value="{{ request('search') }}">
+                            <button class="btn btn-dark" type="submit">
+                                <i class="icon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-sm btn-dark">
+                        <i class="bi bi-funnel me-1"></i> Terapkan Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <div class="card shadow-sm">
-        {{-- <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Daftar Peminjaman</h5>
-        </div> --}}
-        
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -57,11 +109,8 @@
                             <td class="text-center">
                                 @php
                                     $badgeClass = [
-                                        'menunggu' => 'bg-warning',
-                                        'dipinjam' => 'bg-primary',
-                                        'dikembalikan' => 'bg-success',
-                                        'terlambat' => 'bg-danger',
-                                        'dibatalkan' => 'bg-secondary'
+                                        'menunggu'      => 'bg-warning',
+                                        'dipinjam'      => 'bg-info'
                                     ][$peminjaman->status];
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">
@@ -75,20 +124,20 @@
                                         @if(auth()->user()->isAdmin())
                                             <form action="{{ route('admin.peminjaman.approve', $peminjaman->id) }}" method="POST" class="d-inline">
                                                 @csrf @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-success" title="Setujui">
+                                                <button type="submit" class="btn btn-sm btn-success text-white" title="Setujui">
                                                     Setujui
                                                 </button>
                                             </form>
                                             <form action="{{ route('admin.peminjaman.reject', $peminjaman->id) }}" method="POST" class="d-inline">
                                                 @csrf @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Tolak">
+                                                <button type="submit" class="btn btn-sm btn-danger text-white" title="Tolak">
                                                     Tolak
                                                 </button>
                                             </form>
                                         @else
                                             <form action="{{ route('peminjaman.cancel', $peminjaman->id) }}" method="POST" class="d-inline">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" 
+                                                <button type="submit" class="btn btn-sm btn-danger text-white" 
                                                     onclick="return confirm('Apakah Anda yakin ingin membatalkan peminjaman ini?')"
                                                     title="Batalkan">
                                                     Batal
@@ -98,7 +147,7 @@
                                     @endif
 
                                     @if(auth()->user()->isAdmin() && $peminjaman->status == 'dipinjam')
-                                        <button type="button" class="btn btn-sm btn-primary" 
+                                        <button type="button" class="btn btn-sm btn-secondary text-white" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#returnModal{{ $peminjaman->id }}"
                                             title="Konfirmasi Pengembalian">
@@ -122,15 +171,14 @@
                                         @csrf @method('PUT')
                                         <div class="modal-body">
                                             <p>Konfirmasi bahwa buku <strong>{{ $peminjaman->buku->judul }}</strong> telah dikembalikan oleh <strong>{{ $peminjaman->user->name }}</strong>?</p>
-                                            
                                             <div class="mb-3">
                                                 <label for="return_notes{{ $peminjaman->id }}" class="form-label">Catatan (Opsional)</label>
                                                 <textarea class="form-control" id="return_notes{{ $peminjaman->id }}" name="return_notes" rows="3" placeholder="Masukkan catatan pengembalian..."></textarea>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">Konfirmasi</button>
+                                            <button type="button" class="btn btn-sm text-white btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Konfirmasi</button>
                                         </div>
                                     </form>
                                 </div>
@@ -159,7 +207,7 @@
                     Menampilkan <strong>{{ $peminjamans->firstItem() }}</strong> sampai <strong>{{ $peminjamans->lastItem() }}</strong> dari <strong>{{ $peminjamans->total() }}</strong> entri
                 </div>
                 <div>
-                    {{ $peminjamans->links() }}
+                    {{ $peminjamans->appends(request()->query())->links() }}
                 </div>
             </div>
         </div>

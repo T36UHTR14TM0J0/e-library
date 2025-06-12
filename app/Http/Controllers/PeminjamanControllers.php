@@ -7,6 +7,8 @@ use App\Models\Buku;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\View;
+use Mpdf\Mpdf;
 
 class PeminjamanControllers extends Controller
 {
@@ -14,7 +16,14 @@ class PeminjamanControllers extends Controller
     {
         $peminjamans = Peminjaman::with(['buku', 'user'])
             ->when(!auth()->user()->isAdmin(), fn($query) => $query->where('user_id', auth()->id()))
-            ->whereNotIn('status', ['dibatalkan', 'dikembalikan'])
+            ->when(request('status'), fn($query, $status) => $query->where('status', $status))
+            ->when(!request('status'), fn($query) => $query->whereIn('status', ['menunggu', 'dipinjam']))
+            ->when(request('search'), function($query, $search) {
+                return $query->whereHas('buku', fn($q) => $q->where('judul', 'like', "%{$search}%"))
+                    ->orWhereHas('user', fn($q) => $q->where('nama_lengkap', 'like', "%{$search}%"));
+            })
+            ->when(request('date_from'), fn($query, $date) => $query->whereDate('tanggal_pinjam', '>=', $date))
+            ->when(request('date_to'), fn($query, $date) => $query->whereDate('tanggal_pinjam', '<=', $date))
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -26,7 +35,7 @@ class PeminjamanControllers extends Controller
         $request->validate([
             'buku_id'               => 'required|exists:bukus,id',
             'tanggal_pinjam'        => 'required|date',
-            'tanggal_jatuh_tempo'  => 'required|date|after:tanggal_pinjam',
+            'tanggal_jatuh_tempo'   => 'required|date|after:tanggal_pinjam',
             'catatan_pinjam'        => 'nullable|string|max:255',
         ]);
 
@@ -53,10 +62,10 @@ class PeminjamanControllers extends Controller
             return back()->with('error', 'Anda telah mencapai batas maksimal peminjaman 2 buku berbeda');
         }
 
-        $isDosen = auth()->user()->role === 'dosen';
-        $isMahasiswa = auth()->user()->role === 'mahasiswa';
-        $tanggalPinjam = Carbon::parse($request->tanggal_pinjam);
-        $tanggalJatuhTempo = Carbon::parse($request->tanggal_jatuh_tempo);
+        $isDosen            = auth()->user()->role === 'dosen';
+        $isMahasiswa        = auth()->user()->role === 'mahasiswa';
+        $tanggalPinjam      = Carbon::parse($request->tanggal_pinjam);
+        $tanggalJatuhTempo  = Carbon::parse($request->tanggal_jatuh_tempo);
         
         if ($isDosen && $tanggalJatuhTempo->gt($tanggalPinjam->copy()->addMonths(6))) {
             return back()->with('error', 'Maksimal jatuh tempo untuk dosen adalah 6 bulan');
@@ -127,7 +136,7 @@ class PeminjamanControllers extends Controller
         }
 
         $updateData = [
-            'status' => 'dikembalikan',
+            'status'          => 'dikembalikan',
             'tanggal_kembali' => now(),
             'catatan_kembali' => $request->return_notes,
         ];
@@ -135,8 +144,6 @@ class PeminjamanControllers extends Controller
         $updateData['denda'] = now()->isPast($peminjaman->tanggal_jatuh_tempo) 
         ? now()->diffInDays($peminjaman->tanggal_jatuh_tempo) * 1000 
         : 0;
-
-
         $peminjaman->buku->increment('jumlah');
         $peminjaman->update($updateData);
     
@@ -171,5 +178,49 @@ class PeminjamanControllers extends Controller
             ->findOrFail($id);
             // dd($peminjaman)
         return view('peminjaman.show',compact('peminjaman'));
+    }
+
+    public function cetakPDF($id)
+    {
+        // Ambil data peminjaman
+        $peminjaman = Peminjaman::with(['buku', 'user', 'disetujui'])->findOrFail($id);
+        
+        // Render view ke HTML
+        $html = View::make('peminjaman.cetak', compact('peminjaman'))->render();
+        
+        // Buat instance mPDF
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 15,
+            'margin_bottom' => 20,
+            'margin_header' => 10,
+            'margin_footer' => 10
+        ]);
+        
+        // Header dan Footer
+        $mpdf->SetHTMLHeader('
+        <div style="text-align: center; font-weight: bold;">
+            PERPUSTAKAAN UNIVERSITAS - DETAIL PEMINJAMAN
+        </div>');
+        
+        $mpdf->SetHTMLFooter('
+        <table width="100%">
+            <tr>
+                <td width="33%">{DATE j-m-Y}</td>
+                <td width="33%" align="center">{PAGENO}/{nbpg}</td>
+                <td width="33%" style="text-align: right;">Dicetak oleh: '.auth()->user()->nama_lengkap.'</td>
+            </tr>
+        </table>');
+        
+        // Tulis konten HTML
+        $mpdf->WriteHTML($html);
+        
+        // Output PDF
+        return response()->streamDownload(function() use ($mpdf) {
+            $mpdf->Output();
+        }, 'detail_peminjaman_'.$peminjaman->id.'.pdf');
     }
 }
