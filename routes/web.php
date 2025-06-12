@@ -9,6 +9,7 @@ use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LaporanAnggotaController;
+use App\Http\Controllers\LaporanBukuController;
 use App\Http\Controllers\LaporanPeminjamanController;
 use App\Http\Controllers\PeminjamanControllers;
 use App\Http\Controllers\PenerbitControllers;
@@ -62,10 +63,15 @@ Route::middleware(['auth'])->group(function() {
             Route::get('/peminjaman/export/excel', [LaporanPeminjamanController::class, 'exportExcel'])->name('laporan.peminjaman.export.excel');
            
 
-             Route::prefix('anggota')->group(function() {
+            Route::prefix('anggota')->group(function() {
                 Route::get('/', [LaporanAnggotaController::class, 'index'])->name('laporan.anggota.index');
                 Route::get('/pdf', [LaporanAnggotaController::class, 'exportPDF'])->name('laporan.anggota.export.pdf');
                 Route::get('/excel', [LaporanAnggotaController::class, 'exportExcel'])->name('laporan.anggota.export.excel');
+            });
+            Route::prefix('buku')->group(function() {
+                Route::get('/', [LaporanBukuController::class, 'index'])->name('laporan.buku.index');
+                Route::get('/pdf', [LaporanBukuController::class, 'exportPDF'])->name('laporan.buku.export.pdf');
+                Route::get('/excel', [LaporanBukuController::class, 'exportExcel'])->name('laporan.buku.export.excel');
             });
         
         });

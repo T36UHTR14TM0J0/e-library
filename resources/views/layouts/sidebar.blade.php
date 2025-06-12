@@ -55,6 +55,9 @@
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('laporan/anggota*') ? 'active' : '' }}" href="{{ route('laporan.anggota.index') }}">Anggota</a>
           </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('laporan/buku*') ? 'active' : '' }}" href="{{ route('laporan.buku.index') }}">Buku</a>
+          </li>
         </ul>
       </div>
     </li>
