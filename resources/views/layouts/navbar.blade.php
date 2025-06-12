@@ -2,7 +2,7 @@
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <h4 class="navbar-brand" href="#">
       <a class="navbar-brand brand-logo me-5" href="#">E-library</a>
-      <a class="navbar-brand brand-logo-mini" href="#">Elib</a>
+      {{-- <a class="navbar-brand brand-logo-mini" href="#">Elib</a> --}}
     </h4>
   </div>
   
@@ -37,5 +37,8 @@
         </div>
       </li>
     </ul>
+    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+      <span class="icon-menu"></span>
+    </button>
   </div>
 </nav>
