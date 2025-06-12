@@ -8,6 +8,7 @@ use App\Http\Controllers\EbookReadingControllers;
 use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LaporanAnggotaController;
 use App\Http\Controllers\LaporanPeminjamanController;
 use App\Http\Controllers\PeminjamanControllers;
 use App\Http\Controllers\PenerbitControllers;
@@ -59,6 +60,14 @@ Route::middleware(['auth'])->group(function() {
             Route::get('/peminjaman', [LaporanPeminjamanController::class, 'index'])->name('laporan.peminjaman');
             Route::get('/peminjaman/export/pdf', [LaporanPeminjamanController::class, 'exportPDF'])->name('laporan.peminjaman.export.pdf');
             Route::get('/peminjaman/export/excel', [LaporanPeminjamanController::class, 'exportExcel'])->name('laporan.peminjaman.export.excel');
+           
+
+             Route::prefix('anggota')->group(function() {
+                Route::get('/', [LaporanAnggotaController::class, 'index'])->name('laporan.anggota.index');
+                Route::get('/pdf', [LaporanAnggotaController::class, 'exportPDF'])->name('laporan.anggota.export.pdf');
+                Route::get('/excel', [LaporanAnggotaController::class, 'exportExcel'])->name('laporan.anggota.export.excel');
+            });
+        
         });
         
     });
