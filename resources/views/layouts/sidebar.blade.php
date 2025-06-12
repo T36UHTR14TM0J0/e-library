@@ -36,13 +36,33 @@
       </a>
     </li>
     
+    @if (auth()->user()->isAdmin())
     <li class="nav-item">
-      <a class="nav-link {{ request()->is('laporan*') ? 'active' : '' }}" href="#">
+      <a class="nav-link {{ request()->is('laporan*') ? 'active' : '' }}" 
+         data-bs-toggle="collapse" 
+         href="#laporan" 
+         aria-expanded="{{ request()->is('laporan*') ? 'true' : 'false' }}" 
+         aria-controls="laporan">
         <i class="icon-bar-graph menu-icon"></i>
         <span class="menu-title">Laporan</span>
+        <i class="menu-arrow"></i>
       </a>
+      <div class="collapse {{ request()->is('laporan/anggota*') || request()->is('laporan/buku*') ||  request()->is('laporan/peminjaman*') ? 'show' : '' }}" id="laporan">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('laporan/peminjaman*') ? 'active' : '' }}" href="{{ route('laporan.peminjaman') }}">Peminjaman</a>
+          </li>
+          {{-- <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('laporan/anggota*') ? 'active' : '' }}" href="{{ route('anggota.index') }}">Anggota</a>
+          </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('laporan/buku*') ? 'active' : '' }}" href="{{ route('buku.index') }}">Buku</a>
+          </li> --}}
+        </ul>
+      </div>
     </li>
-    
+    @endif
+        
     @if (auth()->user()->isAdmin() || auth()->user()->isDosen())
     <li class="nav-item">
       <a class="nav-link {{ request()->is('MasterData/kategori*') || request()->is('MasterData/buku*') || request()->is('MasterData/ebook*') ? 'active' : '' }}" 

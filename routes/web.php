@@ -8,6 +8,7 @@ use App\Http\Controllers\EbookReadingControllers;
 use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LaporanPeminjamanController;
 use App\Http\Controllers\PeminjamanControllers;
 use App\Http\Controllers\PenerbitControllers;
 use App\Http\Controllers\ProdiController;
@@ -53,6 +54,13 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('buku', BukuControllers::class);
             Route::resource('kategori', KategoriController::class);
         });
+
+        Route::prefix('laporan')->group(function() {
+            Route::get('/peminjaman', [LaporanPeminjamanController::class, 'index'])->name('laporan.peminjaman');
+            Route::get('/peminjaman/export/pdf', [LaporanPeminjamanController::class, 'exportPDF'])->name('laporan.peminjaman.export.pdf');
+            Route::get('/peminjaman/export/excel', [LaporanPeminjamanController::class, 'exportExcel'])->name('laporan.peminjaman.export.excel');
+        });
+        
     });
 
     // Route untuk peminjaman
