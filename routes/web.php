@@ -18,6 +18,7 @@ use App\Http\Controllers\PeminjamanControllers;
 use App\Http\Controllers\PenerbitControllers;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
+use App\Http\Controllers\ProsedurController;
 use App\Http\Controllers\UsersControllers;
 use Illuminate\Support\Facades\Route;
 
@@ -97,6 +98,7 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('prodi', ProdiController::class);
             Route::resource('layanan', LayananController::class);
             Route::resource('jam_layanan', JamLayananController::class);
+            Route::resource('prosedur', ProsedurController::class);
         });
         
         // Master Data routes
