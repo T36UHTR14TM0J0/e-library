@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
         
         // Jam Pelayanan
         JamLayanan::create([
-            'hari' => 'Monday',
+            'hari' => 'Senin',
             'waktu_buka' => '08:00',
             'waktu_tutup' => '18:00'
         ]);

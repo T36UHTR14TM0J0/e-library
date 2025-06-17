@@ -5,6 +5,7 @@ use App\Http\Controllers\BukuControllers;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EbookControllers;
 use App\Http\Controllers\EbookReadingControllers;
+use App\Http\Controllers\JamLayananController;
 use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
@@ -95,6 +96,7 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('penerbit', PenerbitControllers::class);
             Route::resource('prodi', ProdiController::class);
             Route::resource('layanan', LayananController::class);
+            Route::resource('jam_layanan', JamLayananController::class);
         });
         
         // Master Data routes
