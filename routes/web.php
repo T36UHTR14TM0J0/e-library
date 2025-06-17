@@ -8,6 +8,7 @@ use App\Http\Controllers\EbookReadingControllers;
 use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LaporanAnggotaController;
 use App\Http\Controllers\LaporanBukuController;
 use App\Http\Controllers\LaporanPeminjamanController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\UsersControllers;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/',[AuthController::class,'showLoginForm']);
+Route::get('/',[LandingController::class,'index']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('loginProses');
 
