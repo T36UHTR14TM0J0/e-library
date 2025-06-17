@@ -14,29 +14,50 @@ use Illuminate\Support\Facades\Storage;
 
 class LandingController extends Controller
 {
+    /* 
+    |--------------------------------------------------------------------------
+    | LANDING PAGE METHODS
+    |--------------------------------------------------------------------------
+    */
+    
+    /**
+     * Display the home page
+     */
     public function index()
     {
         return view('landing.home');
     }
 
+    /**
+     * Display the procedure page
+     */
     public function Prosedur()
     {
         $prosedurs = Prosedur::ordered();
         return view('landing.prosedur', compact('prosedurs'));
     }
     
+    /**
+     * Display the service hours page
+     */
     public function jamLayanan()
     {
         $hours = JamLayanan::orderByRaw("FIELD(hari, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')")->get();
         return view('landing.jamLayanan', compact('hours'));
     }
     
+    /**
+     * Display the services page
+     */
     public function layanan()
     {
         $layanans = Layanan::all();
         return view('landing.layanan', compact('layanans'));
     }
     
+    /**
+     * Display the about page
+     */
     public function about()
     {
         $about = [
@@ -52,7 +73,17 @@ class LandingController extends Controller
         return view('landing.about', compact('about'));
     }
 
-    public function viewBukuFisik(Request $request){
+    /* 
+    |--------------------------------------------------------------------------
+    | BOOK CATALOG METHODS
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Display physical books catalog with filtering options
+     */
+    public function viewBukuFisik(Request $request)
+    {
         $search = $request->input('search');
         
         $filters = [
@@ -71,6 +102,7 @@ class LandingController extends Controller
                 ->whereNotNull('tanggal_setujui');
             }]);
 
+        // Search functionality
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('judul', 'like', '%'.$search.'%')
@@ -88,6 +120,7 @@ class LandingController extends Controller
             });
         }
 
+        // Apply filters
         if ($filters['kategori_id']) {
             $query->where('kategori_id', $filters['kategori_id']);
         }
@@ -100,6 +133,7 @@ class LandingController extends Controller
             $query->where('tahun_terbit', $filters['tahun_terbit']);
         }
 
+        // Sorting
         switch ($filters['sort']) {
             case 'popular':
                 $query->orderBy('total_peminjaman', 'desc');
@@ -125,7 +159,11 @@ class LandingController extends Controller
         return view('landing.katalog.buku', compact('bukus', 'tahunTerbit', 'kategoris', 'prodis', 'filters', 'search'));
     }
 
-    public function viewEbook(Request $request){
+    /**
+     * Display ebooks catalog with filtering options
+     */
+    public function viewEbook(Request $request)
+    {
         $search = $request->input('search');
         
         $filters = [
@@ -137,6 +175,7 @@ class LandingController extends Controller
         $query = Ebook::with(['kategori', 'prodi', 'penerbit'])
             ->withCount(['readings as total_dibaca']);
 
+        // Search functionality
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('judul', 'like', '%'.$search.'%')
@@ -150,6 +189,7 @@ class LandingController extends Controller
             });
         }
 
+        // Apply filters
         if ($filters['kategori_id']) {
             $query->where('kategori_id', $filters['kategori_id']);
         }
@@ -158,6 +198,7 @@ class LandingController extends Controller
             $query->where('prodi_id', $filters['prodi_id']);
         }
 
+        // Sorting
         switch ($filters['sort']) {
             case 'popular':
                 $query->orderBy('total_dibaca', 'desc');
@@ -178,6 +219,15 @@ class LandingController extends Controller
         return view('landing.katalog.ebook', compact('ebooks', 'kategoris', 'prodis', 'filters', 'search'));
     }
 
+    /* 
+    |--------------------------------------------------------------------------
+    | DETAIL PAGES METHODS
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * Display ebook detail page
+     */
     public function detailEbook($id)
     {
         $ebook = Ebook::with(['kategori', 'prodi', 'pengunggah'])
@@ -186,6 +236,9 @@ class LandingController extends Controller
         return view('landing.katalog.detail_ebook', compact('ebook'));
     }
 
+    /**
+     * Display physical book detail page
+     */
     public function detailBuku($id)
     {
          $buku = Buku::with(['kategori', 'prodi'])
