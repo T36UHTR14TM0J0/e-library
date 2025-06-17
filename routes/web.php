@@ -12,6 +12,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LaporanAnggotaController;
 use App\Http\Controllers\LaporanBukuController;
 use App\Http\Controllers\LaporanPeminjamanController;
+use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PeminjamanControllers;
 use App\Http\Controllers\PenerbitControllers;
 use App\Http\Controllers\ProdiController;
@@ -93,6 +94,7 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('users', UsersControllers::class);
             Route::resource('penerbit', PenerbitControllers::class);
             Route::resource('prodi', ProdiController::class);
+            Route::resource('layanan', LayananController::class);
         });
         
         // Master Data routes
