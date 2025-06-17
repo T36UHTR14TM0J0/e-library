@@ -376,11 +376,11 @@
     @yield('content')
 
     <hr class="mt-5" style="background-color: rgba(255, 255, 255, 0.1);">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
+            <div class="row bg-dark p-2">
+                <div class="col-md-6 text-center text-md-start text-white">
                     <p class="mb-0">&copy; 2023 E-Library. All rights reserved.</p>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
+                <div class="col-md-6 text-center text-md-end text-white">
                     <p class="mb-0">Designed with <i class="fas fa-heart text-danger"></i> by E-Library Team</p>
                 </div>
             </div>

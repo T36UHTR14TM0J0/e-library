@@ -22,26 +22,30 @@
 
 <section class="py-5">
     <div class="container py-5">
-        <h2 class="section-title text-center">Katalog</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-book-open"></i>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title">Katalog</h2>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-5">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <h3>Buku Fisik</h3>
+                            <p>Lebih dari 100.000 judul buku digital dan fisik.</p>
+                            <a href="{{ route('buku-fisik') }}" class="btn btn-primary mt-3">Lihat</a>
+                        </div>
                     </div>
-                    <h3>Buku Fisik</h3>
-                    <p>Lebih dari 100.000 judul buku digital dan fisik.</p>
-                    <a href="/katalog/buku-fisik" class="btn btn-primary mt-3">Lihat Detail</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-laptop"></i>
+                    <div class="col-md-5">
+                        <div class="feature-card">
+                            <div class="feature-icon">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <h3>Ebook</h3>
+                            <p>Perpustakaan digital dapat diakses kapan saja.</p>
+                            <a href="{{ route('ebook') }}" class="btn btn-primary mt-3">Lihat</a>
+                        </div>
                     </div>
-                    <h3>Ebook</h3>
-                    <p>Perpustakaan digital dapat diakses kapan saja.</p>
-                    <a href="/katalog/ebook" class="btn btn-primary mt-3">Lihat Detail</a>
                 </div>
             </div>
         </div>

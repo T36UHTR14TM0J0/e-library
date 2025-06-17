@@ -66,4 +66,39 @@ class Buku extends Model
     {
         return $this->jumlahTersedia() > 0;
     }
+
+
+    /**
+     * Scope for popular books
+     */
+    public function scopePopular($query)
+    {
+        return $query->withCount(['peminjaman as total_peminjaman' => function($q) {
+            $q->validBorrows();
+        }])->orderBy('total_peminjaman', 'desc');
+    }
+
+    /**
+     * Get currently borrowed copies count
+     */
+    public function getSedangDipinjamAttribute()
+    {
+        return $this->peminjaman()->where('status', 'dipinjam')->count();
+    }
+
+    /**
+     * Get returned copies count
+     */
+    public function getTelahDikembalikanAttribute()
+    {
+        return $this->peminjaman()->where('status', 'dikembalikan')->count();
+    }
+
+    /**
+     * Get total valid borrows count
+     */
+    public function getTotalPeminjamanAttribute()
+    {
+        return $this->peminjaman()->validBorrows()->count();
+    }
 }

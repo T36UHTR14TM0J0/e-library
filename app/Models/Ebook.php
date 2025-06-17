@@ -75,6 +75,16 @@ class Ebook extends Model
     }
 
 
+    /**
+     * Relationship with users through readings
+     */
+    public function readers()
+    {
+        return $this->belongsToMany(User::class, 'ebook_readings')
+                   ->withTimestamps();
+    }
+
+
     public function getTotalReadsAttribute()
     {
         return $this->readings()->count();

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -88,6 +89,18 @@ class Peminjaman extends Model
             'tanggal_kembali' => now(),
             'denda' => $this->hitungDenda(),
         ]);
+    }
+
+    /**
+     * Scope for valid borrows (approved and not canceled)
+     */
+    public function scopeValidBorrows(Builder $query)
+    {
+        return $query->where(function($q) {
+                $q->where('status', 'dipinjam')
+                  ->orWhere('status', 'dikembalikan');
+            })
+            ->whereNotNull('tanggal_setujui');
     }
 
 }

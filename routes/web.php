@@ -20,6 +20,8 @@ use App\Http\Controllers\UsersControllers;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',[LandingController::class,'index'])->name('home');
+Route::get('/viewBukuFisik',[LandingController::class,'viewBukuFisik'])->name('buku-fisik');
+Route::get('/viewEbook',[LandingController::class,'viewEbook'])->name('ebook');
 Route::get('/prosedur', [LandingController::class, 'prosedur'])->name('prosedur');
 Route::get('/jam-pelayanan', [LandingController::class, 'jamLayanan'])->name('jamLayanan');
 Route::get('/layanan', [LandingController::class, 'layanan'])->name('layanan');
