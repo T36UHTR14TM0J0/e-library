@@ -19,19 +19,24 @@ use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\UsersControllers;
 use Illuminate\Support\Facades\Route;
 
+// ###### LANDING PAGE ##### //
 Route::get('/',[LandingController::class,'index'])->name('home');
 Route::get('/viewBukuFisik',[LandingController::class,'viewBukuFisik'])->name('buku-fisik');
 Route::get('/viewEbook',[LandingController::class,'viewEbook'])->name('ebook');
+Route::get('/detailEbook/{id}', [LandingController::class, 'detailEbook'])->name('detail_ebook');
+Route::get('/detailBuku/{id}', [LandingController::class, 'detailBuku'])->name('detail_buku');
 Route::get('/prosedur', [LandingController::class, 'prosedur'])->name('prosedur');
 Route::get('/jam-pelayanan', [LandingController::class, 'jamLayanan'])->name('jamLayanan');
 Route::get('/layanan', [LandingController::class, 'layanan'])->name('layanan');
 Route::get('/tentang', [LandingController::class, 'about'])->name('about');
+// ##### END LANDING PAGE ##### //
+
+// ##### LOGIN ##### //
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('loginProses');
+// ##### END LOGIN ##### //
 
 Route::middleware(['auth'])->group(function() {
-    
-    
     // Profile routes
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileControllers::class, 'show'])->name('profile.show');

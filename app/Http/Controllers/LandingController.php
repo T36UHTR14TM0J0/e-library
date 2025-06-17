@@ -177,4 +177,19 @@ class LandingController extends Controller
         
         return view('landing.katalog.ebook', compact('ebooks', 'kategoris', 'prodis', 'filters', 'search'));
     }
+
+    public function detailEbook($id)
+    {
+        $ebook = Ebook::with(['kategori', 'prodi', 'pengunggah'])
+                    ->findOrFail($id);
+                    
+        return view('landing.katalog.detail_ebook', compact('ebook'));
+    }
+
+    public function detailBuku($id)
+    {
+         $buku = Buku::with(['kategori', 'prodi'])
+                    ->findOrFail($id);
+        return view('landing.katalog.detail_buku', compact('buku'));
+    }
 }

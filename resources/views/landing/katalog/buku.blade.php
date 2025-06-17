@@ -1,156 +1,129 @@
 @extends('landing.app')
 @section('title', 'Buku Fisik')
 @section('content')
-<section class="py-5 mt-5">
+<section class="py-5">
     <div class="container">
         <!-- Header Section -->
-        <div class="text-center mb-6 mt-5">
+        <div class="text-center mb-5 mt-5">
             <h1 class="display-5 fw-bold text-gradient">Koleksi Buku Fisik</h1>
             <p class="lead text-muted">Temukan buku-buku berkualitas dari koleksi perpustakaan kami</p>
         </div>
 
-        <!-- Filter Card -->
-        <div class="card border-0 shadow-sm mb-5">
-            <div class="card-body p-4">
-                <form action="{{ route('buku-fisik') }}" method="GET">
-                    <div class="row g-3 align-items-end">
-                        <!-- Combined Search Field -->
-                        <div class="col-md-6">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Cari Buku</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
-                                </span>
-                                <input type="text" 
-                                    class="form-control border-start-0" 
-                                    name="search" 
-                                    value="{{ request('search') }}" 
-                                    placeholder="Judul, penulis, kategori, prodi, atau tahun...">
-                            </div>
+        <!-- Filter Section -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-3">
+                <form action="{{ route('buku-fisik') }}" method="GET" class="row g-2 align-items-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" 
+                                   class="form-control border-start-0" 
+                                   name="search" 
+                                   value="{{ request('search') }}" 
+                                   placeholder="Cari buku...">
                         </div>
-                        
-                        <!-- Sorting Dropdown -->
-                        <div class="col-md-2">
-                            <label class="form-label small fw-bold text-uppercase text-muted">Urutkan</label>
-                            <select class="form-select" name="sort">
-                                <option value="judul" {{ request('sort') == 'judul' ? 'selected' : '' }}>A-Z</option>
-                                <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Paling Banyak Dipinjam</option>
-                                <option value="recent" {{ request('sort') == 'recent' ? 'selected' : '' }}>Terbaru</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="col-md-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary flex-grow-1">
-                                <i class="fas fa-search me-2"></i> Cari
-                            </button>
-                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <select class="form-select" name="sort">
+                            <option value="judul" {{ request('sort') == 'judul' ? 'selected' : '' }}>A-Z</option>
+                            <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Populer</option>
+                            <option value="recent" {{ request('sort') == 'recent' ? 'selected' : '' }}>Terbaru</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-search me-1"></i> Cari
+                        </button>
+                        <a href="{{ route('buku-fisik') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt"></i>
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Results Card -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-0">
-                <!-- Table Header -->
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="border-0 ps-4" width="60px">No</th>
-                                <th class="border-0">Judul Buku</th>
-                                <th class="border-0">Penulis</th>
-                                <th class="border-0">Kategori</th>
-                                <th class="border-0">Prodi</th>
-                                <th class="border-0 text-center">Tahun</th>
-                                <th class="border-0 text-center">Peminjaman</th>
-                                <th class="border-0 text-center">Status</th>
-                                {{-- <th class="border-0 pe-4 text-end">Aksi</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($bukus as $index => $buku)
-                            <tr class="border-top">
-                                <td class="ps-4 text-muted">{{ $index + $bukus->firstItem() }}</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        @if($buku->gambar_sampul)
-                                            <img src="{{ asset('storage/' . $buku->gambar_sampul) }}" 
-                                                 class="rounded me-3 shadow-sm" width="45" height="65" 
-                                                 style="object-fit: cover;" alt="{{ $buku->judul }}">
-                                        @else
-                                            <div class="rounded bg-light me-3 d-flex align-items-center justify-content-center shadow-sm" 
-                                                 style="width: 45px; height: 65px;">
-                                                <i class="fas fa-book text-muted"></i>
-                                            </div>
-                                        @endif
-                                        <div>
-                                            <h6 class="mb-0">{{ $buku->judul }}</h6>
-                                            @if($buku->penerbit)
-                                                <small class="text-muted">{{ $buku->penerbit->nama }}</small>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="text-muted">{{ $buku->penulis }}</td>
-                                <td>
-                                    <span class="badge rounded-pill bg-opacity-10 bg-dark text-dark">
-                                        {{ $buku->kategori->nama ?? 'Umum' }}
-                                    </span>
-                                </td>
-                                <td class="text-muted">{{ $buku->prodi->nama ?? '-' }}</td>
-                                <td class="text-center text-muted">{{ $buku->tahun_terbit }}</td>
-                                <td class="text-center">
-                                    <span class="badge rounded-pill bg-opacity-10 {{ $buku->total_peminjaman > 0 ? 'bg-success text-success' : 'bg-secondary text-secondary' }}">
-                                        {{ $buku->total_peminjaman }}x
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    @if($buku->jumlah > 0)
-                                        <span class="badge rounded-pill bg-opacity-10 bg-primary text-primary">
-                                            <i class="fas fa-check-circle me-1"></i> Tersedia
-                                        </span>
-                                    @else
-                                        <span class="badge rounded-pill bg-opacity-10 bg-danger text-danger">
-                                            <i class="fas fa-times-circle me-1"></i> Habis
-                                        </span>
-                                    @endif
-                                </td>
-                                {{-- <td class="pe-4 text-end">
-                                    <div class="d-flex gap-2 justify-content-end">
-                                        <a href="#" class="btn btn-sm btn-outline-dark rounded-circle" title="Detail" data-bs-toggle="tooltip">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        @if($buku->jumlah > 0)
-                                            <a href="#" class="btn btn-sm btn-success rounded-circle" title="Pinjam" data-bs-toggle="tooltip">
-                                                <i class="fas fa-book-open"></i>
-                                            </a>
-                                        @endif
-                                    </div>
-                                </td> --}}
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-                
-                <!-- Pagination and Results Info -->
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center p-4 border-top">
-                    <div class="text-muted mb-3 mb-md-0">
-                        Menampilkan <span class="fw-bold">{{ $bukus->firstItem() }}</span> sampai <span class="fw-bold">{{ $bukus->lastItem() }}</span> 
-                        dari <span class="fw-bold">{{ $bukus->total() }}</span> buku
+        <!-- Results Section -->
+        <div class="row g-4">
+            @forelse($bukus as $buku)
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
+                    <div class="card-img-container position-relative">
+                        @if($buku->gambar_sampul)
+                            <img src="{{ asset('storage/' . $buku->gambar_sampul) }}" 
+                                 class="card-img-top" 
+                                 alt="{{ $buku->judul }}">
+                        @else
+                            <div class="no-cover d-flex align-items-center justify-content-center">
+                                <i class="fas fa-book text-muted"></i>
+                            </div>
+                        @endif
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-success rounded-pill">
+                                <i class="fas fa-book-open me-1"></i> {{ $buku->total_peminjaman }}
+                            </span>
+                        </div>
                     </div>
-                    <div>
-                        {{ $bukus->withQueryString()->onEachSide(1)->links() }}
+                    
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ $buku->judul }}</h5>
+                        <p class="card-text text-muted mb-2">{{ $buku->penulis }}</p>
+                        
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary">
+                                {{ $buku->kategori->nama ?? 'Umum' }}
+                            </span>
+                            @if($buku->prodi)
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                {{ $buku->prodi->nama }}
+                            </span>
+                            @endif
+                            <span class="badge bg-info bg-opacity-10 text-info">
+                                {{ $buku->tahun_terbit }}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge {{ $buku->jumlah > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger' }}">
+                                <i class="fas {{ $buku->jumlah > 0 ? 'fa-check' : 'fa-times' }} me-1"></i>
+                                {{ $buku->jumlah > 0 ? 'Tersedia' : 'Habis' }}
+                            </span>
+                            
+                            <a href="{{ route('detail_buku', ['id' => $buku->id]) }}" 
+                               class="btn btn-sm btn-outline-primary rounded-circle">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer bg-white border-0 pt-0">
+                        <small class="text-muted d-block text-center">
+                            <i class="fas fa-info-circle me-1"></i> Stok: {{ $buku->jumlah }} buku
+                        </small>
                     </div>
                 </div>
             </div>
+            @empty
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-book-open me-2"></i> Tidak ada buku yang ditemukan
+                </div>
+            </div>
+            @endforelse
         </div>
+
+        <!-- Pagination -->
+        @if($bukus->hasPages())
+        <div class="d-flex justify-content-center mt-4">
+            {{ $bukus->withQueryString()->links() }}
+        </div>
+        @endif
     </div>
 </section>
 
-{{-- @push('styles') --}}
 <style>
     .text-gradient {
         background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
@@ -158,12 +131,33 @@
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
-    .table-hover tbody tr:hover {
-        background-color: rgba(59, 130, 246, 0.05);
+    
+    .card-img-container {
+        height: 200px;
+        overflow: hidden;
     }
-    .badge.bg-opacity-10 {
-        padding: 0.35em 0.65em;
+    
+    .card-img-top {
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
     }
+    
+    .no-cover {
+        height: 100%;
+        background-color: #f8f9fa;
+        color: #6c757d;
+        font-size: 3rem;
+    }
+    
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    
+    .hover-shadow:hover .card-img-top {
+        transform: scale(1.05);
+    }
+    
     .page-link {
         border-radius: 50% !important;
         width: 40px;
@@ -172,23 +166,40 @@
         align-items: center;
         justify-content: center;
         margin: 0 3px;
-        border: none;
     }
+    
     .page-item.active .page-link {
         background-color: #3b82f6;
+        border-color: #3b82f6;
+    }
+    
+    .text-truncate {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 </style>
-{{-- @endpush --}}
 
 @push('scripts')
 <script>
-    // Enable tooltips
     document.addEventListener('DOMContentLoaded', function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        // Enable tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    })
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Smooth scroll to top when paginating
+        document.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
 </script>
 @endpush
 @endsection
