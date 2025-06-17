@@ -19,7 +19,11 @@ use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\UsersControllers;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/',[LandingController::class,'index']);
+Route::get('/',[LandingController::class,'index'])->name('home');
+Route::get('/prosedur', [LandingController::class, 'prosedur'])->name('prosedur');
+Route::get('/jam-pelayanan', [LandingController::class, 'jamLayanan'])->name('jamLayanan');
+Route::get('/layanan', [LandingController::class, 'layanan'])->name('layanan');
+Route::get('/tentang', [LandingController::class, 'about'])->name('about');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('loginProses');
 
