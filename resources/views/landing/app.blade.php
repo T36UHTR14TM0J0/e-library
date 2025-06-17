@@ -375,8 +375,8 @@
 
     @yield('content')
 
-    <hr class="mt-5" style="background-color: rgba(255, 255, 255, 0.1);">
-            <div class="row bg-dark p-2">
+    {{-- <hr class="mt-5" style="background-color: rgba(255, 255, 255, 0.1);"> --}}
+            <div class="row p-2" style="background-color: rgba(26, 26, 46, 0.9) !important;">
                 <div class="col-md-6 text-center text-md-start text-white">
                     <p class="mb-0">&copy; 2023 E-Library. All rights reserved.</p>
                 </div>
