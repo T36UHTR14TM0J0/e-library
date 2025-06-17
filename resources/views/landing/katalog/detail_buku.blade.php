@@ -4,7 +4,7 @@
 <section class="py-5">
     <div class="container">
         <!-- Header Section -->
-        <div class="text-center mb-5">
+        <div class="text-center mb-5 mt-5">
             <h1 class="display-5 fw-bold text-gradient">Detail Buku</h1>
             <p class="lead text-muted">Informasi lengkap tentang buku fisik</p>
         </div>
