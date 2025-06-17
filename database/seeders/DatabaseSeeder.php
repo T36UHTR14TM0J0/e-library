@@ -18,13 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         // Prosedur Kunjungan
         Prosedur::create([
-            'kode' => 1,
+            'urut' => 1,
             'judul' => 'Pendaftaran Anggota',
             'deskripsi' => 'Daftar sebagai anggota melalui website atau langsung di perpustakaan'
         ]);
         
         Prosedur::create([
-            'kode' => 2,
+            'urut' => 2,
             'judul' => 'Verifikasi Data',
             'deskripsi' => 'Verifikasi data diri dan email Anda'
         ]);

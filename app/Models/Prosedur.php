@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Prosedur extends Model
 {
-    protected $fillable = ['kode', 'judul', 'deskripsi'];
+    protected $fillable = ['urut', 'judul', 'deskripsi'];
     
     public static function ordered()
     {
-        return self::orderBy('kode')->get();
+        return self::orderBy('urut')->get();
     }
 }

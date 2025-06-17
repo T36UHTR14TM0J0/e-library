@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('prosedurs', function (Blueprint $table) {
             $table->id();
-            $table->integer('kode');
+            $table->integer('urut');
             $table->string('judul');
             $table->text('deskripsi');
             $table->timestamps();
