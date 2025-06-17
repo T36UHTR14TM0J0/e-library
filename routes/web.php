@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BukuControllers;
 use App\Http\Controllers\DashboardController;
@@ -99,6 +100,7 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('layanan', LayananController::class);
             Route::resource('jam_layanan', JamLayananController::class);
             Route::resource('prosedur', ProsedurController::class);
+            Route::resource('logs', ActivityLogController::class)->only(['index', 'show']);
         });
         
         // Master Data routes

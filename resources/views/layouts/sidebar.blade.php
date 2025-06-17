@@ -123,6 +123,9 @@
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('pengaturan/users*') ? 'active' : '' }}" href="{{ route('users.index') }}">Users</a>
           </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('pengaturan/logs*') ? 'active' : '' }}" href="{{ route('logs.index') }}">Logs Activity</a>
+          </li>
         </ul>
       </div>
     </li>

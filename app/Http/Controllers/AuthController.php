@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\LogsActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+
+    use LogsActivity; 
     // Show login form
     public function showLoginForm()
     {
@@ -34,7 +37,14 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
+            $user = Auth::user();    
+            // Membuat log
+            $this->logActivity(
+                'Login sistem :' . $user->nama_lengkap,
+                $user,
+                $request->all()
+            );
+        
             
             return redirect()->intended('/dashboard')->with('success', 'Login berhasil');
         }
@@ -45,10 +55,20 @@ class AuthController extends Controller
   
 
     // Handle logout
-    public function logout(Request $request)
-    {
+   public function logout(Request $request)
+{
+        // Dapatkan user sebelum logout
+        $user = Auth::user();
+        
+        // Log activity
+        $this->logActivity(
+            'Logout sistem: ' . $user->nama_lengkap,
+            $user);
+        
+        // Proses logout
         Auth::logout();
-
+        
+        // Invalidate session
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
