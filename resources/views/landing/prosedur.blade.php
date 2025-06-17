@@ -13,7 +13,7 @@
                 <ul class="prosedur-list">
                     @foreach($prosedurs as $prosedur)
                     <li>
-                        <div class="prosedur-number">{{ $prosedur->kode }}</div>
+                        <div class="prosedur-number">{{ $prosedur->urut }}</div>
                         <div>
                             <h5>{{ $prosedur->judul }}</h5>
                             <p class="mb-0">{{ $prosedur->deskripsi }}</p>
