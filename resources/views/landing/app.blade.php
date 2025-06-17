@@ -366,7 +366,7 @@
                         <a class="nav-link" href="{{ route('about') }}">Tentang</a>
                     </li>
                     <li class="nav-item ms-lg-3">
-                        <a class="btn btn-outline-light rounded-pill" href="#login">Login</a>
+                        <a class="btn btn-outline-light rounded-pill" href="{{ route('loginProses') }}">Login</a>
                     </li>
                 </ul>
             </div>
