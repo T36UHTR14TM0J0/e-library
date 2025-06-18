@@ -131,23 +131,37 @@ class PeminjamanControllers extends Controller
     {
         $peminjaman = Peminjaman::with('buku')->findOrFail($id);
         
-        if (!in_array($peminjaman->status, ['dipinjam', 'terlambat'])) {
-            return back()->with('error', 'Hanya bisa mengembalikan buku yang berstatus dipinjam atau terlambat');
+        // Validasi status
+        if ($peminjaman->status !== 'dipinjam') {
+            return back()->with('error', 'Hanya bisa mengembalikan buku yang berstatus dipinjam');
         }
 
+        // Hitung denda jika tanggal pengembalian melebihi jatuh tempo
+        $denda = 0;
+        $tanggalKembali = now();
+        $jatuhTempo = $peminjaman->tanggal_jatuh_tempo;
+        
+        if ($tanggalKembali->gt($jatuhTempo)) {
+            $hariTerlambat = $tanggalKembali->diffInDays($jatuhTempo);
+            $denda = $hariTerlambat * 1000; // Rp 1000 per hari keterlambatan
+        }
+
+        // Update data peminjaman
         $updateData = [
             'status'          => 'dikembalikan',
-            'tanggal_kembali' => now(),
+            'tanggal_kembali' => $tanggalKembali,
             'catatan_kembali' => $request->return_notes,
+            'denda'           => $denda,
         ];
 
-        $updateData['denda'] = now()->isPast($peminjaman->tanggal_jatuh_tempo) 
-        ? now()->diffInDays($peminjaman->tanggal_jatuh_tempo) * 1000 
-        : 0;
+        // Kembalikan stok buku
         $peminjaman->buku->increment('jumlah');
+
+        // Simpan perubahan
         $peminjaman->update($updateData);
-    
-        return back()->with('success', 'Pengembalian buku telah dikonfirmasi');
+
+        return back()->with('success', 'Pengembalian buku berhasil dikonfirmasi. ' . 
+            ($denda > 0 ? "Denda yang harus dibayar: Rp " . number_format($denda, 0, ',', '.') : ''));
     }
 
     public function cancel($id)

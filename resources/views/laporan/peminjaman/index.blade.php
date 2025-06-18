@@ -119,8 +119,13 @@
                                     {{ ucfirst($peminjaman->status) }}
                                 </span>
                             </td>
-                            <td class="text-center @if($peminjaman->denda > 0) text-danger fw-bold @endif">
+                            <td class="text-center @if($peminjaman->denda != 0.00) text-danger fw-bold @else text-success @endif">
                                 Rp {{ number_format($peminjaman->denda, 0, ',', '.') }}
+                                @if($peminjaman->denda != 0.00)
+                                    <span class="badge bg-danger ms-1">Denda</span>
+                                @else
+                                    <span class="badge bg-success ms-1">Tepat Waktu</span>
+                                @endif
                             </td>
                             <td class="text-center">{{ $peminjaman->disetujui ? $peminjaman->disetujui->username : '-' }}</td>
                         </tr>
