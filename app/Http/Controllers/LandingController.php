@@ -25,6 +25,9 @@ class LandingController extends Controller
      */
     public function index()
     {
+         if (auth()->check()) {
+            return redirect()->route('dashboard'); // atau route home/beranda Anda
+        }
         return view('landing.home');
     }
 
