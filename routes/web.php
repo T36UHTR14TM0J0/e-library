@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuControllers;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EbookControllers;
 use App\Http\Controllers\EbookReadingControllers;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\JamLayananController;
 use App\Http\Controllers\KatalogBukuControllers;
 use App\Http\Controllers\KatalogEbookControllers;
@@ -52,6 +53,8 @@ Route::post('/login', [AuthController::class, 'login'])->name('loginProses');
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function() {
+    Route::get('/histori', [HistoryController::class, 'index'])->name('histori.index');
+    Route::get('/histori/filter', [HistoryController::class, 'filter'])->name('histori.filter');
     // Profile routes
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileControllers::class, 'show'])->name('profile.show');

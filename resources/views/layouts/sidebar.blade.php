@@ -35,6 +35,13 @@
         <span class="menu-title">Peminjaman</span>
       </a>
     </li>
+
+    <li class="nav-item">
+      <a class="nav-link {{ request()->is('histori*') ? 'active' : '' }}" href="{{ route('histori.index') }}">
+          <i class="icon-clock menu-icon"></i>
+          <span class="menu-title">Histori</span>
+      </a>
+  </li>
     
     @if (auth()->user()->isAdmin())
     <li class="nav-item">
