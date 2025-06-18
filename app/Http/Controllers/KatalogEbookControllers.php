@@ -12,40 +12,47 @@ class KatalogEbookControllers extends Controller
     public function index()
     {
         $query = Ebook::query()
-            ->with(['kategori', 'prodi', 'pengunggah'])
-            ->latest();
+            ->with(['kategori', 'prodi', 'pengunggah', 'penerbit'])
+            ->withCount(['readings as total_reads']);
 
-        // Filter berdasarkan judul
-        if (request()->has('judul') && request('judul') != '') {
-            $query->where('judul', 'like', '%' . request('judul') . '%');
+        // Search filter
+        if ($search = request('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', '%'.$search.'%')
+                ->orWhere('penulis', 'like', '%'.$search.'%')
+                ->orWhereHas('penerbit', function($q) use ($search) {
+                    $q->where('nama', 'like', '%'.$search.'%');
+                })
+                ->orWhereHas('kategori', function($q) use ($search) {
+                    $q->where('nama', 'like', '%'.$search.'%');
+                })
+                ->orWhereHas('prodi', function($q) use ($search) {
+                    $q->where('nama', 'like', '%'.$search.'%');
+                });
+            });
         }
 
-        // Filter berdasarkan penulis
-        if (request()->has('penulis') && request('penulis') != '') {
-            $query->where('penulis', 'like', '%' . request('penulis') . '%');
+        // Sort options
+        switch (request('sort')) {
+                
+            case 'sering_dibaca':
+                $query->orderBy('total_reads', 'desc');
+                break;
+                
+            case 'terbaru':
+            default:
+                $query->latest();
+                break;
         }
 
-        // Filter berdasarkan kategori
-        if (request()->has('kategori_id') && request('kategori_id') != '') {
-            $query->where('kategori_id', request('kategori_id'));
-        }
-
-        // Filter berdasarkan prodi
-        if (request()->has('prodi_id') && request('prodi_id') != '') {
-            $query->where('prodi_id', request('prodi_id'));
-        }
-
-        // Filter berdasarkan izin unduh
-        if (request()->has('izin_unduh') && request('izin_unduh') != '') {
+        // Filter download permission
+        if (request()->filled('izin_unduh')) {
             $query->where('izin_unduh', request('izin_unduh'));
         }
 
         $ebooks = $query->paginate(12);
 
-        $kategoris = Kategori::orderBy('nama')->get();
-        $prodis = Prodi::orderBy('nama')->get();
-
-        return view('katalog.ebook.index', compact('ebooks', 'kategoris', 'prodis'));
+        return view('katalog.ebook.index', compact('ebooks'));
     }
 
     public function show($id)

@@ -9,7 +9,7 @@
                 <div class="card-header bg-dark text-white border-bottom py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter Buku</h5>
-                        @if(request()->hasAny(['judul', 'penulis', 'kategori_id', 'prodi_id']))
+                        @if(request()->hasAny(['search', 'sort']))
                         <a href="{{ route('KatalogBuku.index') }}" class="btn btn-sm btn-light">
                             <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
                         </a>
@@ -19,45 +19,27 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('KatalogBuku.index') }}">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label for="judul" class="form-label">Judul Buku</label>
-                                <input type="text" name="judul" id="judul" class="form-control form-control-sm" 
-                                       placeholder="Cari berdasarkan judul" value="{{ request('judul') }}">
+                            <div class="col-md-8">
+                                <label for="search" class="form-label">Cari Buku</label>
+                                    <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                           placeholder="Judul, penulis,kategori,prodi, atau penerbit..." 
+                                           value="{{ request('search') }}">
+                                <small class="text-muted">Anda bisa mencari berdasarkan judul, penulis, kategori, prodi, atau penerbit buku</small>
                             </div>
                             
                             <div class="col-md-4">
-                                <label for="penulis" class="form-label">Penulis</label>
-                                <input type="text" name="penulis" id="penulis" class="form-control form-control-sm" 
-                                       placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <label for="kategori_id" class="form-label">Kategori</label>
-                                <select name="kategori_id" id="kategori_id" class="form-select form-select-sm">
-                                    <option value="">Semua Kategori</option>
-                                    @foreach($kategoris as $kategori)
-                                    <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                        {{ $kategori->nama }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <label for="prodi_id" class="form-label">Program Studi</label>
-                                <select name="prodi_id" id="prodi_id" class="form-select form-select-sm">
-                                    <option value="">Semua Prodi</option>
-                                    @foreach($prodis as $prodi)
-                                    <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
-                                        {{ $prodi->nama }}
-                                    </option>
-                                    @endforeach
+                                <label for="sort" class="form-label">Urutkan</label>
+                                <select name="sort" id="sort" class="form-select">
+                                    <option value="">Default</option>
+                                    <option value="favorit" {{ request('sort') == 'favorit' ? 'selected' : '' }}>Paling Favorit</option>
+                                    <option value="sering_dipinjam" {{ request('sort') == 'sering_dipinjam' ? 'selected' : '' }}>Sering Dipinjam</option>
+                                    <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                                 </select>
                             </div>
                         </div>
                         
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="btn btn-sm btn-dark">
+                            <button type="submit" class="btn btn-dark">
                                 <i class="bi bi-funnel me-1"></i> Terapkan Filter
                             </button>
                         </div>
@@ -70,7 +52,8 @@
             @if($bukus->isEmpty())
             <div class="text-center py-4">
                 <img src="{{ asset('assets/images/default-cover.png') }}" alt="No data" style="height: 150px;">
-                <h5 class="mt-3">Tidak ada Buku tersedia</h5>
+                <h5 class="mt-3">Tidak ada buku yang sesuai dengan kriteria pencarian</h5>
+                <p class="text-muted">Coba gunakan kata kunci atau filter yang berbeda</p>
             </div>
             @else
             <div class="row g-4 px-3">
@@ -93,9 +76,11 @@
                                 <span class="badge bg-gradient-danger">
                                     {{ $buku->prodi->nama ?? '-' }}
                                 </span>
-                                <span class="badge bg-info">
-                                    Tersedia : {{ $buku->jumlahTersedia() }}
-                                </span>
+                                <div>
+                                    <span class="badge bg-info me-1">
+                                        Tersedia: {{ $buku->jumlahTersedia() }}
+                                    </span>
+                                </div>
                             </div>
                             <h5 class="font-weight-normal">
                                 <a href="#" class="text-dark">{{ Str::limit($buku->judul, 50) }}</a>
@@ -190,38 +175,6 @@
     </div>
 </div>
 
-@push('styles')
-<style>
-    .modal-fullscreen {
-        min-width: 100%;
-    }
-    .modal-xl {
-        max-width: 95%;
-    }
-    .modal-body iframe {
-        border: none;
-    }
-    .card-hover:hover {
-        transform: translateY(-5px);
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-    .colored-shadow {
-        position: absolute;
-        top: 12px;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        filter: blur(12px);
-        z-index: -1;
-        opacity: 0.5;
-    }
-</style>
-@endpush
-
 @push('scripts')
 <script>
     // Calculate due date based on user role when modal is shown
@@ -263,12 +216,6 @@
         return `${year}-${month}-${day}`;
     }
 
-    // Initialize due date when page loads (for each modal)
-    document.addEventListener('DOMContentLoaded', function() {
-        @foreach ($bukus as $buku)
-            calculateDueDate({{ $buku->id }});
-        @endforeach
-    });
 </script>
 @endpush
 @endsection

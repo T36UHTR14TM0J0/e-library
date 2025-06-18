@@ -9,7 +9,7 @@
                 <div class="card-header bg-dark text-white border-bottom py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter E-Book</h5>
-                        @if(request()->hasAny(['judul', 'penulis', 'kategori_id', 'prodi_id', 'izin_unduh']))
+                        @if(request()->hasAny(['search', 'sort', 'izin_unduh']))
                         <a href="{{ route('KatalogEbook.index') }}" class="btn btn-sm btn-light">
                             <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
                         </a>
@@ -19,43 +19,24 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('KatalogEbook.index') }}">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label for="judul" class="form-label">Judul E-Book</label>
-                                <input type="text" name="judul" id="judul" class="form-control form-control-sm" 
-                                       placeholder="Cari berdasarkan judul" value="{{ request('judul') }}">
+                             <div class="col-md-6">
+                                <label for="search" class="form-label">Cari E-Book</label>
+                                    <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                           placeholder="Judul, penulis,kategori,prodi, atau penerbit..." 
+                                           value="{{ request('search') }}">
+                                <small class="text-muted">Anda bisa mencari berdasarkan judul, penulis, kategori, prodi, atau penerbit ebook</small>
                             </div>
-                            
+
                             <div class="col-md-4">
-                                <label for="penulis" class="form-label">Penulis</label>
-                                <input type="text" name="penulis" id="penulis" class="form-control form-control-sm" 
-                                       placeholder="Cari berdasarkan penulis" value="{{ request('penulis') }}">
-                            </div>
-                            
-                            <div class="col-md-4">
-                                <label for="kategori_id" class="form-label">Kategori</label>
-                                <select name="kategori_id" id="kategori_id" class="form-select form-select-sm">
-                                    <option value="">Semua Kategori</option>
-                                    @foreach($kategoris as $kategori)
-                                    <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                        {{ $kategori->nama }}
-                                    </option>
-                                    @endforeach
+                                <label for="sort" class="form-label">Urutkan</label>
+                                <select name="sort" id="sort" class="form-select">
+                                    <option value="">Default</option>
+                                    <option value="sering_dibaca" {{ request('sort') == 'sering_dibaca' ? 'selected' : '' }}>Sering Dibaca</option>
+                                    <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                                 </select>
                             </div>
                             
-                            <div class="col-md-4">
-                                <label for="prodi_id" class="form-label">Program Studi</label>
-                                <select name="prodi_id" id="prodi_id" class="form-select form-select-sm">
-                                    <option value="">Semua Prodi</option>
-                                    @foreach($prodis as $prodi)
-                                    <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
-                                        {{ $prodi->nama }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label for="izin_unduh" class="form-label">Status Unduh</label>
                                 <select name="izin_unduh" id="izin_unduh" class="form-select form-select-sm">
                                     <option value="">Semua Status</option>
