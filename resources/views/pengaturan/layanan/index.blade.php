@@ -101,7 +101,7 @@
                             dari {{ $layanans->total() }} entri
                         </div>
                         <div>
-                            {{ $layanans->links() }}
+                            {{ $layanans->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

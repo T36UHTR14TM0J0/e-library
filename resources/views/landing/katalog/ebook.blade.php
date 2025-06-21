@@ -112,7 +112,7 @@
         <!-- Pagination -->
         @if($ebooks->hasPages())
         <div class="d-flex justify-content-center mt-4">
-            {{ $ebooks->withQueryString()->links() }}
+            {{ $ebooks->withQueryString()->links('vendor.pagination.bootstrap-5') }}
         </div>
         @endif
     </div>

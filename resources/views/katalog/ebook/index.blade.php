@@ -278,7 +278,7 @@
                     Menampilkan {{ $ebooks->firstItem() }} sampai {{ $ebooks->lastItem() }} dari {{ $ebooks->total() }} e-book
                 </div>
                 <div>
-                    {{ $ebooks->links() }}
+                    {{ $ebooks->links('vendor.pagination.bootstrap-5') }}
                 </div>
             </div>
             @endif

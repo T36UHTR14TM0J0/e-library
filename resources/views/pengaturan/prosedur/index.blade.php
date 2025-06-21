@@ -99,7 +99,7 @@
                             dari {{ $prosedurs->total() }} entri
                         </div>
                         <div>
-                            {{ $prosedurs->links() }}
+                            {{ $prosedurs->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

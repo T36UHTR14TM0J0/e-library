@@ -105,7 +105,7 @@
                             dari {{ $jamLayanans->total() }} entri
                         </div>
                         <div>
-                            {{ $jamLayanans->links() }}
+                            {{ $jamLayanans->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

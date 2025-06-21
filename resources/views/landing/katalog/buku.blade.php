@@ -118,7 +118,7 @@
         <!-- Pagination -->
         @if($bukus->hasPages())
         <div class="d-flex justify-content-center mt-4">
-            {{ $bukus->withQueryString()->links() }}
+            {{ $bukus->withQueryString()->links('vendor.pagination.bootstrap-5') }}
         </div>
         @endif
     </div>

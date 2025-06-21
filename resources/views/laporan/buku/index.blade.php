@@ -155,7 +155,7 @@
                     Menampilkan <strong>{{ $buku->firstItem() }}</strong> sampai <strong>{{ $buku->lastItem() }}</strong> dari <strong>{{ $buku->total() }}</strong> entri
                 </div>
                 <div>
-                    {{ $buku->appends(request()->query())->links() }}
+                    {{ $buku->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
                 </div>
             </div>
         </div>

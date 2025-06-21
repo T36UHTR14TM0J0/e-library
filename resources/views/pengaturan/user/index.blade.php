@@ -119,13 +119,13 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="text-muted small">
-                            Menampilkan <strong>{{ $users->firstItem() }}</strong> sampai <strong>{{ $users->lastItem() }}</strong> dari <strong>{{ $users->total() }}</strong> entri
-                        </div>
-                        <div>
-                            {{ $users->links() }}
-                        </div>
+                    <div class="text-muted small">
+                        Menampilkan <strong>{{ $users->firstItem() }}</strong> sampai <strong>{{ $users->lastItem() }}</strong> dari <strong>{{ $users->total() }}</strong> entri
                     </div>
+                    <div>
+                        {{ $users->links('vendor.pagination.bootstrap-5') }}
+                    </div>
+                </div>
                 </div>
             </div>
         </div>

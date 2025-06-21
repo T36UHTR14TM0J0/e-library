@@ -151,7 +151,7 @@
                             Menampilkan {{ $ebooks->firstItem() }} sampai {{ $ebooks->lastItem() }} dari {{ $ebooks->total() }} entri
                         </div>
                         <div>
-                            {{ $ebooks->links() }}
+                            {{ $ebooks->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

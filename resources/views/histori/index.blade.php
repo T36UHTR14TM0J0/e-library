@@ -170,7 +170,7 @@
                             Menampilkan <strong>{{ $peminjamans->firstItem() }}</strong> sampai <strong>{{ $peminjamans->lastItem() }}</strong> dari <strong>{{ $peminjamans->total() }}</strong> entri
                         </div>
                         <div>
-                            {{ $peminjamans->appends(request()->query())->links() }}
+                            {{ $peminjamans->appends(request()->query())->links('vendor.pagination.bootstrap-5''vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
             @if($ebookReadings->hasPages())
             <div class="mt-4">
                 <div class="d-flex justify-content-center">
-                    {{ $ebookReadings->appends(request()->query())->links() }}
+                    {{ $ebookReadings->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
                 </div>
             </div>
             @endif

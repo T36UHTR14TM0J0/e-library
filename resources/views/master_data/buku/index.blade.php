@@ -137,7 +137,7 @@
                             Menampilkan {{ $bukus->firstItem() }} sampai {{ $bukus->lastItem() }} dari {{ $bukus->total() }} entri
                         </div>
                         <div>
-                            {{ $bukus->links() }}
+                            {{ $bukus->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

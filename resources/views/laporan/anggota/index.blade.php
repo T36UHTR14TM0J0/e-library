@@ -150,7 +150,7 @@
                     Menampilkan <strong>{{ $users->firstItem() }}</strong> sampai <strong>{{ $users->lastItem() }}</strong> dari <strong>{{ $users->total() }}</strong> entri
                 </div>
                 <div>
-                    {{ $users->appends(request()->query())->links() }}
+                    {{ $users->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
                 </div>
             </div>
         </div>

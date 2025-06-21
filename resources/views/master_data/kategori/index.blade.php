@@ -94,7 +94,7 @@
                       Menampilkan {{ $kategori->firstItem() }} sampai {{ $kategori->lastItem() }} dari {{ $kategori->total() }} entri
                   </div>
                   <div>
-                      {{ $kategori->links() }}
+                      {{ $kategori->links('vendor.pagination.bootstrap-5') }}
                   </div>
               </div>
           </div>

@@ -82,7 +82,7 @@
                             dari {{ $logs->total() }} entri
                         </div>
                         <div>
-                            {{ $logs->withQueryString()->links() }}
+                            {{ $logs->withQueryString()->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

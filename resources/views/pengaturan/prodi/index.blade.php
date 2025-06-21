@@ -105,8 +105,9 @@
                             dari <strong>{{ $prodi->total() }}</strong> entri
                         </div>
                         <div>
-                            {{ $prodi->links() }}
+                            {{ $prodi->links('vendor.pagination.bootstrap-5') }}
                         </div>
+                        
                     </div>
                 </div>
             </div>
