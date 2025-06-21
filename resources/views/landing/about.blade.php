@@ -59,6 +59,22 @@
                     <i class="fas fa-phone-alt fa-2x text-primary mb-3"></i>
                     <h5>Kontak</h5>
                     <p>Telp: (022) 1234567<br>Email: info@elibrary.com</p>
+                    
+                    <!-- Social Media Icons -->
+                    <div class="mt-3">
+                        <h5 class="mb-3">Media Sosial</h5>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="https://www.facebook.com/sekolahtinggiteknologipayakumbuh" target="_blank" class="text-decoration-none">
+                                <i class="fab fa-facebook-f fa-2x text-primary"></i>
+                            </a>
+                            <a href="https://www.instagram.com/stt_payakumbuh_official/" target="_blank" class="text-decoration-none">
+                                <i class="fab fa-instagram fa-2x text-danger"></i>
+                            </a>
+                            <a href="https://www.youtube.com/@sttpayakumbuh" target="_blank" class="text-decoration-none">
+                                <i class="fab fa-youtube fa-2x text-danger"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
