@@ -70,7 +70,7 @@
     </li>
     @endif
         
-    @if (auth()->user()->isAdmin() || auth()->user()->isDosen())
+    @if (auth()->user()->isAdmin() || auth()->user()->isDosen() || auth()->user()->isMahasiswa())
     <li class="nav-item">
       <a class="nav-link {{ request()->is('MasterData/kategori*') || request()->is('MasterData/buku*') || request()->is('MasterData/ebook*') ? 'active' : '' }}" 
          data-bs-toggle="collapse" 
