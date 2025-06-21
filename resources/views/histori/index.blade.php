@@ -170,7 +170,7 @@
                             Menampilkan <strong>{{ $peminjamans->firstItem() }}</strong> sampai <strong>{{ $peminjamans->lastItem() }}</strong> dari <strong>{{ $peminjamans->total() }}</strong> entri
                         </div>
                         <div>
-                            {{ $peminjamans->appends(request()->query())->links('vendor.pagination.bootstrap-5''vendor.pagination.bootstrap-5') }}
+                            {{ $peminjamans->appends(request()->query())->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>
