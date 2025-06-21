@@ -74,4 +74,79 @@ class AuthController extends Controller
 
         return redirect('/login')->with('success', 'Berhasil keluar sistem');
     }
+
+
+
+    /**
+     * Show forgot password form
+     */
+    public function showForgotPasswordForm()
+    {
+        return view('auth.forgot_password');
+    }
+
+    /**
+     * Handle forgot password request
+     */
+    // public function sendResetLinkEmail(Request $request)
+    // {
+    //     $request->validate([
+    //         'email'             => 'required|email',
+    //     ], [
+    //         'email.required'    => 'Alamat email wajib diisi',
+    //         'email.email'       => 'Format alamat email tidak valid',
+    //     ]);
+
+    //     $status = Password::sendResetLink(
+    //         $request->only('email')
+    //     );
+
+    //     return $status === Password::RESET_LINK_SENT
+    //         ? back()->with("success","Berhasil mengirim link reset password")
+    //         : back()->withErrors(['email' => __($status)]);
+    // }
+
+    // /**
+    //  * Show password reset form
+    //  */
+    // public function showResetPasswordForm($token)
+    // {
+    //     $email = $_GET['email'];
+    //     return view('auth.reset_password', ['token' => $token,'email' => $email]);
+    // }
+
+    // /**
+    //  * Handle password reset request
+    //  */
+    // public function resetPassword(Request $request)
+    // {
+    //     $request->validate([
+    //         'token'             => 'required',
+    //         'email'             => 'required|email',
+    //         'password'          => ['required', 'confirmed', Rules\Password::min(8)],
+    //     ], [
+    //         'token.required'    => 'Token reset password wajib ada',
+    //         'email.required'    => 'Alamat email wajib diisi',
+    //         'email.email'       => 'Format alamat email tidak valid',
+    //         'password.required' => 'Password baru wajib diisi',
+    //         'password.confirmed'=> 'Konfirmasi password tidak cocok',
+    //         'password.min'      => 'Password minimal harus 8 karakter',
+    //     ]);
+    //     $status = Password::reset(
+    //         $request->only('email', 'password', 'password_confirmation', 'token'),
+    //         function ($user, $password) {
+    //             $user->forceFill([
+    //                 'password' => bcrypt($password),
+    //                 'remember_token' => Str::random(60),
+    //             ])->save();
+
+    //             event(new PasswordReset($user));
+    //         }
+    //     );
+
+    //     return $status === Password::PASSWORD_RESET
+    //         ? redirect()->route('login')->with('success', "Berhasil membuat password baru")
+    //         : back()->withErrors(['email' => [__($status)]]);
+    // }
+
 }
