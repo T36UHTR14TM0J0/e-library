@@ -4,7 +4,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>E-library | Login</title>
+    <title>E-library | Reset Password</title>
     
     <!-- Google Fonts - Modern Font Combination -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,6 @@
     
     <!-- Custom Style -->
     <style>
-            
       body {
         font-family: 'Poppins', sans-serif;
       }
@@ -51,7 +50,6 @@
         margin-bottom: 2rem;
       }
       
-     
       .invalid-feedback {
         font-size: 0.85rem;
         color: #dc3545;
@@ -62,6 +60,10 @@
         font-size: 0.9rem;
       }
       
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+      
       /* Animation for form */
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
@@ -70,6 +72,18 @@
       
       .auth-form-light {
         animation: fadeIn 0.6s ease-out;
+      }
+      
+      .back-to-login {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.9rem;
+      }
+      
+      .password-strength {
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: #6c757d;
       }
       
       /* Responsive adjustments */
@@ -93,38 +107,51 @@
               <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                 <div class="brand-logo">
                   <h2 class="text-center text-primary">E-library</h2>
-                  <h4 class="font-weight-light text-center">Halaman Login</h4>
+                  <h4 class="font-weight-light text-center">Buat Password Baru</h4>
                 </div>
-              
-                @if(session('error'))
-                  <div class="alert alert-danger">
-                    {{ session('error') }}
+                
+                @if (session('status'))
+                  <div class="alert alert-success" role="alert">
+                    {{ session('status') }}
                   </div>
                 @endif
                 
-                <form class="pt-3" method="POST" action="{{ route('loginProses') }}">
+                <form class="pt-3" method="POST" action="{{ route('password.update') }}">
                   @csrf
+                  
+                  <input type="hidden" name="token" value="{{ $token }}">
+                  
                   <div class="form-group">
-                    <input type="text" class="form-control form-control-lg @error('username') is-invalid @enderror" 
-                           id="username" name="username" placeholder="Username" value="{{ old('username') }}">
-                    @error('username')
+                    <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" 
+                           id="email" name="email" placeholder="Email" value="{{ $email ?? old('email') }}" required autofocus>
+                    @error('email')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
+                  
                   <div class="form-group">
                     <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 
-                           id="password" name="password" placeholder="Password">
+                           id="password" name="password" placeholder="Password Baru" required>
                     @error('password')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                    <div class="password-strength">Minimal 8 karakter</div>
                   </div>
+                  
+                  <div class="form-group">
+                    <input type="password" class="form-control form-control-lg" 
+                           id="password-confirm" name="password_confirmation" placeholder="Konfirmasi Password Baru" required>
+                  </div>
+                  
                   <div class="mt-3 d-grid gap-2">
-                    <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">Login</button>
+                    <button type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn">
+                      Reset Password
+                    </button>
                   </div>
-                  <br>
-                  <center>
-                    <a class="text-center" href="{{ route('lupa_password') }}">Lupa password</a>
-                  </center>
+                  
+                  <div class="back-to-login">
+                    <a href="{{ route('login') }}" class="text-primary">Kembali ke halaman login</a>
+                  </div>
                 </form>
               </div>
             </div>
@@ -166,33 +193,36 @@
           });
       }
 
-      function confirmDelete(userId) {
-          Swal.fire({
-              title: 'Apakah Anda yakin?',
-              text: "Anda tidak akan dapat mengembalikan ini!",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#3085d6',
-              confirmButtonText: 'Ya, hapus!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  document.getElementById('delete-form-' + userId).submit();
-              }
-          });
-      }
-
       @if(session('success'))
       document.addEventListener('DOMContentLoaded', function() {
           showSuccessAlert("{{ session('success') }}");
       });
       @endif
 
-      @if(session('error'))
+      @if($errors->any())
       document.addEventListener('DOMContentLoaded', function() {
-          showErrorAlert("{{ session('error') }}");
+          @foreach ($errors->all() as $error)
+              showErrorAlert("{{ $error }}");
+          @endforeach
       });
       @endif
+
+      // Password strength indicator
+      document.getElementById('password').addEventListener('input', function() {
+          const password = this.value;
+          const strengthText = document.querySelector('.password-strength');
+          
+          if (password.length === 0) {
+              strengthText.textContent = 'Minimal 8 karakter';
+              strengthText.style.color = '#6c757d';
+          } else if (password.length < 8) {
+              strengthText.textContent = 'Password terlalu pendek';
+              strengthText.style.color = '#dc3545';
+          } else {
+              strengthText.textContent = 'Password cukup kuat';
+              strengthText.style.color = '#28a745';
+          }
+      });
     </script>
   </body>
 </html>

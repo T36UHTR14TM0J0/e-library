@@ -24,6 +24,10 @@ use App\Http\Controllers\ProsedurController;
 use App\Http\Controllers\UsersControllers;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/showForgotPasswordForm', [AuthController::class, 'showForgotPasswordForm'])->name('lupa_password');
+Route::post('/sendResetLinkEmail', [AuthController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 /* 
 |--------------------------------------------------------------------------
 | LANDING PAGE ROUTES
