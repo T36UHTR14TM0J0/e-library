@@ -167,9 +167,9 @@
           });
       }
 
-      @if(session('status'))
+      @if(session('success'))
       document.addEventListener('DOMContentLoaded', function() {
-          showSuccessAlert("{{ session('status') }}");
+          showSuccessAlert("{{ session('success') }}");
       });
       @endif
 

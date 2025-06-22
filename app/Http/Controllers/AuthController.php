@@ -60,7 +60,7 @@ class AuthController extends Controller
 
     // Handle logout
    public function logout(Request $request)
-{
+    {
         // Dapatkan user sebelum logout
         $user = Auth::user();
         
