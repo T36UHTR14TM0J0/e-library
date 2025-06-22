@@ -17,48 +17,18 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('buku.index') }}">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label for="judul" class="form-label">Judul Buku</label>
-                                <input type="text" name="judul" id="judul" class="form-control form-control-sm" 
-                                       placeholder="Masukkan judul buku" value="{{ request('judul') }}">
+                            <div class="col-md-12">
+                                <label for="search" class="form-label">Cari Buku</label>
+                                    <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                           placeholder="Judul, penulis,kategori,prodi, atau penerbit..." 
+                                           value="{{ request('search') }}">
+                                <small class="text-muted">Anda bisa mencari berdasarkan judul, penulis, kategori, prodi, atau penerbit buku</small>
                             </div>
-                            <div class="col-md-4">
-                                <label for="penerbit" class="form-label">Penerbit</label>
-                                <select name="penerbit_id" id="penerbit_id" class="form-select form-select-sm">
-                                    <option value="">Semua Penerbit</option>
-                                    @foreach($penerbits as $penerbit)
-                                        <option value="{{ $penerbit->id }}" {{ request('penerbit_id') == $penerbit->id ? 'selected' : '' }}>
-                                            {{ $penerbit->nama }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="kategori_id" class="form-label">Kategori</label>
-                                <select name="kategori_id" id="kategori_id" class="form-select form-select-sm">
-                                    <option value="">Semua Kategori</option>
-                                    @foreach($kategoris as $kategori)
-                                        <option value="{{ $kategori->id }}" {{ request('kategori_id') == $kategori->id ? 'selected' : '' }}>
-                                            {{ $kategori->nama }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="prodi_id" class="form-label">Program Studi</label>
-                                <select name="prodi_id" id="prodi_id" class="form-select form-select-sm">
-                                    <option value="">Semua Prodi</option>
-                                    @foreach($prodis as $prodi)
-                                        <option value="{{ $prodi->id }}" {{ request('prodi_id') == $prodi->id ? 'selected' : '' }}>
-                                            {{ $prodi->nama }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+    
                         </div>
                         
                         <div class="d-flex justify-content-end mt-4">
-                            @if(request()->has('judul') || request()->has('penulis') || request()->has('kategori_id') || request()->has('prodi_id'))
+                            @if(request()->has('search'))
                             <a href="{{ route('buku.index') }}" class="btn btn-sm btn-outline-secondary me-2">
                                 <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
                             </a>

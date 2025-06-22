@@ -33,16 +33,6 @@ class KatalogBukuControllers extends Controller
         });
     }
 
-    // // Filter kategori
-    // if (request()->has('kategori_id') && request('kategori_id') != '') {
-    //     $query->where('kategori_id', request('kategori_id'));
-    // }
-
-    // // Filter prodi
-    // if (request()->has('prodi_id') && request('prodi_id') != '') {
-    //     $query->where('prodi_id', request('prodi_id'));
-    // }
-
     // Sorting
     if (request()->has('sort')) {
         switch (request('sort')) {

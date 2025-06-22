@@ -14,27 +14,32 @@ class BukuControllers extends Controller
 {
     public function index()
     {
-        $bukus = Buku::with(['kategori', 'prodi','penerbit'])
-            ->when(request('judul'), function($query) {
-                $query->where('judul', 'like', '%'.request('judul').'%');
-            })
-            ->when(request('penerbit_id'), function($query) {
-                $query->where('penerbit_id', 'like', '%'.request('penerbit_id').'%');
-            })
-            ->when(request('kategori_id'), function($query) {
-                $query->where('kategori_id', request('kategori_id'));
-            })
-            ->when(request('prodi_id'), function($query) {
-                $query->where('prodi_id', request('prodi_id'));
-            })
-            ->orderBy(request('sort_by', 'created_at'), request('sort_direction', 'desc'))
-            ->paginate(request('per_page', 10));
+    
+        $query = Buku::query()
+            ->with(['kategori', 'prodi', 'penerbit']);
 
-        $kategoris  = Kategori::all();
-        $prodis     = Prodi::all();
-        $penerbits  = Penerbit::all();
+        // Filter pencarian
+        if (request()->has('search') && request('search') != '') {
+            $searchTerm = request('search');
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('judul', 'like', '%' . $searchTerm . '%')
+                ->orWhere('penulis', 'like', '%' . $searchTerm . '%')
+                ->orWhereHas('penerbit', function($q) use ($searchTerm) {
+                    $q->where('nama', 'like', '%'.$searchTerm.'%');
+                })
+                ->orWhereHas('kategori', function($q) use ($searchTerm) {
+                    $q->where('nama', 'like', '%'.$searchTerm.'%');
+                })
+                ->orWhereHas('prodi', function($q) use ($searchTerm) {
+                    $q->where('nama', 'like', '%'.$searchTerm.'%');
+                });
+            });
+        }
 
-        return view('master_data.buku.index', compact('bukus', 'kategoris', 'prodis','penerbits'));
+        $bukus = $query->paginate(12);
+
+
+        return view('master_data.buku.index', compact('bukus'));
     }
 
     public function create()
