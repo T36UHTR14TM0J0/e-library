@@ -118,9 +118,9 @@ Route::middleware(['auth'])->group(function() {
 
         // Laporan routes
         Route::prefix('laporan')->group(function() {
-            Route::get('/peminjaman', [LaporanPeminjamanController::class, 'index'])->name('laporan.peminjaman');
-            Route::get('/peminjaman/export/pdf', [LaporanPeminjamanController::class, 'exportPDF'])->name('laporan.peminjaman.export.pdf');
-            Route::get('/peminjaman/export/excel', [LaporanPeminjamanController::class, 'exportExcel'])->name('laporan.peminjaman.export.excel');
+            Route::get('/Lap_peminjaman', [LaporanPeminjamanController::class, 'index'])->name('laporan.peminjaman');
+            Route::get('/Lap_peminjaman/export/pdf', [LaporanPeminjamanController::class, 'exportPDF'])->name('laporan.peminjaman.export.pdf');
+            Route::get('/Lap_peminjaman/export/excel', [LaporanPeminjamanController::class, 'exportExcel'])->name('laporan.peminjaman.export.excel');
            
             // Anggota reports
             Route::prefix('anggota')->group(function() {
@@ -131,9 +131,9 @@ Route::middleware(['auth'])->group(function() {
             
             // Buku reports
             Route::prefix('buku')->group(function() {
-                Route::get('/', [LaporanBukuController::class, 'index'])->name('laporan.buku.index');
-                Route::get('/pdf', [LaporanBukuController::class, 'exportPDF'])->name('laporan.buku.export.pdf');
-                Route::get('/excel', [LaporanBukuController::class, 'exportExcel'])->name('laporan.buku.export.excel');
+                Route::get('/Lap_buku', [LaporanBukuController::class, 'index'])->name('laporan.buku.index');
+                Route::get('/Lap_pdf', [LaporanBukuController::class, 'exportPDF'])->name('laporan.buku.export.pdf');
+                Route::get('/Lap_excel', [LaporanBukuController::class, 'exportExcel'])->name('laporan.buku.export.excel');
             });
         });
         
