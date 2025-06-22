@@ -3,6 +3,7 @@
 @section('title', 'Laporan Buku')
 @section('content')
 <div class="container-fluid py-4">
+    <!-- Filter Card -->
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-header bg-dark text-white border-bottom py-3">
             <div class="d-flex justify-content-between align-items-center">
@@ -35,11 +36,12 @@
                             <option value="">Semua Status</option>
                             <option value="tersedia" {{ request('status') == 'tersedia' ? 'selected' : '' }}>Tersedia</option>
                             <option value="habis" {{ request('status') == 'habis' ? 'selected' : '' }}>Habis</option>
+                            <option value="dipinjam" {{ request('status') == 'dipinjam' ? 'selected' : '' }}>Sedang Dipinjam</option>
                         </select>
                     </div>
                     
                     <div class="col-md-4">
-                        <label for="search" class="form-label">Cari (Judul/ISBN)</label>
+                        <label for="search" class="form-label">Cari (Judul/Penulis/ISBN)</label>
                         <input type="text" name="search" id="search" class="form-control form-control-sm" 
                                value="{{ request('search') }}" placeholder="Kata kunci...">
                     </div>
@@ -60,7 +62,63 @@
         </div>
     </div>
     
-    <div class="card shadow-sm">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Total Collection -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-collection text-primary fs-4"></i>
+                    </div>
+                    <h3 class="mb-1">{{ $totalKoleksi }}</h3>
+                    <p class="text-muted mb-0">Total Koleksi Buku</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Available Books -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-check-circle text-success fs-4"></i>
+                    </div>
+                    <h3 class="mb-1">{{ $totalTersedia }}</h3>
+                    <p class="text-muted mb-0">Buku Tersedia</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Borrowed Books -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-arrow-up-circle text-warning fs-4"></i>
+                    </div>
+                    <h3 class="mb-1">{{ $totalDipinjam }}</h3>
+                    <p class="text-muted mb-0">Sedang Dipinjam</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- New Books -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="bi bi-star text-info fs-4"></i>
+                    </div>
+                    <h3 class="mb-1">{{ $bukuBaru }}</h3>
+                    <p class="text-muted mb-0">Buku Baru (30 hari)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Data Table -->
+    <div class="card shadow-sm mb-4">
         <div class="card-header bg-dark text-white border-bottom py-3">
             <h5 class="mb-0"><i class="bi bi-book-half me-2"></i> Data Buku</h5>
         </div>
@@ -82,7 +140,7 @@
                     <tbody>
                         @forelse($buku as $key => $item)
                         <tr class="align-middle">
-                            <td class="text-center">{{ $key + 1 }}</td>
+                            <td class="text-center">{{ $buku->firstItem() + $key }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     @if($item->gambar_sampul)
@@ -102,9 +160,9 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ $item->kategori->nama }}</td>
+                            <td>{{ $item->kategori->nama ?? '-' }}</td>
                             <td class="text-center">{{ $item->isbn ?? '-' }}</td>
-                            <td class="text-center">{{ $item->penerbit->nama }}</td>
+                            <td class="text-center">{{ $item->penerbit->nama ?? '-' }}</td>
                             <td class="text-center">{{ $item->jumlah }}</td>
                             <td class="text-center">
                                 @php
@@ -118,7 +176,7 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                {{ $item->peminjaman_count ?? 0 }}x
+                                {{ $item->total_peminjaman ?? 0 }}x
                             </td>
                         </tr>
                         @empty
@@ -141,7 +199,7 @@
                                 <span class="badge bg-success">{{ $totalTersedia }} Tersedia</span>
                                 <span class="badge bg-danger ms-1">{{ $totalHabis }} Habis</span>
                             </th>
-                            <th class="text-center">{{ $buku->sum('peminjaman_count') }}x Dipinjam</th>
+                            <th class="text-center">{{ $buku->sum('total_peminjaman') }}x Dipinjam</th>
                         </tr>
                     </tfoot>
                 </table>
@@ -160,6 +218,115 @@
             </div>
         </div>
         @endif
+    </div>
+    
+    <!-- Additional Statistics -->
+    <div class="row">
+        <!-- Category Statistics -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0"><i class="bi bi-tags me-2"></i> Jumlah Buku By Kategori</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Kategori</th>
+                                    <th class="text-end">Jumlah Buku</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($totalByKategori as $kategori)
+                                <tr>
+                                    <td>{{ $kategori['nama'] }}</td>
+                                    <td class="text-end">{{ $kategori['total_buku'] }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Borrowings -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0"><i class="bi bi-clock-history me-2"></i> Peminjaman Terakhir</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        @forelse($peminjamanTerakhir as $pinjam)
+                        <div class="list-group-item border-0 px-0 py-2">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">{{ $pinjam->buku->judul ?? 'Buku Dihapus' }}</h6>
+                                    <small class="text-muted">Oleh: {{ $pinjam->user->nama_lengkap }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge 
+                                        @if($pinjam->status == 'dipinjam') bg-warning 
+                                        @elseif($pinjam->status == 'dikembalikan') bg-success 
+                                        @else bg-secondary @endif">
+                                        {{ ucfirst($pinjam->status) }}
+                                    </span>
+                                    <div class="text-muted small mt-1">
+                                        {{ $pinjam->tanggal_pinjam->format('d M Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-journal-x fs-1"></i>
+                            <p class="mt-2 mb-0">Belum ada data peminjaman</p>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Popular Books -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <h6 class="mb-0"><i class="bi bi-star-fill me-2"></i> Buku Terpopuler</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @forelse($bukuPopuler as $buku)
+                <div class="col-md-4 col-lg-2 mb-3">
+                    <div class="card h-100 border-0 shadow-sm">
+                        @if($buku->gambar_sampul)
+                        <img src="{{ asset('storage/'.$buku->gambar_sampul) }}" class="card-img-top" alt="{{ $buku->judul }}" style="height: 150px; object-fit: cover;">
+                        @else
+                        <div class="bg-secondary d-flex align-items-center justify-content-center" style="height: 150px;">
+                            <i class="fas fa-book fa-3x text-white"></i>
+                        </div>
+                        @endif
+                        <div class="card-body text-center">
+                            <h6 class="card-title mb-1">{{ Str::limit($buku->judul, 20) }}</h6>
+                            <small class="text-muted">{{ $buku->penulis }}</small>
+                            <div class="mt-2">
+                                <span class="badge bg-primary">
+                                    {{ $buku->peminjaman_count }}x dipinjam
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-12 text-center py-4 text-muted">
+                    <i class="bi bi-journal-x fs-1"></i>
+                    <p class="mt-2 mb-0">Belum ada data buku populer</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
     </div>
 </div>
 @endsection
