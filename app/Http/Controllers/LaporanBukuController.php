@@ -215,28 +215,33 @@ class LaporanBukuController extends Controller
             );
 
         } catch (\Exception $e) {
-            Log::error('PDF Export Error: '.$e->getMessage());
             return back()->with('error', 'Gagal menghasilkan PDF: '.$e->getMessage());
         }
     }
 
     public function exportExcel(Request $request)
     {
-        try {
-            $data = $this->getEnhancedReportData($request);
-            
-            return Excel::download(
-                new BukuExport($data),
-                'Laporan_Buku_'.now()->format('Ymd_His').'.xlsx',
-                \Maatwebsite\Excel\Excel::XLSX,
-                ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']
-            );
-
-        } catch (\Exception $e) {
-            Log::error('Excel Export Error: '.$e->getMessage());
-            return back()->with('error', 'Gagal menghasilkan Excel: '.$e->getMessage());
-        }
+        $data = $this->getEnhancedReportData($request);
+        
+        // Prepare data for export - transform the bukuAll collection
+        $exportData = [
+            'buku'                  => $data['bukuAll'],
+            'totalKoleksi'          => $data['totalKoleksi'],
+            'totalTersedia'         => $data['totalTersedia'],
+            'totalDipinjam'         => $data['totalDipinjam'],
+            'totalHabis'            => $data['totalHabis'],
+            'totalByKategori'       => $data['totalByKategori'],
+            'bukuPopuler'           => $data['bukuPopuler'],
+            'tanggalLaporan'        => $data['tanggalLaporan']
+        ];
+        
+        
+        return Excel::download(
+            new BukuExport($exportData, $data['tanggalLaporan']), 
+            'laporan_buku_'.now()->format('YmdHis').'.xlsx'
+        );
     }
+
 
     private function getEnhancedReportData($request)
     {

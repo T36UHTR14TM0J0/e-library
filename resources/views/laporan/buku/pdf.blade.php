@@ -162,6 +162,15 @@
                     <td style="text-align:center">{{ $item->peminjaman_count ?? 0 }}x</td>
                 </tr>
             @endforeach
+            {{-- <tr>
+                <td colspan="7" style="text-align: center;">Total</td>
+                <td style="text-align: center;">{{ $item->sum('jumlah') }}</td>
+                <td style="text-align: center;">
+                    <span class="badge bg-success">{{ $totalTersedia }} Tersedia</span>
+                    <span class="badge bg-danger ms-1">{{ $totalHabis }} Habis</span>
+                </td>
+                <td>{{ $item->sum('total_peminjaman') }}x Dipinjam</td>
+            </tr> --}}
         </tbody>
     </table>
 
@@ -172,7 +181,7 @@
             <tr>
                 <th width="60%">Kategori</th>
                 <th width="20%" style="text-align:center">Jumlah Buku</th>
-                <th width="20%" style="text-align:center">Total Pinjam</th>
+                {{-- <th width="20%" style="text-align:center">Total Pinjam</th> --}}
             </tr>
         </thead>
         <tbody>
@@ -180,7 +189,7 @@
                 <tr>
                     <td>{{ $kategori['nama'] }}</td>
                     <td style="text-align:center">{{ $kategori['total_buku'] }}</td>
-                    <td style="text-align:center">{{ $kategori['total_pinjam'] }}</td>
+                    {{-- <td style="text-align:center">{{ $kategori['total_pinjam'] }}</td> --}}
                 </tr>
             @endforeach
         </tbody>
