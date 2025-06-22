@@ -123,7 +123,7 @@
                   
                   <div class="form-group">
                     <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror" 
-                           id="email" name="email" placeholder="Email" value="{{ $email ?? old('email') }}" required autofocus>
+                           id="email" name="email" placeholder="Email" value="{{ $email ?? old('email') }}" required autofocus readonly>
                     @error('email')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
