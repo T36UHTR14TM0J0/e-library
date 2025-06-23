@@ -102,8 +102,8 @@
                             Menampilkan <strong>{{ $penerbit->firstItem() }}</strong> sampai <strong>{{ $penerbit->lastItem() }}</strong> 
                             dari <strong>{{ $penerbit->total() }}</strong> entri
                         </div>
-                        <div>
-                            {{ $penerbit->links() }}
+                         <div>
+                            {{ $layanans->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>
