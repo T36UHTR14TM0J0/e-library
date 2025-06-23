@@ -21,7 +21,8 @@ class User extends Authenticatable
         'npm',
         'nidn',
         'foto', 
-        'prodi_id' 
+        'prodi_id',
+        'status_aktif'
     ];
 
     protected $hidden = [

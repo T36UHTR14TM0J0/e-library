@@ -26,6 +26,7 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('prodi_id')->nullable();
             $table->foreign('prodi_id')->references('id')->on('prodis')->onDelete('set null');
+            $table->enum('status_aktif', [0, 1])->default(1);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

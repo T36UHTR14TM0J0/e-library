@@ -42,6 +42,7 @@ class UsersRequest extends FormRequest
             'nidn'          => 'nullable|required_if:role,dosen|unique:users,nidn,'.$userId,
             'prodi_id'      => 'nullable|exists:prodis,id',
             'foto'          => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'status_aktif'   => 'required',
         ];
 
         // For update requests, make password optional
@@ -93,6 +94,8 @@ class UsersRequest extends FormRequest
             'foto.image'            => 'File harus berupa gambar',
             'foto.mimes'            => 'Format gambar harus jpeg, png, jpg, atau gif',
             'foto.max'              => 'Ukuran gambar maksimal 2MB',
+            'status_aktif.required'  => 'Status akun harus dipilih',
+            'status_aktif.boolean'   => 'Status akun tidak valid',
         ];
     }
 }

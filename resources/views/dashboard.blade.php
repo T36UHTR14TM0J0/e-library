@@ -38,7 +38,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h5 class="card-title text-white">Jumlah User</h5>
+                            <h5 class="card-title text-white">Total User / Pengguna</h5>
                             <h2 class="mb-0">{{ $totalUsers }}</h2>
                         </div>
                         <i class="mdi mdi-account-multiple fa-3x opacity-50"></i>
@@ -62,6 +62,29 @@
         </div>
     </div>
     
+    <!-- User Statistics Row -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Statistik Status Pengguna</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height:250px;">
+                        <canvas id="userStatusChart"></canvas>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <span class="badge bg-success me-2"> Aktif: {{ $activeUsers }}</span>
+                        <span class="badge bg-danger"> Tidak Aktif: {{ $inactiveUsers }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- You can add another chart or content here -->
+        </div>
+    </div>
+    
     <!-- Overdue Books Section -->
     <div class="card shadow-sm">
         <div class="card-header bg-danger text-white">
@@ -82,7 +105,6 @@
                                 <th class="text-white bg-info">Tenggat Kembali</th>
                                 <th class="text-white bg-info">Terlambat</th>
                                 <th class="text-white bg-info">Denda</th>
-                                {{-- <th width="10%">Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -99,16 +121,6 @@
                                     </span>
                                 </td>
                                 <td>Rp {{ number_format($book->hitungDenda(), 0, ',', '.') }}</td>
-                                {{-- <td>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-sm btn-outline-primary" title="Kirim Pengingat">
-                                            <i class="fas fa-envelope"></i>
-                                        </button>
-                                        <a href="{{ route('peminjaman.show', $book->id) }}" class="btn btn-sm btn-outline-info" title="Detail">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </div>
-                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -118,6 +130,54 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // User Status Donut Chart
+        const ctx = document.getElementById('userStatusChart').getContext('2d');
+        const userStatusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Aktif', 'Tidak Aktif'],
+                datasets: [{
+                    data: [{{ $activeUsers }}, {{ $inactiveUsers }}],
+                    backgroundColor: [
+                        '#28a745', // Green for active
+                        '#dc3545'  // Red for inactive
+                    ],
+                    borderWidth: 0,
+                    cutout: '70%' // Makes it a donut instead of pie
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false, // We'll use custom legend
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((context.raw / total) * 100);
+                                label += context.raw + ' (' + percentage + '%)';
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+@endpush
 
 <style>
     .card {

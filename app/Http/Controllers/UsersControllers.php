@@ -30,6 +30,9 @@ class UsersControllers extends Controller
                     $query->where('role', '!=', 'admin');
                 }
             })
+            ->when(!is_null(request('status_aktif')), function($query) {
+                $query->where('status_aktif', request('status_aktif'));
+            })
             ->orderBy(request('sort_by', 'created_at'), request('sort_direction', 'desc'))
             ->paginate(request('per_page', 10));
 
@@ -51,7 +54,6 @@ class UsersControllers extends Controller
             $validated['foto'] = $path;
         }
 
-
         // Membuat pengguna baru
         User::create([
             'nama_lengkap'  => $validated['nama_lengkap'],
@@ -63,12 +65,12 @@ class UsersControllers extends Controller
             'nidn'          => $validated['nidn'] ?? null,
             'prodi_id'      => $validated['prodi_id'] ?? null,
             'foto'          => $validated['foto'] ?? null,
+            'status_aktif'  => $validated['status_aktif'],
         ]);
 
         return redirect()->route('users.index')->with('success', 'User baru berhasil ditambahkan.');
     }
 
-    // Menampilkan detail pengguna
     public function show(User $user)
     {
         return view('pengaturan.user.show', compact('user'));
@@ -76,40 +78,36 @@ class UsersControllers extends Controller
 
     public function edit(User $user)
     {
-        $prodis = Prodi::all(); // atau query lain sesuai kebutuhan
+        $prodis = Prodi::all();
         return view('pengaturan.user.edit', compact('user', 'prodis'));
     }
 
-    // Memperbarui pengguna
     public function update(UsersRequest $request, User $user)
     {
-        // Data sudah divalidasi oleh UsersRequest
         $validated = $request->validated();
 
-        // Handle password update (jika diisi)
+        // Handle password update
         if (!empty($validated['password'])) {
             $validated['password'] = Hash::make($validated['password']);
         } else {
-            unset($validated['password']); // Hapus dari array jika tidak diubah
+            unset($validated['password']);
         }
-
-    
 
         // Handle file upload
         if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
+            // Delete old photo if exists
             if ($user->foto) {
                 Storage::disk('public')->delete($user->foto);
             }
             
             $path = $request->file('foto')->store('profile-photos', 'public');
             $validated['foto'] = $path;
-        }  else {
-            // Pertahankan foto yang ada jika tidak ada perubahan
+        } else {
             unset($validated['foto']);
         }
 
-        // Update data pengguna
+        // dd($validated['status_aktif']);
+        // Update user data including status_aktif
         $user->update([
             'nama_lengkap'  => $validated['nama_lengkap'],
             'email'         => $validated['email'],
@@ -118,16 +116,21 @@ class UsersControllers extends Controller
             'npm'           => $validated['npm'] ?? null,
             'nidn'          => $validated['nidn'] ?? null,
             'prodi_id'      => $validated['prodi_id'] ?? null,
-            // Password dan foto sudah dihandle di atas
-        ] + $validated); // Gabungkan dengan data yang mungkin sudah diubah
+            'status_aktif'  => $validated['status_aktif'],
+        ] + $validated);
 
         return redirect()->route('users.index')->with('success', 'Data user berhasil diperbarui.');
     }
 
-
     public function destroy(User $user)
     {
-        $user->delete(); // Hapus pengguna
+        // Delete user photo if exists
+        if ($user->foto) {
+            Storage::disk('public')->delete($user->foto);
+        }
+        
+        $user->delete();
         return redirect()->route('users.index')->with('success', 'Data user berhasil dihapus.');
     }
+
 }

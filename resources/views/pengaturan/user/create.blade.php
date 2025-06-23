@@ -115,6 +115,19 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label class="form-label">Status Akun</label>
+                    <select name="status_aktif" class="form-control @error('status_aktif') is-invalid @enderror">
+                        <option value="1" {{ old('status_aktif', 1) == 1 ? 'selected' : '' }}>Aktif</option>
+                        <option value="0" {{ old('status_aktif') == 0 ? 'selected' : '' }}>Tidak Aktif</option>
+                    </select>
+                    @error('status_aktif')
+                      <div class="invalid-feedback">
+                        {{ $message }}
+                      </div>
+                    @enderror
+                </div>
+
+                <div class="form-group mb-3">
                     <label class="form-label">Foto Profil</label>
                     <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror">
                     @error('foto')

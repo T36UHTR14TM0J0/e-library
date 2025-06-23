@@ -16,21 +16,29 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('users.index') }}" class="needs-validation" novalidate>
                         <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="npm" class="form-label fw-medium">NPM/NIDN</label>
                                 <input type="text" name="npm" id="npm" class="form-control form-control-sm" placeholder="Masukkan NPM atau NIDN" value="{{ request('npm') }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="username" class="form-label fw-medium">Username</label>
                                 <input type="text" name="username" id="username" class="form-control form-control-sm" placeholder="Cari username" value="{{ request('username') }}">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="role" class="form-label fw-medium">Role</label>
                                 <select class="form-select form-select-sm" name="role" id="role">
                                     <option value="" {{ empty(request('role')) ? 'selected' : '' }}>Semua Role</option>
                                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                     <option value="dosen" {{ request('role') == 'dosen' ? 'selected' : '' }}>Dosen</option>
                                     <option value="mahasiswa" {{ request('role') == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="status_aktif" class="form-label fw-medium">Status</label>
+                                <select class="form-select form-select-sm" name="status_aktif" id="status_aktif">
+                                    <option value="" {{ empty(request('status_aktif')) ? 'selected' : '' }}>Semua Status</option>
+                                    <option value="1" {{ request('status_aktif') == '1' ? 'selected' : '' }}>Aktif</option>
+                                    <option value="0" {{ request('status_aktif') == '0' ? 'selected' : '' }}>Non-Aktif</option>
                                 </select>
                             </div>
                         </div>
@@ -42,7 +50,7 @@
                                 </a> --}}
                             </div>
                             <div>
-                                @if(request()->has('npm') || request()->has('nama_lengkap') || request()->has('username') || request()->has('role'))
+                                @if(request()->has('npm') || request()->has('nama_lengkap') || request()->has('username') || request()->has('role') || request()->has('status_aktif'))
                                 <a href="{{ route('users.index') }}" class="btn btn-sm btn-outline-secondary me-2">
                                     <i class="bi bi-x-circle me-1"></i> Reset
                                 </a>
@@ -73,8 +81,9 @@
                                     <th class="text-center bg-primary text-white">NPM/NIDN</th>
                                     <th class="text-center bg-primary text-white">Username</th>
                                     <th class="text-center bg-primary text-white">Role</th>
+                                    <th class="text-center bg-primary text-white">Status</th>
                                     <th class="text-center bg-primary text-white">Tanggal Buat</th>
-                                    <th class="text-center bg-primary text-white" width="12%">Aksi</th>
+                                    <th class="text-center bg-primary text-white" width="15%">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -93,11 +102,21 @@
                                             {{ ucfirst($user->role) }}
                                         </span>
                                     </td>
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill bg-{{ 
+                                            $user->status_aktif == '0' ? 'danger' : 'success' 
+                                        }}">
+                                            {{ $user->status_aktif == '1' ? 'Aktif' : 'Tidak Aktif' }}
+                                        </span>
+                                    </td>
                                     <td class="text-center">{{ $user->created_at->locale('id')->translatedFormat('d M Y') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a href="{{ route('users.show',$user->id) }}" class="btn btn-info text-white" title="View" data-bs-toggle="tooltip">
                                                 Detail
+                                            </a>
+                                            <a href="{{ route('users.edit',$user->id) }}" class="btn btn-warning text-white" title="Edit" data-bs-toggle="tooltip">
+                                                Edit
                                             </a>
                                             <button class="btn btn-danger text-white" title="Delete" onclick="confirmDelete('{{ $user->id }}')" data-bs-toggle="tooltip">
                                                 Hapus
@@ -111,7 +130,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">Tidak ada data pengguna</td>
+                                    <td colspan="8" class="text-center py-4">Tidak ada data pengguna</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -119,13 +138,13 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="text-muted small">
-                        Menampilkan <strong>{{ $users->firstItem() }}</strong> sampai <strong>{{ $users->lastItem() }}</strong> dari <strong>{{ $users->total() }}</strong> entri
+                        <div class="text-muted small">
+                            Menampilkan <strong>{{ $users->firstItem() }}</strong> sampai <strong>{{ $users->lastItem() }}</strong> dari <strong>{{ $users->total() }}</strong> entri
+                        </div>
+                        <div>
+                            {{ $users->links('vendor.pagination.bootstrap-5') }}
+                        </div>
                     </div>
-                    <div>
-                        {{ $users->links('vendor.pagination.bootstrap-5') }}
-                    </div>
-                </div>
                 </div>
             </div>
         </div>

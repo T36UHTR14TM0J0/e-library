@@ -65,9 +65,9 @@
                     <label class="form-label">Role <span class="text-danger">*</span></label>
                     <select name="role" class="form-control @error('role') is-invalid @enderror">
                         <option value="" disabled>Pilih Role</option>
-                        <option value="admin" {{ (old('role', $user->role) == 'admin') ? 'selected' : '' }}>Admin</option>
-                        <option value="dosen" {{ (old('role', $user->role) == 'dosen') ? 'selected' : '' }}>Dosen</option>
-                        <option value="mahasiswa" {{ (old('role', $user->role) == 'mahasiswa') ? 'selected' : '' }}>Mahasiswa</option>
+                        <option value="admin" {{ (old('role', $user->role) == 'admin' ? 'selected' : '') }}>Admin</option>
+                        <option value="dosen" {{ (old('role', $user->role) == 'dosen' ? 'selected' : '') }}>Dosen</option>
+                        <option value="mahasiswa" {{ (old('role', $user->role) == 'mahasiswa' ? 'selected' : '') }}>Mahasiswa</option>
                     </select>
                     @error('role')
                       <div class="invalid-feedback">
@@ -103,12 +103,25 @@
                     <select name="prodi_id" class="form-control @error('prodi_id') is-invalid @enderror">
                         <option value="">Pilih Prodi (opsional)</option>
                         @foreach($prodis as $prodi)
-                            <option value="{{ $prodi->id }}" {{ (old('prodi_id', $user->prodi_id) == $prodi->id) ? 'selected' : '' }}>
+                            <option value="{{ $prodi->id }}" {{ (old('prodi_id', $user->prodi_id) == $prodi->id ? 'selected' : '') }}>
                                 {{ $prodi->kode }} - {{ $prodi->nama }}
                             </option>
                         @endforeach
                     </select>
                     @error('prodi_id')
+                      <div class="invalid-feedback">
+                        {{ $message }}
+                      </div>
+                    @enderror
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label">Status Akun</label>
+                    <select name="status_aktif" class="form-control @error('status_aktif') is-invalid @enderror">
+                        <option value="1" {{ old('status_aktif', $user->status_aktif) == 1 ? 'selected' : '' }}>Aktif</option>
+                        <option value="0" {{ old('status_aktif', $user->status_aktif) == 0 ? 'selected' : '' }}>Tidak Aktif</option>
+                    </select>
+                    @error('status_aktif')
                       <div class="invalid-feedback">
                         {{ $message }}
                       </div>
