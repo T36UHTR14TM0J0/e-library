@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Buku;
 use App\Models\Ebook;
 use App\Models\Peminjaman;
+use App\Models\EbookReading;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -38,6 +39,23 @@ class DashboardController extends Controller
             
             $currentDate->addDay();
         }
+
+        // Top 10 pengguna sering meminjam
+        $topPeminjam = Peminjaman::selectRaw('user_id, count(*) as total_peminjaman')
+            ->with('user:id,nama_lengkap')
+            ->where('status', '!=', 'dibatalkan')
+            ->groupBy('user_id')
+            ->orderByDesc('total_peminjaman')
+            ->limit(10)
+            ->get();
+
+        // Top 10 pengguna sering membaca ebook
+        $topPembaca = EbookReading::selectRaw('user_id, count(*) as total_bacaan')
+            ->with('user:id,nama_lengkap')
+            ->groupBy('user_id')
+            ->orderByDesc('total_bacaan')
+            ->limit(10)
+            ->get();
         
         return view('dashboard', [
             'totalBooks'        => Buku::count(),
@@ -57,6 +75,8 @@ class DashboardController extends Controller
                                     ->orderByDesc('total_peminjaman')
                                     ->limit(5)
                                     ->get(),
+            'topPeminjam'       => $topPeminjam,
+            'topPembaca'        => $topPembaca,
             'chartData'         => [
                 'labels' => $chartLabels,
                 'data' => $chartData,

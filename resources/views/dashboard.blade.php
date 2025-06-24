@@ -321,6 +321,97 @@
                 </div>
             </div>
         </div>
+        <!-- Tambahkan setelah accordion Statistik Peminjaman Harian -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingSix">
+                <button class="accordion-button collapsed bg-info text-white" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
+                    Aktivitas Pengguna
+                </button>
+            </h2>
+            <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <div class="row">
+                        <!-- Kolom Top 10 Pengguna Sering Meminjam -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">Top 10 Pengguna Sering Meminjam</h5>
+                                </div>
+                                <div class="card-body">
+                                    @if($topPeminjam->isEmpty())
+                                        <div class="alert alert-info">Belum ada data peminjaman</div>
+                                    @else
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>
+                                                        <th>Nama Pengguna</th>
+                                                        <th>Total Pinjam</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($topPeminjam as $index => $user)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ $user->user->nama_lengkap }}</td>
+                                                        <td>
+                                                            <span class="badge bg-primary">
+                                                                {{ $user->total_peminjaman }} kali
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kolom Top 10 Pengguna Sering Membaca -->
+                        <div class="col-md-6">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">Top 10 Pengguna Sering Membaca Ebook</h5>
+                                </div>
+                                <div class="card-body">
+                                    @if($topPembaca->isEmpty())
+                                        <div class="alert alert-info">Belum ada data membaca ebook</div>
+                                    @else
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>
+                                                        <th>Nama Pengguna</th>
+                                                        <th>Total Baca</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($topPembaca as $index => $user)
+                                                    <tr>
+                                                        <td>{{ $index + 1 }}</td>
+                                                        <td>{{ $user->user->nama_lengkap }}</td>
+                                                        <td>
+                                                            <span class="badge bg-success">
+                                                                {{ $user->total_bacaan }} kali
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
