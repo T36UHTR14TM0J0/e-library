@@ -12,7 +12,33 @@ use Illuminate\Validation\ValidationException;
 
 class DashboardController extends Controller
 {
-    public function index(){
+    public function index()
+    {
+        // Hitung rata-rata peminjaman per hari dalam 30 hari terakhir
+        $startDate = now()->subDays(30)->format('Y-m-d');
+        $endDate = now()->format('Y-m-d');
+        
+        $dailyLoans = Peminjaman::selectRaw('DATE(tanggal_pinjam) as date, COUNT(*) as count')
+            ->whereBetween('tanggal_pinjam', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+        
+        // Siapkan data untuk chart
+        $chartLabels = [];
+        $chartData = [];
+        
+        $currentDate = Carbon::parse($startDate);
+        while ($currentDate <= Carbon::parse($endDate)) {
+            $dateStr = $currentDate->format('Y-m-d');
+            $chartLabels[] = $currentDate->format('d M');
+            
+            $loanData = $dailyLoans->firstWhere('date', $dateStr);
+            $chartData[] = $loanData ? $loanData->count : 0;
+            
+            $currentDate->addDay();
+        }
+        
         return view('dashboard', [
             'totalBooks'        => Buku::count(),
             'totalEbook'        => Ebook::count(),
@@ -29,8 +55,54 @@ class DashboardController extends Controller
                                     ->with('buku')
                                     ->groupBy('buku_id')
                                     ->orderByDesc('total_peminjaman')
-                                    ->limit(5) // Ambil 5 buku teratas
-                                    ->get()
+                                    ->limit(5)
+                                    ->get(),
+            'chartData'         => [
+                'labels' => $chartLabels,
+                'data' => $chartData,
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]
+        ]);
+    }
+
+    public function getLoanChartData(Request $request)
+    {
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
+        ]);
+        
+        $startDate = $validated['start_date'];
+        $endDate = $validated['end_date'];
+        
+        $dailyLoans = Peminjaman::selectRaw('DATE(tanggal_pinjam) as date, COUNT(*) as count')
+            ->whereBetween('tanggal_pinjam', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+        
+        // Siapkan data untuk chart
+        $chartLabels = [];
+        $chartData = [];
+        
+        $currentDate = Carbon::parse($startDate);
+        while ($currentDate <= Carbon::parse($endDate)) {
+            $dateStr = $currentDate->format('Y-m-d');
+            $chartLabels[] = $currentDate->format('d M');
+            
+            $loanData = $dailyLoans->firstWhere('date', $dateStr);
+            $chartData[] = $loanData ? $loanData->count : 0;
+            
+            $currentDate->addDay();
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'labels' => $chartLabels,
+                'data' => $chartData
+            ]
         ]);
     }
 

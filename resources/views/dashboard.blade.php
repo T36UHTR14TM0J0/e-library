@@ -283,6 +283,44 @@
                 </div>
             </div>
         </div>
+        <!-- Tambahkan di dalam accordion setelah accordion-item terakhir -->
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingFive">
+                <button class="accordion-button collapsed bg-primary text-white" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                    Statistik Peminjaman Harian
+                </button>
+            </h2>
+            <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="chartStartDate" class="form-label">Dari Tanggal</label>
+                            <input type="date" class="form-control" id="chartStartDate" value="{{ $chartData['start_date'] }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="chartEndDate" class="form-label">Sampai Tanggal</label>
+                            <input type="date" class="form-control" id="chartEndDate" value="{{ $chartData['end_date'] }}">
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button class="btn btn-primary" id="updateChartBtn">
+                                <i class="mdi mdi-refresh"></i> Perbarui Grafik
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Rata-Rata Peminjaman Per Hari</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container" style="position: relative; height:400px;">
+                                <canvas id="loanChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -329,6 +367,72 @@
                     }
                 }
             }
+        });
+
+        const loanCtx = document.getElementById('loanChart').getContext('2d');
+        const loanChart = new Chart(loanCtx, {
+            type: 'bar',
+            data: {
+                labels: @json($chartData['labels']),
+                datasets: [{
+                    label: 'Jumlah Peminjaman',
+                    data: @json($chartData['data']),
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Jumlah Peminjaman'
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tanggal'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Peminjaman: ${context.raw}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Fungsi untuk update chart
+        document.getElementById('updateChartBtn').addEventListener('click', function() {
+            const startDate = document.getElementById('chartStartDate').value;
+            const endDate = document.getElementById('chartEndDate').value;
+            
+            fetch(`/dashboard/loan-chart-data?start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        loanChart.data.labels = data.data.labels;
+                        loanChart.data.datasets[0].data = data.data.data;
+                        loanChart.update();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memuat data chart');
+                });
         });
 
         // Filter functionality

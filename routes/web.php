@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function() {
     // Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dasboard/filterpeminjaman', [DashboardController::class, 'filterDataPeminjaman'])->name('dashboard.filter');
-    
+    Route::get('/dashboard/loan-chart-data', [DashboardController::class, 'getLoanChartData']);
     // Logout route
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
