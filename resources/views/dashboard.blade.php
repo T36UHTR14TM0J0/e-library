@@ -111,7 +111,7 @@
                             <h5 class="mb-0">Buku yang Sering Dipinjam</h5>
                         </div>
                         <div class="card-body">
-                            @if($mostBorrowedBooks->isEmpty())
+                            @if($TopBukuDipinjam->isEmpty())
                                 <div class="alert alert-info">Belum ada data peminjaman buku</div>
                             @else
                                 <div class="table-responsive">
@@ -127,7 +127,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($mostBorrowedBooks as $index => $book)
+                                            @foreach($TopBukuDipinjam as $index => $book)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $book->buku->judul }}</td>
@@ -163,7 +163,7 @@
                             <h5 class="mb-0">Buku dengan Tenggat Pinjam</h5>
                         </div>
                         <div class="card-body">
-                            @if($overdueBooks->isEmpty())
+                            @if($TenggatList->isEmpty())
                                 <div class="alert alert-info">Tidak ada buku yang melewati tenggat pinjam</div>
                             @else
                                 <div class="table-responsive">
@@ -180,7 +180,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($overdueBooks as $index => $book)
+                                            @foreach($TenggatList as $index => $book)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
                                                 <td>{{ $book->buku->judul }}</td>
@@ -204,7 +204,7 @@
                 </div>
             </div>
         </div>
-        
+
         {{-- DATA PEMINJAMAN FILTER --}}
         <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingFour">
@@ -269,6 +269,16 @@
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <!-- Pagination Controls (Sederhana) -->
+                    <div class="d-flex justify-content-between mt-3">
+                        <button id="prevPage" class="btn btn-outline-primary" disabled>
+                            &laquo; Sebelumnya
+                        </button>
+                        <span id="pageInfo" class="align-self-center">Halaman 1</span>
+                        <button id="nextPage" class="btn btn-outline-primary" disabled>
+                            Selanjutnya &raquo;
+                        </button>
                     </div>
                 </div>
             </div>
@@ -353,8 +363,17 @@
             filterContainers[selectedFilter].classList.remove('d-none');
         });
         
-        // Handle filter button click
+        let currentPage = 1;
+        let lastPage = 1;
+
         filterButton.addEventListener('click', function() {
+            currentPage = 1; // Reset ke halaman pertama saat filter baru
+            updatePaginationControls();
+            fetchLoanData();
+        });
+
+        // Fungsi untuk mengambil data peminjaman
+        function fetchLoanData() {
             const selectedFilter = filterType.value;
             let filterValue;
             
@@ -378,7 +397,7 @@
                 return;
             }
             
-            fetch(`/dasboard/filterpeminjaman?filter_type=${selectedFilter}&filter_value=${filterValue}`)
+            fetch(`/dasboard/filterpeminjaman?filter_type=${selectedFilter}&filter_value=${filterValue}&page=${currentPage}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -397,7 +416,7 @@
                     data.data.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${index + 1}</td>
+                            <td>${((currentPage - 1) * 10) + index + 1}</td>
                             <td>${item.user ? item.user.nama_lengkap : 'N/A'}</td>
                             <td>${item.buku ? item.buku.judul : 'N/A'}</td>
                             <td>${new Date(item.tanggal_pinjam).toLocaleDateString('id-ID')}</td>
@@ -407,17 +426,46 @@
                                     ${item.status}
                                 </span>
                             </td>
-                            <td>Rp ${item.denda ? Number(item.denda).toLocaleString('id-ID') : '0'}</td>
+                            <td>${item.denda_formatted}</td>
                         `;
                         tableBody.appendChild(row);
                     });
+                    
+                    // Update pagination info
+                    lastPage = data.meta.last_page;
+                    updatePaginationControls();
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     const tableBody = document.getElementById('loanDataBody');
                     tableBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Terjadi kesalahan saat memuat data</td></tr>';
                 });
+        }
+
+        // Fungsi untuk update kontrol pagination
+        function updatePaginationControls() {
+            document.getElementById('pageInfo').textContent = `Halaman ${currentPage}`;
+            document.getElementById('prevPage').disabled = currentPage === 1;
+            document.getElementById('nextPage').disabled = currentPage === lastPage;
+        }
+
+        // Event listeners untuk tombol pagination
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                fetchLoanData();
+                window.scrollTo({ top: document.getElementById('loanDataBody').offsetTop, behavior: 'smooth' });
+            }
         });
+
+        document.getElementById('nextPage').addEventListener('click', function() {
+            if (currentPage < lastPage) {
+                currentPage++;
+                fetchLoanData();
+                window.scrollTo({ top: document.getElementById('loanDataBody').offsetTop, behavior: 'smooth' });
+            }
+        });
+
         
         // Helper function for status badge classes
         function getStatusBadgeClass(status) {
@@ -453,6 +501,14 @@
     }
     .table th {
         white-space: nowrap;
+    }
+
+    /* Tambahkan di bagian style */
+    .btn-outline-primary {
+        min-width: 120px;
+    }
+    #pageInfo {
+        font-weight: bold;
     }
 </style>
 @endsection
