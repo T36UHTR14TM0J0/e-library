@@ -1,10 +1,17 @@
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <h4 class="navbar-brand" href="#">
-      <a class="navbar-brand brand-logo me-5" href="#">E-library</a>
-      {{-- <a class="navbar-brand brand-logo-mini" href="#">Elib</a> --}}
+        <a class="navbar-brand brand-logo me-5" href="#">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="E-library Logo" class="me-2" style="height: 40px;" 
+                 onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3663/3663398.png'">
+            E-library
+        </a>
+        <a class="navbar-brand brand-logo-mini" href="#">
+            <img src="{{ asset('assets/images/logo-mini.png') }}" alt="E-library Mini Logo" style="height: 30px;"
+                 onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3663/3663398.png'">
+        </a>
     </h4>
-  </div>
+</div>
   
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
     <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">

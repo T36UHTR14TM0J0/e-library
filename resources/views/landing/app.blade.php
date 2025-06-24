@@ -344,7 +344,10 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">E<span>Library</span></a>
+            <a class="navbar-brand" href="#">
+                <img src="{{ asset('assets/images/logo.png') }}" alt="E-library Logo" class="d-inline-block align-top me-2" style="height: 30px; width: auto;" onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3663/3663398.png'">
+                E<span>Library</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>

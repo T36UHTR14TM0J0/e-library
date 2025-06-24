@@ -51,6 +51,13 @@
         margin-bottom: 2rem;
       }
       
+      .logo-img {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1rem;
+        display: block;
+        object-fit: contain;
+      }
      
       .invalid-feedback {
         font-size: 0.85rem;
@@ -81,6 +88,11 @@
         .brand-logo h2 {
           font-size: 2rem;
         }
+        
+        .logo-img {
+          width: 60px;
+          height: 60px;
+        }
       }
     </style>
   </head>
@@ -91,7 +103,13 @@
           <div class="row w-100 mx-0">
             <div class="col-lg-4 mx-auto">
               <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                <div class="brand-logo">
+                <div class="brand-logo text-center">
+                  <!-- Added logo from online (placeholder) -->
+                  @if(file_exists(public_path('assets/images/logo.png')))
+                    <img src="{{ asset('assets/images/logo.png') }}" alt="E-library Logo" class="logo-img">
+                  @else
+                    <img src="https://cdn-icons-png.flaticon.com/512/3106/3106921.png" alt="E-library Logo" class="logo-img">
+                  @endif
                   <h2 class="text-center text-primary">E-library</h2>
                   <h4 class="font-weight-light text-center">Halaman Login</h4>
                 </div>
