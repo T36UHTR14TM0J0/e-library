@@ -2,13 +2,11 @@
   <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <h4 class="navbar-brand" href="#">
         <a class="navbar-brand brand-logo me-5" href="#">
-            <img src="{{ asset('assets/images/logo.png') }}" alt="E-library Logo" class="me-2" style="height: 40px;" 
-                 onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3663/3663398.png'">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="E-library Logo" class="me-2" style="height: 40px;" >
             E-library
         </a>
         <a class="navbar-brand brand-logo-mini" href="#">
-            <img src="{{ asset('assets/images/logo-mini.png') }}" alt="E-library Mini Logo" style="height: 30px;"
-                 onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/3663/3663398.png'">
+            <img src="{{ asset('assets/images/logo.png') }}" alt="E-library Mini Logo" style="height: 30px;">
         </a>
     </h4>
 </div>
