@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Buku Perpustakaan</title>
+    <title>Laporan Ebook Perpustakaan</title>
     <style>
         body { 
             font-family: 'Helvetica', Arial, sans-serif;
@@ -50,14 +50,16 @@
         .stat-container {
             display: flex;
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
         .stat-card {
             flex: 1;
+            min-width: 120px;
             background-color: #f8f9fa;
             border: 1px solid #dee2e6;
             border-radius: 3px;
             padding: 8px;
-            margin: 0 5px;
+            margin: 0 5px 5px 0;
             text-align: center;
         }
         .stat-title {
@@ -99,9 +101,9 @@
         @if(file_exists(public_path('images/logo_perpus.png')))
             <img src="{{ public_path('images/logo_perpus.png') }}" alt="Logo Perpustakaan">
         @endif
-        <h2 style="margin:5px 0;font-size:14px;">LAPORAN DATA BUKU PERPUSTAKAAN</h2>
-        <h3 style="margin:5px 0;font-size:12px;">{{ config('app.name') }}</h3>
-        <p style="margin:0;font-size:10px;">Periode: {{ $tanggalLaporan }} | Dicetak pada: {{ now()->format('d F Y H:i') }}</p>
+        <h2 style="margin:5px 0;font-size:14px;">LAPORAN DATA EBOOK PERPUSTAKAAN</h2>
+        <h3 style="margin:5px 0;font-size:12px;">{{ $institution }}</h3>
+        <p style="margin:0;font-size:10px;">Periode: {{ $tanggalLaporan }} | Dicetak pada: {{ $printed_at }}</p>
     </div>
 
     <!-- Statistics Summary -->
@@ -111,66 +113,61 @@
             <div class="stat-value">{{ $totalKoleksi }}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">Tersedia</div>
-            <div class="stat-value">{{ $totalTersedia }}</div>
+            <div class="stat-title">Dapat Diunduh</div>
+            <div class="stat-value">{{ $totalDapatDiunduh }}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">Dipinjam</div>
-            <div class="stat-value">{{ $totalDipinjam }}</div>
+            <div class="stat-title">Tidak Dapat Diunduh</div>
+            <div class="stat-value">{{ $totalTidakDapatDiunduh }}</div>
         </div>
         <div class="stat-card">
-            <div class="stat-title">Habis</div>
-            <div class="stat-value">{{ $totalHabis }}</div>
+            <div class="stat-title">Total Dibaca</div>
+            <div class="stat-value">{{ $totalDibaca }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Pembaca Aktif</div>
+            <div class="stat-value">{{ $pembacaAktif }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-title">Ebook Baru (30 hari)</div>
+            <div class="stat-value">{{ $ebookBaru }}</div>
         </div>
     </div>
 
-    <!-- Main Book Data -->
-    <div class="section-title">DAFTAR BUKU</div>
+    <!-- Main Ebook Data -->
+    <div class="section-title">DAFTAR EBOOK</div>
     <table>
         <thead>
             <tr>
                 <th width="5%">No</th>
                 <th width="25%">Judul</th>
                 <th width="15%">Penulis</th>
-                <th width="10%">ISBN</th>
                 <th width="15%">Kategori</th>
+                <th width="15%">Prodi</th>
                 <th width="10%">Penerbit</th>
-                <th width="8%">Tahun</th>
-                <th width="7%">Stok</th>
+                <th width="7%">Dibaca</th>
                 <th width="10%">Status</th>
-                <th width="10%">Dipinjam</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($buku as $key => $item)
+            @foreach($ebooks as $key => $item)
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $item->judul }}</td>
                     <td>{{ $item->penulis }}</td>
-                    <td>{{ $item->isbn ?? '-' }}</td>
                     <td>{{ $item->kategori->nama ?? '-' }}</td>
+                    <td>{{ $item->prodi->nama ?? '-' }}</td>
                     <td>{{ $item->penerbit->nama ?? '-' }}</td>
-                    <td>{{ $item->tahun_terbit }}</td>
-                    <td style="text-align:center">{{ $item->jumlah }}</td>
+                    <td style="text-align:center">{{ $item->total_dibaca ?? 0 }}x</td>
                     <td style="text-align:center">
-                        @if($item->jumlah > 0)
-                            <span class="badge badge-success">Tersedia</span>
+                        @if($item->izin_unduh)
+                            <span class="badge badge-success">Dapat Diunduh</span>
                         @else
-                            <span class="badge badge-danger">Habis</span>
+                            <span class="badge badge-danger">Tidak Dapat Diunduh</span>
                         @endif
                     </td>
-                    <td style="text-align:center">{{ $item->peminjaman_count ?? 0 }}x</td>
                 </tr>
             @endforeach
-            {{-- <tr>
-                <td colspan="7" style="text-align: center;">Total</td>
-                <td style="text-align: center;">{{ $item->sum('jumlah') }}</td>
-                <td style="text-align: center;">
-                    <span class="badge bg-success">{{ $totalTersedia }} Tersedia</span>
-                    <span class="badge bg-danger ms-1">{{ $totalHabis }} Habis</span>
-                </td>
-                <td>{{ $item->sum('total_peminjaman') }}x Dipinjam</td>
-            </tr> --}}
         </tbody>
     </table>
 
@@ -180,24 +177,41 @@
         <thead>
             <tr>
                 <th width="60%">Kategori</th>
-                <th width="20%" style="text-align:center">Jumlah Buku</th>
-                {{-- <th width="20%" style="text-align:center">Total Pinjam</th> --}}
+                <th width="20%" style="text-align:center">Jumlah Ebook</th>
             </tr>
         </thead>
         <tbody>
             @foreach($totalByKategori as $kategori)
                 <tr>
                     <td>{{ $kategori['nama'] }}</td>
-                    <td style="text-align:center">{{ $kategori['total_buku'] }}</td>
-                    {{-- <td style="text-align:center">{{ $kategori['total_pinjam'] }}</td> --}}
+                    <td style="text-align:center">{{ $kategori['total_ebook'] }}</td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
-    <!-- Popular Books -->
-    @if(isset($bukuPopuler) && count($bukuPopuler) > 0)
-    <div class="section-title">BUKU TERPOPULER</div>
+    <!-- Program Studi Statistics -->
+    <div class="section-title">STATISTIK PER PROGRAM STUDI</div>
+    <table>
+        <thead>
+            <tr>
+                <th width="60%">Program Studi</th>
+                <th width="20%" style="text-align:center">Jumlah Ebook</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($totalByProdi as $prodi)
+                <tr>
+                    <td>{{ $prodi['nama'] }}</td>
+                    <td style="text-align:center">{{ $prodi['total_ebook'] }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <!-- Popular Ebooks -->
+    @if(isset($ebookPopuler) && count($ebookPopuler) > 0)
+    <div class="section-title">EBOOK TERPOPULER</div>
     <table>
         <thead>
             <tr>
@@ -205,19 +219,17 @@
                 <th width="35%">Judul</th>
                 <th width="20%">Penulis</th>
                 <th width="15%">Kategori</th>
-                <th width="15%">Tahun</th>
-                <th width="10%" style="text-align:center">Dipinjam</th>
+                <th width="10%" style="text-align:center">Dibaca</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($bukuPopuler as $key => $item)
+            @foreach($ebookPopuler as $key => $item)
                 <tr>
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $item->judul }}</td>
                     <td>{{ $item->penulis }}</td>
                     <td>{{ $item->kategori->nama ?? '-' }}</td>
-                    <td>{{ $item->tahun_terbit }}</td>
-                    <td style="text-align:center">{{ $item->peminjaman_count }}x</td>
+                    <td style="text-align:center">{{ $item->readings_count }}x</td>
                 </tr>
             @endforeach
         </tbody>
@@ -225,7 +237,7 @@
     @endif
 
     <div class="footer">
-        <p>Dicetak oleh: {{ Auth::user()->name ?? 'System' }} | &copy; {{ date('Y') }} {{ config('app.name') }}</p>
+        <p>Dicetak oleh: {{ $printed_by }} | &copy; {{ date('Y') }} {{ $institution }}</p>
     </div>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\BukuExport;
+use App\Exports\EbookExport;
 use Illuminate\Http\Request;
 use App\Models\Ebook;
 use App\Models\EbookReading;
@@ -127,14 +127,14 @@ class LaporanEbookController extends Controller
             ]);
 
             // Set document metadata
-            $mpdf->SetTitle('Laporan Buku - ' . $data['tanggalLaporan']);
+            $mpdf->SetTitle('Laporan Ebook - ' . $data['tanggalLaporan']);
             $mpdf->SetAuthor($data['printed_by']);
             $mpdf->SetCreator($data['institution']);
 
             // Header
             $mpdf->SetHTMLHeader('
             <div style="text-align:center;border-bottom:1px solid #ddd;padding-bottom:5px;">
-                <h3 style="margin:0;color:#2c3e50;">LAPORAN DATA BUKU</h3>
+                <h3 style="margin:0;color:#2c3e50;">LAPORAN DATA EBOOK</h3>
                 <p style="margin:5px 0 0;font-size:12px;">'.$data['institution'].' | '.$data['tanggalLaporan'].'</p>
             </div>');
 
@@ -148,14 +148,14 @@ class LaporanEbookController extends Controller
                 </tr>
             </table>');
 
-            $html = View::make('laporan.buku.pdf', $data)->render();
+            $html = View::make('laporan.ebook.pdf', $data)->render();
             $mpdf->WriteHTML($html);
 
             return response()->streamDownload(
                 function() use ($mpdf) {
                     $mpdf->Output('', 'I');
                 },
-                'Laporan_Buku_'.now()->format('Ymd_His').'.pdf',
+                'Laporan_Ebook_'.now()->format('Ymd_His').'.pdf',
                 ['Content-Type' => 'application/pdf']
             );
 
@@ -168,113 +168,116 @@ class LaporanEbookController extends Controller
     {
         $data = $this->getEnhancedReportData($request);
         
-        // Prepare data for export - transform the bukuAll collection
+        // Prepare data for export - transform the ebookAll collection
         $exportData = [
-            'buku'                  => $data['bukuAll'],
-            'totalKoleksi'          => $data['totalKoleksi'],
-            'totalTersedia'         => $data['totalTersedia'],
-            'totalDipinjam'         => $data['totalDipinjam'],
-            'totalHabis'            => $data['totalHabis'],
+            'ebooks'                => $data['ebookAll'],
+            'totalKoleksi'         => $data['totalKoleksi'],
+            'totalDapatDiunduh'     => $data['totalDapatDiunduh'],
+            'totalTidakDapatDiunduh' => $data['totalTidakDapatDiunduh'],
+            'totalDibaca'          => $data['totalDibaca'],
             'totalByKategori'       => $data['totalByKategori'],
-            'bukuPopuler'           => $data['bukuPopuler'],
-            'tanggalLaporan'        => $data['tanggalLaporan']
+            'totalByProdi'          => $data['totalByProdi'],
+            'ebookPopuler'          => $data['ebookPopuler'],
+            'tanggalLaporan'       => $data['tanggalLaporan']
         ];
         
-        
         return Excel::download(
-            new BukuExport($exportData, $data['tanggalLaporan']), 
-            'laporan_buku_'.now()->format('YmdHis').'.xlsx'
+            new EbookExport($exportData, $data['tanggalLaporan']), 
+            'laporan_ebook_'.now()->format('YmdHis').'.xlsx'
         );
     }
 
-
     private function getEnhancedReportData($request)
     {
-        // Main book query with filters
-        $bukuQuery = Buku::with(['kategori', 'penerbit'])
-            ->withCount(['peminjaman' => function($query) {
-                $query->where('status', '!=', 'dibatalkan');
-            }])
+        // Main ebook query with filters (same as index method)
+        $ebookQuery = Ebook::with(['kategori', 'penerbit', 'prodi', 'pengunggah'])
+            ->withCount(['readings as total_dibaca'])
             ->when($request->kategori_id, function($query, $kategori_id) {
                 return $query->where('kategori_id', $kategori_id);
             })
+            ->when($request->prodi_id, function($query, $prodi_id) {
+                return $query->where('prodi_id', $prodi_id);
+            })
             ->when($request->status, function($query, $status) {
-                if ($status == 'habis') {
-                    return $query->where('jumlah', 0);
-                } elseif ($status == 'tersedia') {
-                    return $query->where('jumlah', '>', 0);
-                } elseif ($status == 'dipinjam') {
-                    return $query->whereHas('peminjaman', function($q) {
-                        $q->where('status', 'dipinjam');
-                    });
+                if ($status == 'dapat_diunduh') {
+                    return $query->where('izin_unduh', true);
+                } elseif ($status == 'tidak_dapat_diunduh') {
+                    return $query->where('izin_unduh', false);
                 }
             })
             ->when($request->search, function($query, $search) {
-                return $query->where(function($q) use ($search) {
-                    $q->where('judul', 'like', '%'.$search.'%')
-                    ->orWhere('isbn', 'like', '%'.$search.'%')
-                    ->orWhere('penulis', 'like', '%'.$search.'%');
-                });
+                return $query->where('judul', 'like', '%'.$search.'%')
+                            ->orWhere('penulis', 'like', '%'.$search.'%');
             });
 
         // Get paginated data for view
-        $bukuPaginated = $bukuQuery->orderBy('judul')->paginate(10);
+        $ebookPaginated = $ebookQuery->orderBy('judul')->paginate(10);
         
         // Get all data for export
-        $bukuAll = $bukuQuery->orderBy('judul')->get();
+        $ebookAll = $ebookQuery->orderBy('judul')->get();
 
         // Calculate statistics
-        $totalKoleksi = $bukuAll->count();
-        $totalTersedia = $bukuAll->where('jumlah', '>', 0)->count();
-        $totalHabis = $bukuAll->where('jumlah', 0)->count();
-        $totalDipinjam = $bukuAll->sum('peminjaman_count');
-        $bukuBaru = Buku::where('created_at', '>=', now()->subDays(30))->count();
+        $totalKoleksi = Ebook::count();
+        $totalDapatDiunduh = Ebook::where('izin_unduh', true)->count();
+        $totalTidakDapatDiunduh = Ebook::where('izin_unduh', false)->count();
+        $totalDibaca = EbookReading::count();
+        $pembacaAktif = EbookReading::select('user_id')
+                        ->groupBy('user_id')
+                        ->get()
+                        ->count();
+        $ebookBaru = Ebook::where('created_at', '>=', now()->subDays(30))->count();
 
         // Category statistics
-        $totalByKategori = Kategori::withCount(['buku' => function($query) {
-                $query->withCount('peminjaman');
-            }])
+        $totalByKategori = Kategori::withCount('ebook')
             ->get()
-            ->map(function($kategori) {
+            ->map(function ($kategori) {
                 return [
                     'nama' => $kategori->nama,
-                    'total_buku' => $kategori->buku_count,
-                    'total_pinjam' => $kategori->buku->sum('peminjaman_count')
+                    'total_ebook' => $kategori->ebook_count
+                ];
+            });
+        
+        $totalByProdi = Prodi::withCount('ebook')
+            ->get()
+            ->map(function ($prodi) {
+                return [
+                    'nama' => $prodi->nama,
+                    'total_ebook' => $prodi->ebook_count
                 ];
             });
 
-        // Recent borrowings
-        $peminjamanTerakhir = Peminjaman::with(['buku', 'user'])
-            ->where('status', '!=', 'dibatalkan')
+        // Recent readings
+        $pembacaanTerakhir = EbookReading::with(['ebook', 'user'])
             ->latest()
             ->take(5)
             ->get();
 
-        // Popular books
-        $bukuPopuler = Buku::withCount(['peminjaman' => function($query) {
-                $query->where('status', '!=', 'dibatalkan');
-            }])
-            ->orderBy('peminjaman_count', 'desc')
+        // Popular ebooks
+        $ebookPopuler = Ebook::withCount('readings as readings_count')
+            ->orderByDesc('readings_count')
             ->take(5)
             ->get();
 
         return [
             // For view
-            'buku' => $bukuPaginated,
+            'ebooks' => $ebookPaginated,
             'kategoris' => Kategori::all(),
+            'prodis' => Prodi::all(),
             
             // Statistics
             'totalKoleksi' => $totalKoleksi,
-            'totalTersedia' => $totalTersedia,
-            'totalHabis' => $totalHabis,
-            'totalDipinjam' => $totalDipinjam,
-            'bukuBaru' => $bukuBaru,
+            'totalDapatDiunduh' => $totalDapatDiunduh,
+            'totalTidakDapatDiunduh' => $totalTidakDapatDiunduh,
+            'totalDibaca' => $totalDibaca,
+            'pembacaAktif' => $pembacaAktif,
+            'ebookBaru' => $ebookBaru,
             'totalByKategori' => $totalByKategori,
-            'peminjamanTerakhir' => $peminjamanTerakhir,
-            'bukuPopuler' => $bukuPopuler,
+            'totalByProdi' => $totalByProdi,
+            'pembacaanTerakhir' => $pembacaanTerakhir,
+            'ebookPopuler' => $ebookPopuler,
             
             // For export
-            'bukuAll' => $bukuAll,
+            'ebookAll' => $ebookAll,
             'tanggalLaporan' => now()->format('d F Y'),
             'printed_by' => auth()->user()->name ?? 'System',
             'printed_at' => now()->format('d/m/Y H:i'),
@@ -282,6 +285,7 @@ class LaporanEbookController extends Controller
             
             // Filter parameters
             'kategori_id' => $request->kategori_id,
+            'prodi_id' => $request->prodi_id,
             'status' => $request->status,
             'search' => $request->search
         ];
