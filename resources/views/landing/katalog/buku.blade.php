@@ -46,73 +46,54 @@
             </div>
         </div>
 
-        <!-- Results Section -->
-        <div class="row g-4">
-            @forelse($bukus as $buku)
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
-                    <div class="card-img-container position-relative">
-                        @if($buku->gambar_sampul)
-                            <img src="{{ asset('storage/' . $buku->gambar_sampul) }}" 
-                                 class="card-img-top" 
-                                 alt="{{ $buku->judul }}">
-                        @else
-                            <div class="no-cover d-flex align-items-center justify-content-center">
-                                <i class="fas fa-book text-muted"></i>
+        <!-- Results Section - Vertical Card List -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                @forelse($bukus as $buku)
+                <div class="book-list-item border-bottom p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">{{ $buku->judul }}</h5>
+                            <p class="text-muted mb-2">{{ $buku->penulis }}</p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    {{ $buku->kategori->nama ?? 'Umum' }}
+                                </span>
+                                @if($buku->prodi)
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                    {{ $buku->prodi->nama }}
+                                </span>
+                                @endif
+                                <span class="badge bg-info bg-opacity-10 text-info">
+                                    {{ $buku->tahun_terbit }}
+                                </span>
+                                <span class="badge {{ $buku->jumlah > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger' }}">
+                                    <i class="fas {{ $buku->jumlah > 0 ? 'fa-check' : 'fa-times' }} me-1"></i>
+                                    {{ $buku->jumlah > 0 ? 'Tersedia' : 'Habis' }} ({{ $buku->jumlah }})
+                                </span>
                             </div>
-                        @endif
-                        <div class="position-absolute top-0 end-0 m-2">
-                            <span class="badge bg-success rounded-pill">
+                        </div>
+                        
+                        <div class="d-flex align-items-center ms-3">
+                            <span class="badge bg-success rounded-pill me-2">
                                 <i class="fas fa-book-open me-1"></i> {{ $buku->total_peminjaman }}
                             </span>
-                        </div>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h5 class="card-title text-truncate">{{ $buku->judul }}</h5>
-                        <p class="card-text text-muted mb-2">{{ $buku->penulis }}</p>
-                        
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge bg-primary bg-opacity-10 text-primary">
-                                {{ $buku->kategori->nama ?? 'Umum' }}
-                            </span>
-                            @if($buku->prodi)
-                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                {{ $buku->prodi->nama }}
-                            </span>
-                            @endif
-                            <span class="badge bg-info bg-opacity-10 text-info">
-                                {{ $buku->tahun_terbit }}
-                            </span>
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge {{ $buku->jumlah > 0 ? 'bg-success bg-opacity-10 text-success' : 'bg-danger bg-opacity-10 text-danger' }}">
-                                <i class="fas {{ $buku->jumlah > 0 ? 'fa-check' : 'fa-times' }} me-1"></i>
-                                {{ $buku->jumlah > 0 ? 'Tersedia' : 'Habis' }}
-                            </span>
-                            
                             <a href="{{ route('detail_buku', ['id' => $buku->id]) }}" 
-                               class="btn btn-sm btn-outline-primary rounded-circle">
-                                <i class="fas fa-eye"></i>
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i> Detail
                             </a>
                         </div>
                     </div>
-                    
-                    <div class="card-footer bg-white border-0 pt-0">
-                        <small class="text-muted d-block text-center">
-                            <i class="fas fa-info-circle me-1"></i> Stok: {{ $buku->jumlah }} buku
-                        </small>
+                </div>
+                @empty
+                <div class="p-4 text-center">
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-book-open me-2"></i> Tidak ada buku yang ditemukan
                     </div>
                 </div>
+                @endforelse
             </div>
-            @empty
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-book-open me-2"></i> Tidak ada buku yang ditemukan
-                </div>
-            </div>
-            @endforelse
         </div>
 
         <!-- Pagination -->
@@ -132,30 +113,16 @@
         background-clip: text;
     }
     
-    .card-img-container {
-        height: 200px;
-        overflow: hidden;
+    .book-list-item {
+        transition: background-color 0.2s ease;
     }
     
-    .card-img-top {
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
+    .book-list-item:hover {
+        background-color: rgba(59, 130, 246, 0.05);
     }
     
-    .no-cover {
-        height: 100%;
-        background-color: #f8f9fa;
-        color: #6c757d;
-        font-size: 3rem;
-    }
-    
-    .hover-shadow:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-    
-    .hover-shadow:hover .card-img-top {
-        transform: scale(1.05);
+    .book-list-item:last-child {
+        border-bottom: none !important;
     }
     
     .page-link {
@@ -171,13 +138,6 @@
     .page-item.active .page-link {
         background-color: #3b82f6;
         border-color: #3b82f6;
-    }
-    
-    .text-truncate {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
 </style>
 

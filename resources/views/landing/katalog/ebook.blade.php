@@ -13,7 +13,7 @@
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-body p-3">
                 <form action="{{ route('ebook') }}" method="GET" class="row g-2 align-items-center">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="input-group">
                             <span class="input-group-text bg-white border-end-0">
                                 <i class="fas fa-search text-muted"></i>
@@ -34,79 +34,63 @@
                         </select>
                     </div>
                     
-                    <div class="col-md-4 d-flex gap-2">
+                    <div class="col-md-2 d-flex gap-2">
                         <button type="submit" class="btn btn-primary flex-grow-1">
                             <i class="fas fa-search me-1"></i> Cari
                         </button>
+                        <a href="{{ route('ebook') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt"></i>
+                        </a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Results Section -->
-        <div class="row g-4">
-            @forelse($ebooks as $ebook)
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
-                    <div class="card-img-container position-relative">
-                        @if($ebook->gambar_sampul)
-                            <img src="{{ asset('storage/' . $ebook->gambar_sampul) }}" 
-                                 class="card-img-top" 
-                                 alt="{{ $ebook->judul }}">
-                        @else
-                            <div class="no-cover d-flex align-items-center justify-content-center">
-                                <i class="fas fa-file-pdf text-danger"></i>
+        <!-- Results Section - Vertical Card List -->
+        <div class="card border-0 shadow-sm mb-5">
+            <div class="card-body p-0">
+                @forelse($ebooks as $ebook)
+                <div class="ebook-list-item border-bottom p-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <h5 class="mb-1">{{ $ebook->judul }}</h5>
+                            <p class="text-muted mb-2">{{ $ebook->penulis }}</p>
+                            
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    {{ $ebook->kategori->nama ?? 'Umum' }}
+                                </span>
+                                @if($ebook->prodi)
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                    {{ $ebook->prodi->nama }}
+                                </span>
+                                @endif
+                                <span class="badge {{ $ebook->izin_unduh ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning' }}">
+                                    <i class="fas {{ $ebook->izin_unduh ? 'fa-download' : 'fa-lock' }} me-1"></i>
+                                    {{ $ebook->izin_unduh ? 'Bisa Diunduh' : 'Baca Online' }}
+                                </span>
                             </div>
-                        @endif
-                        <div class="position-absolute top-0 end-0 m-2">
-                            <span class="badge bg-success rounded-pill">
+                        </div>
+                        
+                        <div class="d-flex align-items-center ms-3">
+                            <span class="badge bg-success rounded-pill me-2">
                                 <i class="fas fa-eye me-1"></i> {{ $ebook->total_dibaca }}
                             </span>
-                        </div>
-                    </div>
-                    
-                    <div class="card-body">
-                        <h5 class="card-title text-truncate">{{ $ebook->judul }}</h5>
-                        <p class="card-text text-muted mb-2">{{ $ebook->penulis }}</p>
-                        
-                        <div class="d-flex flex-wrap gap-2 mb-3">
-                            <span class="badge bg-primary bg-opacity-10 text-primary">
-                                {{ $ebook->kategori->nama ?? 'Umum' }}
-                            </span>
-                            @if($ebook->prodi)
-                            <span class="badge bg-secondary bg-opacity-10 text-secondary">
-                                {{ $ebook->prodi->nama }}
-                            </span>
-                            @endif
-                        </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge {{ $ebook->izin_unduh ? 'bg-success bg-opacity-10 text-success' : 'bg-warning bg-opacity-10 text-warning' }}">
-                                <i class="fas {{ $ebook->izin_unduh ? 'fa-download' : 'fa-lock' }} me-1"></i>
-                                {{ $ebook->izin_unduh ? 'Bisa Diunduh' : 'Baca Online' }}
-                            </span>
-                            
                             <a href="{{ route('detail_ebook', ['id' => $ebook->id]) }}" 
-                            class="btn btn-sm btn-outline-primary rounded-circle">
-                            <i class="fas fa-eye"></i>
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i> Detail
                             </a>
                         </div>
                     </div>
-                    
-                    <div class="card-footer bg-white border-0 pt-0">
-                        <small class="text-muted d-block text-center">
-                            <i class="fas fa-info-circle me-1"></i> Login untuk membaca
-                        </small>
+                </div>
+                @empty
+                <div class="p-4 text-center">
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-book-open me-2"></i> Tidak ada ebook yang ditemukan
                     </div>
                 </div>
+                @endforelse
             </div>
-            @empty
-            <div class="col-12">
-                <div class="alert alert-info text-center">
-                    <i class="fas fa-book-open me-2"></i> Tidak ada ebook yang ditemukan
-                </div>
-            </div>
-            @endforelse
         </div>
 
         <!-- Pagination -->
@@ -126,30 +110,16 @@
         background-clip: text;
     }
     
-    .card-img-container {
-        height: 200px;
-        overflow: hidden;
+    .ebook-list-item {
+        transition: background-color 0.2s ease;
     }
     
-    .card-img-top {
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
+    .ebook-list-item:hover {
+        background-color: rgba(16, 185, 129, 0.05);
     }
     
-    .no-cover {
-        height: 100%;
-        background-color: #f8f9fa;
-        color: #dc3545;
-        font-size: 3rem;
-    }
-    
-    .hover-shadow:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-    
-    .hover-shadow:hover .card-img-top {
-        transform: scale(1.05);
+    .ebook-list-item:last-child {
+        border-bottom: none !important;
     }
     
     .page-link {
@@ -165,13 +135,6 @@
     .page-item.active .page-link {
         background-color: #10b981;
         border-color: #10b981;
-    }
-    
-    .text-truncate {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
 </style>
 
