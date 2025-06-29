@@ -94,27 +94,48 @@ class AuthController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
-        $request->validate([
-            'email'             => 'required|email',
-        ], [
-            'email.required'    => 'Alamat email wajib diisi',
-            'email.email'       => 'Format alamat email tidak valid',
-        ]);
+        try {
+            // Validate request
+            $validated = $request->validate([
+                'email' => 'required|email|exists:users,email'
+            ], [
+                'email.required' => 'Alamat email wajib diisi',
+                'email.email'    => 'Format alamat email tidak valid',
+                'email.exists'   => 'Email tidak terdaftar dalam sistem'
+            ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+            // Send password reset link
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
 
-        
-        // Log activity
-        $user = Auth::user();
-        $this->logActivity(
-            'Meminta kirim link lupa password : ' . $user->nama_lengkap,
-            $user);
+            // Check if the reset link was sent successfully
+            if ($status !== Password::RESET_LINK_SENT) {
+                throw new \Exception(__($status));
+            }
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with("success","Berhasil mengirim link reset password")
-            : back()->withErrors(['email' => __($status)]);
+            // Get user by email for logging
+            $user = User::where('email', $validated['email'])->first();
+
+            // Log activity
+            if ($user) {
+                $this->logActivity(
+                    'Meminta kirim link reset password untuk email: ' . $validated['email'],
+                    $user
+                );
+            }
+
+            return back()->with('success', 'Link reset password telah dikirim ke email Anda. Silakan cek inbox atau folder spam.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors());
+            
+        } catch (\Exception $e) {
+            // Log error
+            \Log::error('Failed to send password reset link: ' . $e->getMessage());
+            
+            return back()->withErrors(['email' => 'Gagal mengirim link reset password. Silakan coba lagi.']);
+        }
     }
 
     /**
