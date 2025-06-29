@@ -152,7 +152,7 @@ class AuthController extends Controller
      */
     public function resetPassword(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'token'             => 'required',
             'email'             => 'required|email',
             'password'          => ['required', 'confirmed', Rules\Password::min(8)],
@@ -164,6 +164,7 @@ class AuthController extends Controller
             'password.confirmed'=> 'Konfirmasi password tidak cocok',
             'password.min'      => 'Password minimal harus 8 karakter',
         ]);
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -176,15 +177,19 @@ class AuthController extends Controller
             }
         );
 
+        // Get user by email for logging
+        $user = User::where('email', $validated['email'])->first();
+
         // Log activity
-        $user = Auth::user();
-        $this->logActivity(
-            'Melakukan perubahan password : ' . $user->nama_lengkap,
-            $user);
+        if ($user) {
+            $this->logActivity(
+                'Berhasil reset password : ' . $validated['email'],
+                $user
+            );
+        }
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('success', "Berhasil membuat password baru")
             : back()->withErrors(['email' => [__($status)]]);
     }
-
 }
