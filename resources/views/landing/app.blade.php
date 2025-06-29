@@ -338,6 +338,79 @@
                 font-size: 1rem;
             }
         }
+
+        /* Social Media Popup */
+    .social-popup {
+        position: fixed;
+        bottom: 90px;
+        right: 30px;
+        z-index: 99;
+    }
+    
+    .social-toggle {
+        width: 50px;
+        height: 50px;
+        background-color: #4361ee;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+    }
+    
+    .social-toggle:hover {
+        background-color: #3a56d4;
+        transform: scale(1.1);
+    }
+    
+    .social-buttons {
+        position: absolute;
+        bottom: 60px;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s;
+    }
+    
+    .social-popup:hover .social-buttons {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    .social-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .social-btn:hover {
+        transform: translateY(-3px) scale(1.1);
+    }
+    
+    .facebook { background-color: #3b5998; }
+    .instagram { 
+        background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+    }
+    .youtube { background-color: #ff0000; }
     </style>
 </head>
 <body>
@@ -390,6 +463,16 @@
         </div>
     </footer>
 
+    <!-- Add this right before the Back to Top Button in your HTML -->
+    <div class="social-popup">
+        <button class="social-toggle"><i class="fas fa-share-alt"></i></button>
+        <div class="social-buttons">
+            <a href="https://www.facebook.com/sekolahtinggiteknologipayakumbuh" class="social-btn facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/stt_payakumbuh_official/" class="social-btn instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.youtube.com/@sttpayakumbuh" class="social-btn youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+    </div>
+
     <!-- Back to Top Button -->
     <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
 
@@ -441,6 +524,37 @@
                     });
                 }
             });
+        });
+
+        // Social media popup toggle
+        document.querySelector('.social-toggle').addEventListener('click', function(e) {
+            e.preventDefault();
+            const socialButtons = document.querySelector('.social-buttons');
+            const isVisible = socialButtons.style.opacity === '1';
+            
+            socialButtons.style.opacity = isVisible ? '0' : '1';
+            socialButtons.style.visibility = isVisible ? 'hidden' : 'visible';
+            socialButtons.style.transform = isVisible ? 'translateY(20px)' : 'translateY(0)';
+            
+            // For mobile devices, keep it open until clicked again
+            if(window.innerWidth <= 768) {
+                socialButtons.classList.toggle('force-show');
+            }
+        });
+        
+        // Close when clicking outside on mobile
+        document.addEventListener('click', function(e) {
+            if(window.innerWidth <= 768) {
+                const socialPopup = document.querySelector('.social-popup');
+                const socialButtons = document.querySelector('.social-buttons');
+                
+                if(!socialPopup.contains(e.target) && socialButtons.classList.contains('force-show')) {
+                    socialButtons.style.opacity = '0';
+                    socialButtons.style.visibility = 'hidden';
+                    socialButtons.style.transform = 'translateY(20px)';
+                    socialButtons.classList.remove('force-show');
+                }
+            }
         });
     </script>
 </body>
