@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\BukuExport;
 use Illuminate\Http\Request;
-use App\Models\Buku;
+use App\Models\Ebook;
+use App\Models\EbookReading;
 use App\Models\Kategori;
+use App\Models\Prodi;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\DB;
@@ -13,104 +15,96 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Peminjaman;
 use Mpdf\Mpdf;
 
-class LaporanBukuController extends Controller
+class LaporanEbookController extends Controller
 {
     
     public function index(Request $request)
     {
-        // Query dasar untuk buku dengan filter
-        $buku = Buku::with(['kategori', 'penerbit'])
-            ->withCount(['peminjaman as total_peminjaman' => function($query) {
-                $query->where('status', '!=', 'dibatalkan');
-            }])
+        // Query dasar untuk ebook dengan filter
+        $ebooks = Ebook::with(['kategori', 'penerbit', 'prodi', 'pengunggah'])
+            ->withCount(['readings as total_dibaca'])
             ->when($request->kategori_id, function($query, $kategori_id) {
                 return $query->where('kategori_id', $kategori_id);
             })
+            ->when($request->prodi_id, function($query, $prodi_id) {
+                return $query->where('prodi_id', $prodi_id);
+            })
             ->when($request->status, function($query, $status) {
-                if ($status == 'habis') {
-                    return $query->where('jumlah', 0);
-                } elseif ($status == 'tersedia') {
-                    return $query->where('jumlah', '>', 0);
-                } elseif ($status == 'dipinjam') {
-                    return $query->whereHas('peminjaman', function($q) {
-                        $q->where('status', 'dipinjam');
-                    });
+                if ($status == 'dapat_diunduh') {
+                    return $query->where('izin_unduh', true);
+                } elseif ($status == 'tidak_dapat_diunduh') {
+                    return $query->where('izin_unduh', false);
                 }
             })
             ->when($request->search, function($query, $search) {
                 return $query->where('judul', 'like', '%'.$search.'%')
-                            ->orWhere('isbn', 'like', '%'.$search.'%')
                             ->orWhere('penulis', 'like', '%'.$search.'%');
             })
             ->orderBy('judul')
             ->paginate(10);
 
-        // Statistik dasar dari tabel bukus
-        $totalKoleksi   = Buku::count();
-        $totalTersedia  = Buku::where('jumlah', '>', 0)->count();
-        $totalHabis     = Buku::where('jumlah', 0)->count();
+        // Statistik dasar dari tabel ebooks
+        $totalKoleksi   = Ebook::count();
+        $totalDapatDiunduh  = Ebook::where('izin_unduh', true)->count();
+        $totalTidakDapatDiunduh = Ebook::where('izin_unduh', false)->count();
         
-        // Statistik dari peminjamans
-        $totalDipinjam      = Peminjaman::where('status', 'dipinjam')->count();
-        $totalMenunggu      = Peminjaman::where('status', 'menunggu')->count();
-        $totalDikembalikan  = Peminjaman::where('status', 'dikembalikan')->count();
+        // Statistik pembacaan ebook
+        $totalDibaca      = EbookReading::count();
+        $pembacaAktif     = EbookReading::select('user_id')
+                            ->groupBy('user_id')
+                            ->get()
+                            ->count();
         
         // Statistik gabungan
-        $totalByKategori = Kategori::withCount(['buku' => function($query) {
-                $query->withCount('peminjaman');
-            }])
+        $totalByKategori = Kategori::withCount('ebook')
             ->get()
             ->map(function ($kategori) {
                 return [
                     'nama' => $kategori->nama,
-                    'total_buku' => $kategori->buku_count
+                    'total_ebook' => $kategori->ebook_count
                 ];
             });
         
-       $totalByTahun = Buku::select(
-            DB::raw('YEAR(tahun_terbit) as tahun'),
-            DB::raw('count(*) as total_buku'),
-            DB::raw('(SELECT COUNT(*) FROM peminjamans 
-                    WHERE YEAR(peminjamans.created_at) = YEAR(bukus.tahun_terbit)
-                    AND peminjamans.status != "dibatalkan") as total_pinjam')
-        )
-        ->groupBy('tahun', 'tahun_terbit') // Add tahun_terbit to GROUP BY
-        ->orderBy('tahun', 'desc')
-        ->get();
+        $totalByProdi = Prodi::withCount('ebook')
+            ->get()
+            ->map(function ($prodi) {
+                return [
+                    'nama' => $prodi->nama,
+                    'total_ebook' => $prodi->ebook_count
+                ];
+            });
         
-        $bukuBaru = Buku::where('created_at', '>=', now()->subDays(30))
+        $ebookBaru = Ebook::where('created_at', '>=', now()->subDays(30))
             ->count();
         
-        $bukuPopuler = Buku::withCount(['peminjaman' => function($query) {
-                $query->where('status', '!=', 'dibatalkan');
-            }])
-            ->orderBy('peminjaman_count', 'desc')
+        $ebookPopuler = Ebook::withCount('readings as readings_count')
+            ->orderByDesc('readings_count')
             ->take(5)
             ->get();
         
-        // Statistik peminjaman
-        $peminjamanTerakhir = Peminjaman::with(['buku', 'user'])
-            ->where('status', '!=', 'dibatalkan')
+        // Statistik pembacaan
+        $pembacaanTerakhir = EbookReading::with(['ebook', 'user'])
             ->latest()
             ->take(5)
             ->get();
         
         $kategoris = Kategori::all();
+        $prodis = Prodi::all();
         
-        return view('laporan.buku.index', compact(
-            'buku',
+        return view('laporan.ebook.index', compact(
+            'ebooks',
             'kategoris',
+            'prodis',
             'totalKoleksi',
-            'totalTersedia',
-            'totalHabis',
-            'totalDipinjam',
-            'totalMenunggu',
-            'totalDikembalikan',
+            'totalDapatDiunduh',
+            'totalTidakDapatDiunduh',
+            'totalDibaca',
+            'pembacaAktif',
             'totalByKategori',
-            'totalByTahun',
-            'bukuBaru',
-            'bukuPopuler',
-            'peminjamanTerakhir'
+            'totalByProdi',
+            'ebookBaru',
+            'ebookPopuler',
+            'pembacaanTerakhir'
         ));
     }
     

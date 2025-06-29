@@ -14,6 +14,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LaporanAnggotaController;
 use App\Http\Controllers\LaporanBukuController;
+use App\Http\Controllers\LaporanEbookController;
 use App\Http\Controllers\LaporanPeminjamanController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PeminjamanControllers;
@@ -135,6 +136,13 @@ Route::middleware(['auth'])->group(function() {
                 Route::get('/Lap_buku', [LaporanBukuController::class, 'index'])->name('laporan.buku.index');
                 Route::get('/Lap_pdf', [LaporanBukuController::class, 'exportPDF'])->name('laporan.buku.export.pdf');
                 Route::get('/Lap_excel', [LaporanBukuController::class, 'exportExcel'])->name('laporan.buku.export.excel');
+            });
+
+            // Ebook reports
+            Route::prefix('ebook')->group(function() {
+                Route::get('/Lap_ebook', [LaporanEbookController::class, 'index'])->name('laporan.ebook.index');
+                Route::get('/Lap_pdf', [LaporanEbookController::class, 'exportPDF'])->name('laporan.ebook.export.pdf');
+                Route::get('/Lap_excel', [LaporanEbookController::class, 'exportExcel'])->name('laporan.ebook.export.excel');
             });
         });
         

@@ -54,7 +54,7 @@
         <span class="menu-title">Laporan</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->is('laporan/anggota*') || request()->is('laporan/Lap_buku*') ||  request()->is('laporan/Lap_peminjaman*') ? 'show' : '' }}" id="laporan">
+      <div class="collapse {{ request()->is('laporan/anggota*') || request()->is('laporan/Lap_buku*') || request()->is('laporan/Lap_ebook*') ||  request()->is('laporan/Lap_peminjaman*') ? 'show' : '' }}" id="laporan">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('laporan/Lap_peminjaman*') ? 'active' : '' }}" href="{{ route('laporan.peminjaman') }}">Peminjaman</a>
@@ -64,6 +64,9 @@
           </li>
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('laporan/Lap_buku*') ? 'active' : '' }}" href="{{ route('laporan.buku.index') }}">Buku</a>
+          </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('laporan/Lap_ebook*') ? 'active' : '' }}" href="{{ route('laporan.ebook.index') }}">Ebook</a>
           </li>
         </ul>
       </div>
