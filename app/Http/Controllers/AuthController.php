@@ -105,6 +105,13 @@ class AuthController extends Controller
             $request->only('email')
         );
 
+        
+        // Log activity
+        $user = Auth::user();
+        $this->logActivity(
+            'Meminta kirim link lupa password : ' . $user->nama_lengkap,
+            $user);
+
         return $status === Password::RESET_LINK_SENT
             ? back()->with("success","Berhasil mengirim link reset password")
             : back()->withErrors(['email' => __($status)]);
@@ -147,6 +154,12 @@ class AuthController extends Controller
                 event(new PasswordReset($user));
             }
         );
+
+        // Log activity
+        $user = Auth::user();
+        $this->logActivity(
+            'Melakukan perubahan password : ' . $user->nama_lengkap,
+            $user);
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('success', "Berhasil membuat password baru")

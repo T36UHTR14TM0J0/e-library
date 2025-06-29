@@ -24,7 +24,6 @@
     
     <!-- Custom Style -->
     <style>
-            
       body {
         font-family: 'Poppins', sans-serif;
       }
@@ -67,6 +66,22 @@
       .alert {
         border-radius: 8px;
         font-size: 0.9rem;
+      }
+      
+      /* Password toggle button */
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #6c757d;
+      }
+      
+      .password-input-group {
+        position: relative;
       }
       
       /* Animation for form */
@@ -124,9 +139,12 @@
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
-                  <div class="form-group">
+                  <div class="form-group password-input-group">
                     <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 
                            id="password" name="password" placeholder="Password">
+                    <button type="button" class="password-toggle" id="togglePassword">
+                      <i class="fa fa-eye"></i>
+                    </button>
                     @error('password')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -156,56 +174,68 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      // Fungsi dasar SweetAlert
-      function showSuccessAlert(message) {
-          Swal.fire({
-              icon: 'success',
-              title: message,
-              timer: 3000,
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false
-          });
-      }
-
-      function showErrorAlert(message) {
-          Swal.fire({
-              icon: 'error',
-              title: message,
-              timer: 3000,
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false
-          });
-      }
-
-      function confirmDelete(userId) {
-          Swal.fire({
-              title: 'Apakah Anda yakin?',
-              text: "Anda tidak akan dapat mengembalikan ini!",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#3085d6',
-              confirmButtonText: 'Ya, hapus!'
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  document.getElementById('delete-form-' + userId).submit();
-              }
-          });
-      }
-
-      @if(session('success'))
+      // Password toggle functionality
       document.addEventListener('DOMContentLoaded', function() {
-          showSuccessAlert("{{ session('success') }}");
-      });
-      @endif
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        
+        togglePassword.addEventListener('click', function() {
+          // Toggle the type attribute
+          const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+          password.setAttribute('type', type);
+          
+          // Toggle the eye icon
+          this.querySelector('i').classList.toggle('fa-eye');
+          this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
 
-      @if(session('error'))
-      document.addEventListener('DOMContentLoaded', function() {
-          showErrorAlert("{{ session('error') }}");
+        // Fungsi dasar SweetAlert
+        function showSuccessAlert(message) {
+            Swal.fire({
+                icon: 'success',
+                title: message,
+                timer: 3000,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false
+            });
+        }
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                title: message,
+                timer: 3000,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false
+            });
+        }
+
+        function confirmDelete(userId) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda tidak akan dapat mengembalikan ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + userId).submit();
+                }
+            });
+        }
+
+        @if(session('success'))
+        showSuccessAlert("{{ session('success') }}");
+        @endif
+
+        @if(session('error'))
+        showErrorAlert("{{ session('error') }}");
+        @endif
       });
-      @endif
     </script>
   </body>
 </html>

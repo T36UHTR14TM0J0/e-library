@@ -42,19 +42,29 @@
 
                 <div class="form-group mb-3">
                     <label class="form-label">Password <span class="text-danger">*</span></label>
-                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" 
-                           placeholder="Masukkan password">
-                    @error('password')
-                      <div class="invalid-feedback">
-                        {{ $message }}
-                      </div>
-                    @enderror
+                    <div class="input-group">
+                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" 
+                               placeholder="Masukkan password">
+                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#password">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        @error('password')
+                          <div class="invalid-feedback">
+                            {{ $message }}
+                          </div>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-                    <input type="password" name="password_confirmation" class="form-control" 
-                           placeholder="Masukkan konfirmasi password">
+                    <div class="input-group">
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" 
+                               placeholder="Masukkan konfirmasi password">
+                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#password_confirmation">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -172,6 +182,24 @@
         
         // Toggle on change
         roleSelect.addEventListener('change', toggleFields);
+
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const target = document.querySelector(this.getAttribute('data-target'));
+                const icon = this.querySelector('i');
+                
+                if (target.type === 'password') {
+                    target.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    target.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
     });
 </script>
 @endpush

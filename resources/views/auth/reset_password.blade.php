@@ -64,6 +64,22 @@
         margin-bottom: 1.5rem;
       }
       
+      /* Password toggle button */
+      .password-toggle {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #6c757d;
+      }
+      
+      .password-input-group {
+        position: relative;
+      }
+      
       /* Animation for form */
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
@@ -129,18 +145,24 @@
                     @enderror
                   </div>
                   
-                  <div class="form-group">
+                  <div class="form-group password-input-group">
                     <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror" 
                            id="password" name="password" placeholder="Password Baru" required>
+                    <button type="button" class="password-toggle" id="togglePassword">
+                      <i class="fa fa-eye"></i>
+                    </button>
                     @error('password')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                     <div class="password-strength">Minimal 8 karakter</div>
                   </div>
                   
-                  <div class="form-group">
+                  <div class="form-group password-input-group">
                     <input type="password" class="form-control form-control-lg" 
                            id="password-confirm" name="password_confirmation" placeholder="Konfirmasi Password Baru" required>
+                    <button type="button" class="password-toggle" id="togglePasswordConfirm">
+                      <i class="fa fa-eye"></i>
+                    </button>
                   </div>
                   
                   <div class="mt-3 d-grid gap-2">
@@ -170,45 +192,35 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      // Fungsi dasar SweetAlert
-      function showSuccessAlert(message) {
-          Swal.fire({
-              icon: 'success',
-              title: message,
-              timer: 3000,
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false
-          });
-      }
-
-      function showErrorAlert(message) {
-          Swal.fire({
-              icon: 'error',
-              title: message,
-              timer: 3000,
-              toast: true,
-              position: 'top-end',
-              showConfirmButton: false
-          });
-      }
-
-      @if(session('success'))
       document.addEventListener('DOMContentLoaded', function() {
-          showSuccessAlert("{{ session('success') }}");
-      });
-      @endif
+        // Password toggle functionality
+        const togglePassword = document.querySelector('#togglePassword');
+        const password = document.querySelector('#password');
+        const togglePasswordConfirm = document.querySelector('#togglePasswordConfirm');
+        const passwordConfirm = document.querySelector('#password-confirm');
+        
+        togglePassword.addEventListener('click', function() {
+          // Toggle the type attribute
+          const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+          password.setAttribute('type', type);
+          
+          // Toggle the eye icon
+          this.querySelector('i').classList.toggle('fa-eye');
+          this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
 
-      @if($errors->any())
-      document.addEventListener('DOMContentLoaded', function() {
-          @foreach ($errors->all() as $error)
-              showErrorAlert("{{ $error }}");
-          @endforeach
-      });
-      @endif
+        togglePasswordConfirm.addEventListener('click', function() {
+          // Toggle the type attribute
+          const type = passwordConfirm.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordConfirm.setAttribute('type', type);
+          
+          // Toggle the eye icon
+          this.querySelector('i').classList.toggle('fa-eye');
+          this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
 
-      // Password strength indicator
-      document.getElementById('password').addEventListener('input', function() {
+        // Password strength indicator
+        password.addEventListener('input', function() {
           const password = this.value;
           const strengthText = document.querySelector('.password-strength');
           
@@ -222,6 +234,40 @@
               strengthText.textContent = 'Password cukup kuat';
               strengthText.style.color = '#28a745';
           }
+        });
+
+        // Fungsi dasar SweetAlert
+        function showSuccessAlert(message) {
+            Swal.fire({
+                icon: 'success',
+                title: message,
+                timer: 3000,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false
+            });
+        }
+
+        function showErrorAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                title: message,
+                timer: 3000,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false
+            });
+        }
+
+        @if(session('success'))
+        showSuccessAlert("{{ session('success') }}");
+        @endif
+
+        @if($errors->any())
+        @foreach ($errors->all() as $error)
+            showErrorAlert("{{ $error }}");
+        @endforeach
+        @endif
       });
     </script>
   </body>
