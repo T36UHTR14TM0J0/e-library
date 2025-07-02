@@ -23,6 +23,7 @@ use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\ProsedurController;
 use App\Http\Controllers\UsersControllers;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/showForgotPasswordForm', [AuthController::class, 'showForgotPasswordForm'])->name('lupa_password');
@@ -58,6 +59,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('loginProses');
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth'])->group(function() {
+    Route::resource('reviews', ReviewController::class);
     Route::get('/histori', [HistoryController::class, 'index'])->name('histori.index');
     Route::get('/histori/filter', [HistoryController::class, 'filter'])->name('histori.filter');
     // Profile routes

@@ -14,14 +14,12 @@ class UsersControllers extends Controller
     public function index()
     {
         $users = User::query()
-            ->when(request('username'), function($query) {
-                $query->where('username', 'like', '%'.request('username').'%');
-            })
-            ->when(request('npm'), function($query) {
-                $query->where('npm', 'like', '%'.request('npm').'%');
-            })
-            ->when(request('nidn'), function($query) {
-                $query->where('nidn', 'like', '%'.request('nidn').'%');
+            ->when(request('search'), function($query) {
+                $query->where(function($q) {
+                    $q->where('username', 'like', '%'.request('search').'%')
+                    ->orWhere('npm', 'like', '%'.request('search').'%')
+                    ->orWhere('nidn', 'like', '%'.request('search').'%');
+                });
             })
             ->when(request('role'), function($query) {
                 $query->where('role', request('role'));

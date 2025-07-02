@@ -16,13 +16,10 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('users.index') }}" class="needs-validation" novalidate>
                         <div class="row g-3">
-                            <div class="col-md-3">
-                                <label for="npm" class="form-label fw-medium">NPM/NIDN</label>
-                                <input type="text" name="npm" id="npm" class="form-control form-control-sm" placeholder="Masukkan NPM atau NIDN" value="{{ request('npm') }}">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="username" class="form-label fw-medium">Username</label>
-                                <input type="text" name="username" id="username" class="form-control form-control-sm" placeholder="Cari username" value="{{ request('username') }}">
+                            <div class="col-md-6">
+                                <label for="search" class="form-label fw-medium">Cari (NPM/NIDN/Username)</label>
+                                <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                       placeholder="Masukkan NPM, NIDN, atau Username" value="{{ request('search') }}">
                             </div>
                             <div class="col-md-3">
                                 <label for="role" class="form-label fw-medium">Role</label>
@@ -50,7 +47,7 @@
                                 </a> --}}
                             </div>
                             <div>
-                                @if(request()->has('npm') || request()->has('nama_lengkap') || request()->has('username') || request()->has('role') || request()->has('status_aktif'))
+                                @if(request()->has('search') || request()->has('role') || request()->has('status_aktif'))
                                 <a href="{{ route('users.index') }}" class="btn btn-sm btn-outline-secondary me-2">
                                     <i class="bi bi-x-circle me-1"></i> Reset
                                 </a>
@@ -80,6 +77,7 @@
                                     <th class="text-center bg-primary text-white" width="5%">No</th>
                                     <th class="text-center bg-primary text-white">NPM/NIDN</th>
                                     <th class="text-center bg-primary text-white">Username</th>
+                                    <th class="text-center bg-primary text-white">Email</th>
                                     <th class="text-center bg-primary text-white">Role</th>
                                     <th class="text-center bg-primary text-white">Status</th>
                                     <th class="text-center bg-primary text-white">Tanggal Buat</th>
@@ -93,6 +91,7 @@
                                     <td class="text-center">
                                         {{ $user->nidn ?? $user->npm ?? '-' }}
                                     </td>
+                                    <td>{{ $user->username }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td class="text-center">
                                         <span class="badge rounded-pill bg-{{ 
@@ -160,6 +159,22 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     });
+
+    function confirmDelete(userId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Anda tidak akan dapat mengembalikan ini!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + userId).submit();
+            }
+        });
+    }
 </script>
 @endpush
 @endsection

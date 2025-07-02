@@ -29,9 +29,11 @@
       }
       
       .auth-form-light {
-        background: white;
+        background: rgba(255, 255, 255, 0.95);
         border-radius: 16px;
         box-shadow: 0 10px 30px rgba(58, 42, 31, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
       
       .brand-logo h2 {
@@ -94,6 +96,23 @@
         animation: fadeIn 0.6s ease-out;
       }
       
+      /* Background styles */
+      .content-wrapper {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                    url("{{ asset('assets/images/bg-login.jpeg') }}") no-repeat center center;
+        background-size: cover;
+        min-height: 100vh;
+      }
+      
+      /* Alternative background options (uncomment to use) */
+      /*
+      .content-wrapper {
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                    url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center;
+        background-size: cover;
+      }
+      */
+      
       /* Responsive adjustments */
       @media (max-width: 576px) {
         .auth-form-light {
@@ -114,7 +133,7 @@
   <body>
     <div class="container-scroller">
       <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="content-wrapper d-flex align-items-center auth px-0 bg-primary">
+        <div class="content-wrapper d-flex align-items-center auth px-0">
           <div class="row w-100 mx-0">
             <div class="col-lg-4 mx-auto">
               <div class="auth-form-light text-left py-5 px-4 px-sm-5">

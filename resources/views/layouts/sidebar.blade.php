@@ -42,7 +42,13 @@
           <span class="menu-title">Histori</span>
       </a>
   </li>
-    
+    <li class="nav-item">
+      <a class="nav-link {{ request()->is('reviews*') ? 'active' : '' }}" href="{{ route('reviews.index') }}">
+          <i class="icon-clock menu-icon"></i>
+          <span class="menu-title">Komentar / Ulasan</span>
+      </a>
+  </li>
+   
     @if (auth()->user()->isAdmin())
     <li class="nav-item">
       <a class="nav-link {{ request()->is('laporan*') ? 'active' : '' }}" 
