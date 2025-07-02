@@ -75,18 +75,18 @@ class ReviewController extends Controller
         if ($response->denied()) {
             return redirect()->route('reviews.index')->with('error', $response->message());
         }else{
-            return view('reviews.edit', compact('review'));
+            $validated = $request->validate([
+                'comment' => 'required|string|max:1000',
+                'rating' => 'required|integer|min:1|max:5'
+            ]);
+
+            $review->update($validated);
+
+            return redirect()->route('reviews.index')
+                ->with('success', 'Komentar berhasil diperbarui');
         }
 
-        $validated = $request->validate([
-            'comment' => 'required|string|max:1000',
-            'rating' => 'required|integer|min:1|max:5'
-        ]);
-
-        $review->update($validated);
-
-        return redirect()->route('reviews.index')
-            ->with('success', 'Komentar berhasil diperbarui');
+       
     }
 
     public function destroy(Review $review)
@@ -96,12 +96,11 @@ class ReviewController extends Controller
         if ($response->denied()) {
             return redirect()->route('reviews.index')->with('error', $response->message());
         }else{
-            return view('reviews.edit', compact('review'));
+            $review->delete();
+    
+            return redirect()->route('reviews.index')
+                ->with('success', 'Komentar berhasil dihapus');
         }
 
-        $review->delete();
-
-        return redirect()->route('reviews.index')
-            ->with('success', 'Komentar berhasil dihapus');
     }
 }
