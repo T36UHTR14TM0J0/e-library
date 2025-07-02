@@ -96,6 +96,7 @@
                                     <td class="text-center">{{ $review->created_at->format('d M Y') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm" role="group">
+                                            {{-- @if(auth()->id() == $review->user_id || auth()->user()->isAdmin()) --}}
                                             <a href="{{ route('reviews.edit', $review->id) }}" class="btn btn-sm btn-warning text-white" 
                                                data-bs-toggle="tooltip" title="Edit">
                                                 Edit
@@ -109,6 +110,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                             </form>
+                                            {{-- @endif --}}
                                         </div>
                                     </td>
                                 </tr>

@@ -61,10 +61,11 @@ class ReviewController extends Controller
         $response = $this->policy->update(auth()->user(), $review);
         
         if ($response->denied()) {
-            throw new AuthorizationException($response->message());
+            return redirect()->route('reviews.index')->with('error', $response->message());
+        }else{
+            return view('reviews.edit', compact('review'));
         }
         
-        return view('reviews.edit', compact('review'));
     }
 
     public function update(Request $request, Review $review)
@@ -72,7 +73,9 @@ class ReviewController extends Controller
         $response = $this->policy->update(auth()->user(), $review);
         
         if ($response->denied()) {
-            throw new AuthorizationException($response->message());
+            return redirect()->route('reviews.index')->with('error', $response->message());
+        }else{
+            return view('reviews.edit', compact('review'));
         }
 
         $validated = $request->validate([
@@ -91,7 +94,9 @@ class ReviewController extends Controller
         $response = $this->policy->delete(auth()->user(), $review);
         
         if ($response->denied()) {
-            throw new AuthorizationException($response->message());
+            return redirect()->route('reviews.index')->with('error', $response->message());
+        }else{
+            return view('reviews.edit', compact('review'));
         }
 
         $review->delete();
