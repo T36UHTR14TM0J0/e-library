@@ -14,31 +14,13 @@ class EbookControllers extends Controller
 {
     public function index()
     {
-        // $ebooks = Ebook::with(['kategori', 'prodi', 'pengunggah','penerbit'])
-        //     ->when(request('judul'), function($query) {
-        //         $query->where('judul', 'like', '%'.request('judul').'%');
-        //     })
-        //     ->when(request('penerbit_id'), function($query) {
-        //         $query->where('penerbit_id', 'like', '%'.request('penerbit_id').'%');
-        //     })
-        //     ->when(request('kategori_id'), function($query) {
-        //         $query->where('kategori_id', request('kategori_id'));
-        //     })
-        //     ->when(request('prodi_id'), function($query) {
-        //         $query->where('prodi_id', request('prodi_id'));
-        //     })
-        //     ->when(request()->has('izin_unduh'), function($query) {
-        //         $query->where('izin_unduh', request('izin_unduh'));
-        //     })
-        //     ->orderBy(request('sort_by', 'created_at'), request('sort_direction', 'desc'))
-        //     ->paginate(request('per_page', 10));
-
-        // $kategoris  = Kategori::all();
-        // $prodis     = Prodi::all();
-        // $penerbits  = Prodi::all();
-
+        
         $query = Ebook::query()
             ->with(['kategori', 'prodi', 'pengunggah', 'penerbit']);
+
+        if (!auth()->user()->is_admin) {
+            $query->where('penerbit_id', auth()->id());
+        }
 
         // Search filter
         if ($search = request('search')) {
