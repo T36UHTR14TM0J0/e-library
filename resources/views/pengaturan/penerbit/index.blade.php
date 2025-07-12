@@ -103,7 +103,7 @@
                             dari <strong>{{ $penerbit->total() }}</strong> entri
                         </div>
                          <div>
-                            {{ $layanans->links('vendor.pagination.bootstrap-5') }}
+                            {{ $penerbit->links('vendor.pagination.bootstrap-5') }}
                         </div>
                     </div>
                 </div>

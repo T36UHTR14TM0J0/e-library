@@ -9,6 +9,7 @@ use App\Models\Kategori;
 use App\Models\Layanan;
 use App\Models\Prodi;
 use App\Models\Prosedur;
+use App\Models\Galeri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -247,5 +248,20 @@ class LandingController extends Controller
          $buku = Buku::with(['kategori', 'prodi'])
                     ->findOrFail($id);
         return view('landing.katalog.detail_buku', compact('buku'));
+    }
+
+    public function gallery()
+{
+   
+    
+    
+    return view('landing.galeri', compact('galleries', 'activities'));
+}
+
+    public function galeri()
+    {
+         $galeris = Galeri::where('tipe', '1')->paginate(6);
+         $aktivitass = Galeri::where('tipe', '2')->paginate(6);
+        return view('landing.galeri', compact('galeris', 'aktivitass'));
     }
 }

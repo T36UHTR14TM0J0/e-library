@@ -44,7 +44,7 @@
   </li>
     <li class="nav-item">
       <a class="nav-link {{ request()->is('reviews*') ? 'active' : '' }}" href="{{ route('reviews.index') }}">
-          <i class="icon-clock menu-icon"></i>
+          <i class="icon-inbox menu-icon"></i>
           <span class="menu-title">Komentar / Ulasan</span>
       </a>
   </li>
@@ -108,6 +108,30 @@
     </li>
     @endif
 
+    @if (auth()->user()->isAdmin())
+    <li class="nav-item">
+      <a class="nav-link {{ request()->is('galeri*') ? 'active' : '' }}" 
+         data-bs-toggle="collapse" 
+         href="#galeri" 
+         aria-expanded="{{ request()->is('galeri*') ? 'true' : 'false' }}" 
+         aria-controls="galeri">
+        <i class="icon-image menu-icon"></i>
+        <span class="menu-title">Galeri</span>
+        <i class="menu-arrow"></i>
+      </a>
+      <div class="collapse {{ request()->is('galeri/aktivitas*') || request()->is('galeri/galeri*')  ? 'show' : '' }}" id="galeri">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('galeri/galeri*') ? 'active' : '' }}" href="{{ route('galeri.index') }}">Perpustakaan</a>
+          </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('galeri/aktivitas*') ? 'active' : '' }}" href="{{ route('aktivitas.index') }}">Pengunjung</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    @endif
+    
     @if (auth()->user()->isAdmin())
     <li class="nav-item">
       <a class="nav-link {{ request()->is('pengaturan*') ? 'active' : '' }}" 

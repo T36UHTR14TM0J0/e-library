@@ -433,6 +433,9 @@
                         <a class="nav-link" href="{{ route('prosedur') }}">Prosedur</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('galeri') }}">Galeri</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('jamLayanan') }}">Jam Layanan</a>
                     </li>
                     <li class="nav-item">

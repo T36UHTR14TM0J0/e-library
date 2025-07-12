@@ -22,6 +22,8 @@ use App\Http\Controllers\PenerbitControllers;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\ProsedurController;
+use App\Http\Controllers\GaleriControllers;
+use App\Http\Controllers\AktivitasControllers;
 use App\Http\Controllers\UsersControllers;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +46,7 @@ Route::get('/prosedur', [LandingController::class, 'prosedur'])->name('prosedur'
 Route::get('/jam-pelayanan', [LandingController::class, 'jamLayanan'])->name('jamLayanan');
 Route::get('/layanan', [LandingController::class, 'layanan'])->name('layanan');
 Route::get('/tentang', [LandingController::class, 'about'])->name('about');
+Route::get('/galeri', [LandingController::class, 'galeri'])->name('galeri');
 
 /* 
 |--------------------------------------------------------------------------
@@ -113,6 +116,11 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('prosedur', ProsedurController::class);
             Route::resource('logs', ActivityLogController::class)->only(['index', 'show']);
         });
+
+         Route::prefix('galeri')->group(function(){
+            Route::resource('galeri', GaleriControllers::class);
+            Route::resource('aktivitas', AktivitasControllers::class);
+        });
         
         // Master Data routes
         Route::prefix('MasterData')->group(function(){
@@ -134,14 +142,14 @@ Route::middleware(['auth'])->group(function() {
             });
             
             // Buku reports
-            Route::prefix('buku')->group(function() {
+            Route::prefix('Lbuku')->group(function() {
                 Route::get('/Lap_buku', [LaporanBukuController::class, 'index'])->name('laporan.buku.index');
                 Route::get('/Lap_pdf', [LaporanBukuController::class, 'exportPDF'])->name('laporan.buku.export.pdf');
                 Route::get('/Lap_excel', [LaporanBukuController::class, 'exportExcel'])->name('laporan.buku.export.excel');
             });
 
             // Ebook reports
-            Route::prefix('ebook')->group(function() {
+            Route::prefix('Lebook')->group(function() {
                 Route::get('/Lap_ebook', [LaporanEbookController::class, 'index'])->name('laporan.ebook.index');
                 Route::get('/Lap_pdf', [LaporanEbookController::class, 'exportPDF'])->name('laporan.ebook.export.pdf');
                 Route::get('/Lap_excel', [LaporanEbookController::class, 'exportExcel'])->name('laporan.ebook.export.excel');
