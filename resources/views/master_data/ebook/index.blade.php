@@ -51,11 +51,16 @@
             
             <div class="card mt-3 shadow-sm">
                 <div class="card-header bg-dark text-white border-bottom py-3">
-                    <h5 class="mb-0"><i class="bi bi-book me-2"></i> Daftar Ebook</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-book me-2"></i> Daftar Ebook</h5>
+                        <button id="export-pdf" class="btn btn-sm btn-danger text-white">
+                            <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table table-striped table-hover" id="ebooks-table">
                             <thead class="bg-primary">
                                 <tr>
                                     <th class="text-white text-center bg-primary" style="width: 5%">No</th>
@@ -132,15 +137,73 @@
 @endsection
 
 @push('scripts')
+<!-- Add jsPDF library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 <script>    
     // Enable tooltips
     document.addEventListener('DOMContentLoaded', function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-    });
+        });
 
-  
+        // PDF Export functionality
+        document.getElementById('export-pdf').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Title
+            doc.setFontSize(18);
+            doc.text('Daftar Ebook', 105, 15, { align: 'center' });
+            
+            // Date
+            doc.setFontSize(10);
+            const now = new Date();
+            doc.text(`Dicetak pada: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`, 105, 22, { align: 'center' });
+            
+            // Table
+            doc.autoTable({
+                html: '#ebooks-table',
+                startY: 30,
+                styles: {
+                    cellPadding: 3,
+                    fontSize: 10,
+                    valign: 'middle',
+                    halign: 'center'
+                },
+                columnStyles: {
+                    0: { halign: 'center' }, // No
+                    1: { halign: 'left' },   // Judul
+                    2: { halign: 'left' },   // Penerbit
+                    3: { halign: 'left' },   // Kategori
+                    4: { halign: 'left' },   // Prodi
+                    5: { halign: 'left' },   // Uploader
+                    6: { halign: 'center' }, // Izin Unduh
+                    7: { halign: 'center' }  // Aksi (will be removed)
+                },
+                didParseCell: function(data) {
+                    // Remove the "Aksi" column (column index 7)
+                    if (data.column.index === 7) {
+                        data.cell.text = '';
+                    }
+                    
+                    // Convert badge to text for Izin Unduh column (column index 6)
+                    if (data.column.index === 6) {
+                        if (data.cell.text.includes('Ya')) {
+                            data.cell.text = 'Ya';
+                        } else if (data.cell.text.includes('Tidak')) {
+                            data.cell.text = 'Tidak';
+                        }
+                    }
+                },
+                margin: { top: 30 }
+            });
+            
+            // Save the PDF
+            doc.save(`daftar-ebook_${now.getTime()}.pdf`);
+        });
+    });
 </script>
 @endpush
