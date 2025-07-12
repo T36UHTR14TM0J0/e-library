@@ -58,58 +58,43 @@
             @else
             <div class="row g-4 px-3">
                 @foreach ($bukus as $buku)
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="card card-hover h-100">
-                       <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
-                            <div class="d-block blur-shadow-image">
-                                <img src="{{ asset($buku->gambar_sampul ? 'storage/' . $buku->gambar_sampul : 'assets/images/default-cover.png') }}" 
-                                    alt="{{ $buku->judul ?? 'Book Cover' }}" 
-                                    class="img-fluid border-radius-lg" 
-                                    style="height: 200px; width: 100%; object-fit: cover;"
-                                    onerror="this.src='{{ asset('assets/images/default-cover.png') }}'">
-                            </div>
-                            <div class="colored-shadow" 
-                                style="background-image: url('{{ asset($buku->gambar_sampul ? 'storage/' . $buku->gambar_sampul : 'assets/images/default-cover.png') }}');"></div>
+                        <div class="card-header p-0 mx-2 mt-2 position-relative">
+                            <img src="{{ asset($buku->gambar_sampul ? 'storage/' . $buku->gambar_sampul : 'assets/images/default-cover.png') }}" 
+                                alt="{{ $buku->judul ?? 'Book Cover' }}" 
+                                class="img-fluid rounded" 
+                                style="height: 150px; width: 100%; object-fit: cover;"
+                                onerror="this.src='{{ asset('assets/images/default-cover.png') }}'">
                         </div>
-                        <div class="card-body pt-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-gradient-danger">
-                                    {{ $buku->prodi->nama ?? '-' }}
-                                </span>
-                                <div>
-                                    <span class="badge bg-info me-1">
-                                        Tersedia: {{ $buku->jumlahTersedia() }}
-                                    </span>
-                                </div>
+                        <div class="card-body pt-2 px-2 pb-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="badge bg-danger small">{{ Str::limit($buku->prodi->nama ?? '-', 10) }}</span>
+                                <span class="badge bg-info small">{{ $buku->jumlahTersedia() }}</span>
                             </div>
-                            <h5 class="font-weight-normal">
-                                <a href="#" class="text-dark">{{ Str::limit($buku->judul, 50) }}</a>
-                            </h5>
-                            <p class="mb-0 text-sm">
-                                <i class="fas fa-user-edit me-1"></i> {{ $buku->penulis }}
+                            <h6 class="card-title mb-1">
+                                <a href="#" class="text-dark">{{ Str::limit($buku->judul, 30) }}</a>
+                            </h6>
+                            <p class="mb-1 small text-muted">
+                                <i class="fas fa-user-edit me-1"></i> {{ Str::limit($buku->penulis, 20) }}
                             </p>
-                            <div class="d-flex justify-content-between mt-2">
-                                <span class="badge bg-secondary">
-                                    {{ $buku->kategori->nama ?? '-' }}
-                                </span>
-                                <span class="badge bg-success">
-                                    {{ $buku->created_at->locale('id')->translatedFormat('d F Y H:i') ?? '-' }}
-                                </span>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span class="badge bg-secondary small">{{ Str::limit($buku->kategori->nama ?? '-', 10) }}</span>
+                                <span class="badge bg-success small">{{ $buku->created_at->format('d/m/Y') }}</span>
                             </div>
-                            <hr class="horizontal dark my-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <a href="{{ route('KatalogBuku.show', $buku->id) }}" class="btn btn-sm btn-outline-info">
-                                        Detail
-                                    </a>
-                                </div>
+                        </div>
+                        <div class="card-footer bg-white px-2 py-1">
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ route('KatalogBuku.show', $buku->id) }}" class="btn btn-sm btn-outline-info py-0 px-2">
+                                    Detail
+                                </a>
                                 @if($buku->tersedia() > 0)
-                                <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#pinjamModal-{{ $buku->id }}">
+                                <button type="button" class="btn btn-sm btn-outline-success py-0 px-2" data-bs-toggle="modal" data-bs-target="#pinjamModal-{{ $buku->id }}">
                                     Pinjam
                                 </button>
                                 @else
-                                <button class="btn btn-sm btn-outline-secondary" disabled>
-                                    Tidak Tersedia
+                                <button class="btn btn-sm btn-outline-secondary py-0 px-2" disabled>
+                                    Habis
                                 </button>
                                 @endif
                             </div>

@@ -23,8 +23,8 @@
                             @foreach($hours as $hour)
                             <tr>
                                 <td>{{ $hour->hari }}</td>
-                                <td>{{ $hour->waktu_buka }}</td>
-                                <td>{{ $hour->waktu_tutup}}</td>
+                                <td>{{ \Carbon\Carbon::parse($hour->waktu_buka)->format('H:i') . ' WIB' }}</td>
+                                <td>{{ \Carbon\Carbon::parse($hour->waktu_tutup)->format('H:i') . ' WIB'}}</td>
                                 <td>{{ $hour->catatan ?? 'Layanan penuh' }}</td>
                             </tr>
                             @endforeach
