@@ -11,6 +11,7 @@ use App\Models\Prodi;
 use App\Models\Prosedur;
 use App\Models\Galeri;
 use App\Models\Informasi;
+use App\Models\Peraturan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -262,5 +263,24 @@ class LandingController extends Controller
     {
         $informasi = Informasi::all();
         return view('landing.informasi', compact('informasi'));
+    }
+   
+    public function peraturan()
+    {
+        // Mengambil data peraturan umum (tipe 1) diurutkan berdasarkan 'urut'
+        $peraturanUmum = Peraturan::where('tipe', 1)
+                            ->orderBy('urut')
+                            ->get();
+        
+        // Mengambil data peraturan ruang baca (tipe 2) diurutkan berdasarkan 'urut'
+        $peraturanRuangBaca = Peraturan::where('tipe', 2)
+                                ->orderBy('urut')
+                                ->get();
+
+        // Mengirim data ke view
+        return view('landing.peraturan', [
+            'peraturanUmum' => $peraturanUmum,
+            'peraturanRuangBaca' => $peraturanRuangBaca
+        ]);
     }
 }

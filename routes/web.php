@@ -25,6 +25,7 @@ use App\Http\Controllers\ProsedurController;
 use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\GaleriControllers;
 use App\Http\Controllers\AktivitasControllers;
+use App\Http\Controllers\PeraturanController;
 use App\Http\Controllers\UsersControllers;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,7 @@ Route::get('/layanan', [LandingController::class, 'layanan'])->name('layanan');
 Route::get('/tentang', [LandingController::class, 'about'])->name('about');
 Route::get('/galeri', [LandingController::class, 'galeri'])->name('galeri');
 Route::get('/informasi', [LandingController::class, 'informasi'])->name('informasi');
+Route::get('/peraturan', [LandingController::class, 'peraturan'])->name('peraturan');
 
 /* 
 |--------------------------------------------------------------------------
@@ -117,6 +119,7 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('jam_layanan', JamLayananController::class);
             Route::resource('prosedur', ProsedurController::class);
             Route::resource('informasi', InformasiController::class);
+            Route::resource('peraturan', PeraturanController::class);
             Route::resource('logs', ActivityLogController::class)->only(['index', 'show']);
         });
 

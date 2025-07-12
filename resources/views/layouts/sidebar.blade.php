@@ -143,10 +143,13 @@
         <span class="menu-title">Pengaturan</span>
         <i class="menu-arrow"></i>
       </a>
-      <div class="collapse {{ request()->is('pengaturan/informasi*') || request()->is('pengaturan/layanan*') || request()->is('pengaturan/prosedur*') || request()->is('pengaturan/jam_layanan*') || request()->is('pengaturan/prodi*') || request()->is('pengaturan/users*') ||  request()->is('pengaturan/penerbit*') ? 'show' : '' }}" id="pengaturan">
+      <div class="collapse {{ request()->is('pengaturan/informasi*') || request()->is('pengaturan/informasi*') || request()->is('pengaturan/layanan*') || request()->is('pengaturan/prosedur*') || request()->is('pengaturan/jam_layanan*') || request()->is('pengaturan/prodi*') || request()->is('pengaturan/users*') ||  request()->is('pengaturan/penerbit*') ? 'show' : '' }}" id="pengaturan">
         <ul class="nav flex-column sub-menu">
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('pengaturan/informasi*') ? 'active' : '' }}" href="{{ route('informasi.index') }}">Informasi</a>
+          </li>
+          <li class="nav-item"> 
+            <a class="nav-link {{ request()->is('pengaturan/peraturan*') ? 'active' : '' }}" href="{{ route('peraturan.index') }}">Peraturan</a>
           </li>
           <li class="nav-item"> 
             <a class="nav-link {{ request()->is('pengaturan/penerbit*') ? 'active' : '' }}" href="{{ route('penerbit.index') }}">Penerbit</a>
