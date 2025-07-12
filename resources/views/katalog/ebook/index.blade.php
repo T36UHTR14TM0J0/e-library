@@ -3,46 +3,52 @@
 @section('content')
 
 <div class="container py-4">
-    <!-- Header Section -->
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-gradient">Katalog E-Book</h1>
-        <p class="lead text-muted">Temukan koleksi ebook terlengkap untuk kebutuhan akademik Anda</p>
-    </div>
-
-    <!-- Filter Section -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body p-3">
-            <form method="GET" action="{{ route('KatalogEbook.index') }}" class="row g-2 align-items-center">
-                <div class="col-md-8">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" 
-                               class="form-control border-start-0" 
-                               name="search" 
-                               value="{{ request('search') }}" 
-                               placeholder="Cari judul, penulis, kategori, prodi, atau penerbit...">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-dark text-white border-bottom py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter E-Book</h5>
+                @if(request()->hasAny(['search', 'sort']))
+                <a href="{{ route('KatalogEbook.index') }}" class="btn btn-sm btn-light">
+                    <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
+                </a>
+                @endif
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('KatalogEbook.index') }}">
+                <div class="row g-3">
+                    <!-- Search Field -->
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" 
+                                name="search" 
+                                class="form-control border-start-0" 
+                                placeholder="Judul, penulis, kategori, prodi, atau penerbit..." 
+                                value="{{ request('search') }}">
+                        </div>
+                        <small class="text-muted ms-2">Anda bisa mencari berdasarkan judul, penulis, kategori, prodi, atau penerbit ebook</small>
+                    </div>
+                    
+                    <!-- Sort Field -->
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <select name="sort" class="form-select">
+                                <option value="">Urutkan</option>
+                                <option value="sering_dibaca" {{ request('sort') == 'sering_dibaca' ? 'selected' : '' }}>Paling Banyak Dibaca</option>
+                                <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                                <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="col-md-2">
-                    <select name="sort" class="form-select">
-                        <option value="">Default</option>
-                        <option value="sering_dibaca" {{ request('sort') == 'sering_dibaca' ? 'selected' : '' }}>Populer</option>
-                        <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
-                    </select>
-                </div>
-                
-                <div class="col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary flex-grow-1">
-                        <i class="fas fa-filter me-1"></i> Filter
+                                
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-funnel me-1"></i> Terapkan Filter
                     </button>
-                    @if(request()->hasAny(['search', 'sort', 'izin_unduh']))
-                    <a href="{{ route('KatalogEbook.index') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-sync-alt"></i>
-                    </a>
-                    @endif
                 </div>
             </form>
         </div>

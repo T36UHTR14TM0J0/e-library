@@ -16,16 +16,16 @@ class ReviewController extends Controller
         $this->policy = new ReviewPolicy();
     }
     
-    public function index()
+   public function index()
     {
         $reviews = Review::with(['user'])
-            ->when(request('user'), function($query) {
-                $query->whereHas('user', function($q) {
-                    $q->where('name', 'like', '%'.request('user').'%');
+            ->when(request('search'), function($query) {
+                $query->where(function($q) {
+                    $q->where('comment', 'like', '%'.request('search').'%')
+                    ->orWhereHas('user', function($userQuery) {
+                        $userQuery->where('name', 'like', '%'.request('search').'%');
+                    });
                 });
-            })
-            ->when(request('comment'), function($query) {
-                $query->where('comment', 'like', '%'.request('comment').'%');
             })
             ->when(request('rating'), function($query) {
                 $query->where('rating', request('rating'));

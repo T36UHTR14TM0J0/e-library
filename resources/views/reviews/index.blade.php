@@ -4,32 +4,32 @@
 @section('content')
 <div class="container-fluid px-4">
     <div class="row my-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-dark text-white border-bottom py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="bi bi-filter-square me-2"></i> Filter Komentar/Ulasan</h5>
-                        <a href="{{ route('reviews.create') }}" class="btn btn-sm btn-light">
-                            <i class="bi bi-plus-circle me-1"></i> Tambah Komentar
+                        @if(request()->hasAny(['search', 'rating']))
+                        <a href="{{ route('reviews.index') }}" class="btn btn-sm btn-light">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filter
                         </a>
+                        @endif
                     </div>
                 </div>
                 <div class="card-body">
                     <form method="GET" action="{{ route('reviews.index') }}">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label for="user" class="form-label">Nama Pengguna</label>
-                                <input type="text" name="user" id="user" class="form-control form-control-sm" 
-                                       placeholder="Cari berdasarkan pengguna" value="{{ request('user') }}">
+                            <div class="col-md-8">
+                                <label for="search" class="form-label">Cari Komentar/Ulasan</label>
+                                <input type="text" name="search" id="search" class="form-control form-control-sm" 
+                                    placeholder="Nama pengguna atau isi komentar..." 
+                                    value="{{ request('search') }}">
+                                <small class="text-muted">Anda bisa mencari berdasarkan nama pengguna atau isi komentar</small>
                             </div>
+                            
                             <div class="col-md-4">
-                                <label for="comment" class="form-label">Isi Komentar</label>
-                                <input type="text" name="comment" id="comment" class="form-control form-control-sm" 
-                                       placeholder="Cari dalam komentar" value="{{ request('comment') }}">
-                            </div>
-                            <div class="col-md-4">
-                                <label for="rating" class="form-label">Rating</label>
-                                <select name="rating" id="rating" class="form-select form-select-sm">
+                                <label for="rating" class="form-label">Filter Rating</label>
+                                <select name="rating" id="rating" class="form-select">
                                     <option value="">Semua Rating</option>
                                     @for($i = 1; $i <= 5; $i++)
                                         <option value="{{ $i }}" {{ request('rating') == $i ? 'selected' : '' }}>
@@ -41,12 +41,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-end mt-4">
-                            @if(request()->has('user') || request()->has('comment') || request()->has('rating'))
-                            <a href="{{ route('reviews.index') }}" class="btn btn-sm btn-outline-secondary me-2">
-                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
-                            </a>
-                            @endif
-                            <button type="submit" class="btn btn-sm btn-dark">
+                            <button type="submit" class="btn btn-dark">
                                 <i class="bi bi-funnel me-1"></i> Terapkan Filter
                             </button>
                         </div>
