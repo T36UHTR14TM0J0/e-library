@@ -22,6 +22,7 @@ use App\Http\Controllers\PenerbitControllers;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\ProfileControllers;
 use App\Http\Controllers\ProsedurController;
+use App\Http\Controllers\InformasiController;
 use App\Http\Controllers\GaleriControllers;
 use App\Http\Controllers\AktivitasControllers;
 use App\Http\Controllers\UsersControllers;
@@ -47,6 +48,7 @@ Route::get('/jam-pelayanan', [LandingController::class, 'jamLayanan'])->name('ja
 Route::get('/layanan', [LandingController::class, 'layanan'])->name('layanan');
 Route::get('/tentang', [LandingController::class, 'about'])->name('about');
 Route::get('/galeri', [LandingController::class, 'galeri'])->name('galeri');
+Route::get('/informasi', [LandingController::class, 'informasi'])->name('informasi');
 
 /* 
 |--------------------------------------------------------------------------
@@ -114,6 +116,7 @@ Route::middleware(['auth'])->group(function() {
             Route::resource('layanan', LayananController::class);
             Route::resource('jam_layanan', JamLayananController::class);
             Route::resource('prosedur', ProsedurController::class);
+            Route::resource('informasi', InformasiController::class);
             Route::resource('logs', ActivityLogController::class)->only(['index', 'show']);
         });
 

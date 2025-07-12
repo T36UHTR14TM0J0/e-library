@@ -11,12 +11,12 @@
             </div>
             <div class="col-md-6 text-md-end mt-3 mt-md-0">
                 <div class="btn-group" role="group">
-                    <button class="btn btn-outline-primary btn-modern px-4 py-2 me-2">
+                     <a href="#" class="btn btn-outline-primary btn-modern px-4 py-2 me-2">
                         <i class="fas fa-clipboard-list me-2"></i>Peraturan
-                    </button>
-                    <button class="btn btn-primary btn-modern px-4 py-2">
+                    </a>
+                     <a href="{{ route('informasi') }}" class="btn btn-primary btn-modern px-4 py-2">
                         <i class="fas fa-info-circle me-2"></i>Informasi
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
