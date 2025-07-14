@@ -78,7 +78,7 @@
                 <td>{{ $user->nama_lengkap }}</td>
                 <td>{{ ucfirst($user->role) }}</td>
                 <td>{{ $user->role == 'mahasiswa' ? $user->npm : $user->nidn }}</td>
-                <td>{{ $user->prodi ? $user->prodi->nama_prodi : '-' }}</td>
+                <td>{{ $user->prodi ? $user->prodi->nama : '-' }}</td>
                 <td>{{ $user->email }}</td>
             </tr>
             @endforeach

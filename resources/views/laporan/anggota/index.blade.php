@@ -115,7 +115,7 @@
                             <td class="text-center">
                                 {{ $user->role == 'mahasiswa' ? $user->npm : $user->nidn }}
                             </td>
-                            <td>{{ $user->prodi ? $user->prodi->nama_prodi : '-' }}</td>
+                            <td>{{ $user->prodi ? $user->prodi->nama : '-' }}</td>
                             <td>{{ $user->email }}</td>
                             <td class="text-center">{{ $user->username }}</td>
                         </tr>

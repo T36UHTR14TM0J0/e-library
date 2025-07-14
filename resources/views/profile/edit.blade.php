@@ -91,7 +91,7 @@
                                 <div class="form-group mb-3">
                                     <label class="form-label">Program Studi</label>
                                     <input type="text" class="form-control" 
-                                           value="{{ $user->prodi->nama_prodi ?? 'Tidak diketahui' }}" readonly>
+                                           value="{{ $user->prodi->nama ?? 'Tidak diketahui' }}" readonly>
                                 </div>
                                 @endif
 

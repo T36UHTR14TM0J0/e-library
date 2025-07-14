@@ -41,7 +41,7 @@ class AnggotaExport implements FromCollection, WithHeadings, WithMapping, WithCo
             $user->nama_lengkap,
             ucfirst($user->role),
             $user->role == 'mahasiswa' ? $user->npm : $user->nidn,
-            $user->prodi ? $user->prodi->nama_prodi : '-',
+            $user->prodi ? $user->prodi->nama : '-',
             $user->email,
             $user->username
         ];
